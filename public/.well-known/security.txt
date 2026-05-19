@@ -1,0 +1,4 @@
+Contact: mailto:security@nestorangulo.pro
+Expires: 2027-05-19T00:00:00.000Z
+Preferred-Languages: en, es
+Canonical: https://nestorangulo.pro/.well-known/security.txt
