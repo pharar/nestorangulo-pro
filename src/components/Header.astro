@@ -1,0 +1,39 @@
+---
+const navItems = [
+  { href: '/writing', label: 'Writing' },
+  { href: '/talks', label: 'Talks' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+
+const { pathname } = Astro.url;
+
+function isActive(href: string): boolean {
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(href + '/');
+}
+---
+
+<!-- Skip-to-content: visually hidden until keyboard-focused -->
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<header class="site-header">
+  <div class="container container--wide">
+    <a href="/" class="site-logo" aria-label="Nestor Angulo de Ugarte — home">
+      Nestor Angulo de Ugarte
+    </a>
+    <nav aria-label="Main navigation">
+      <ul class="site-nav">
+        {
+          navItems.map(({ href, label }) => (
+            <li>
+              <a href={href} aria-current={isActive(href) ? 'page' : undefined}>
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

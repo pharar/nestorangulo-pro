@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+
+# Astro / build output
+dist/
+.astro/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Lighthouse CI artifacts
+.lighthouseci/
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Deployment platforms
+.vercel/
+.netlify/
+
+# Local secrets / certificates
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.secret
+secrets.*
+credentials.*

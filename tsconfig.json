@@ -1,0 +1,10 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    // CSS side-effect imports (e.g. @fontsource packages) have no TS declarations.
+    // noUncheckedSideEffectImports (TS 5.6+) rejects them; disable for this project.
+    "noUncheckedSideEffectImports": false
+  },
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "node_modules"]
+}

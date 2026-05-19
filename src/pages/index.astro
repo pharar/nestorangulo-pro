@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Nestor Angulo de Ugarte — Head of Security · Security Program Builder · CISSP"
+  person={true}
+>
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-headline">
+    <div class="container">
+      <p class="hero-eyebrow">Nestor Angulo de Ugarte &middot; Head of Security &middot; CISSP</p>
+      <h1 class="hero-headline" id="hero-headline">
+        Building security programs from zero<span class="caret" aria-hidden="true">_</span>
+      </h1>
+      <p class="hero-tagline">
+        Builder of programs.&ensp;Operator at incident scale.&ensp;Strategist at the exec table.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Manifesto ─────────────────────────────────────────── -->
+  <section class="manifesto" aria-label="Manifesto">
+    <div class="container">
+      <div class="manifesto-body">
+        <p>
+          Security programs don't fail because of bad tools or misconfigured alerts. They fail
+          because they were designed for a different organization than the one that has to run
+          them — shaped around compliance frameworks instead of engineering workflows, written
+          in a language that only makes sense inside a security team, and treated as
+          infrastructure when they're actually a relationship with every team in the company.
+        </p>
+        <p>
+          I spent eight years inside incident response at Sucuri and GoDaddy. At the scale we
+          operated — thousands of incidents per year, live malware campaigns, e-commerce skimmers
+          running in production, intrusions on critical infrastructure — the gap between security
+          theater and security practice becomes impossible to hide. You either build things that
+          work under pressure or you don't.
+        </p>
+        <p>
+          At Patchstack, I built the security program from scratch. Not a policy document dropped
+          into a shared drive — a functioning program: secure development lifecycle, threat
+          modeling embedded in engineering, incident response playbooks, vulnerability
+          intelligence workflows, and coordinated disclosure operating at the scale of the global 
+          #1 CNA in 2023 and 2025, ahead of GitHub and Kernel.org. The hardest part was never the 
+	  technology. It was the organizational negotiation: making security useful instead of 
+          obstructive, translating risk into decisions that product and engineering teams can act 
+	  on.
+        </p>
+        <p>
+          This site is a working archive. Essays on security program design, talks from 25+
+          international conference appearances, and the thinking behind the work.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section cards ─────────────────────────────────────── -->
+  <section class="section-cards" aria-label="Explore this site">
+    <div class="container">
+      <nav aria-label="Site sections">
+        <ul class="cards-grid">
+          <li class="card">
+            <a href="/writing">
+              <span class="card-label">Writing</span>
+              <span class="card-desc">
+                Essays on security program design, vulnerability intelligence, and what incident
+                response at scale actually teaches.
+              </span>
+              <span class="card-cta">Coming next →</span>
+            </a>
+          </li>
+          <li class="card">
+            <a href="/talks">
+              <span class="card-label">Talks</span>
+              <span class="card-desc">
+                25+ international conference appearances. Slides, notes, and editorial commentary
+                on each.
+              </span>
+              <span class="card-cta">Coming next →</span>
+            </a>
+          </li>
+          <li class="card">
+            <a href="/about">
+              <span class="card-label">About</span>
+              <span class="card-desc">
+                Background, credentials, and what I've built across Patchstack and
+                Sucuri/GoDaddy.
+              </span>
+              <span class="card-cta">Coming next →</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>

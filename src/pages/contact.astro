@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Contact {
+  label: string;
+  href: string;
+  display: string;
+  note: string | null;
+  external: boolean;
+}
+
+const contacts: Contact[] = [
+  {
+    label: 'LinkedIn',
+    href: 'https://linkedin.com/in/pharar',
+    display: '/in/pharar',
+    note: 'Primary channel for professional contact and conversation.',
+    external: true,
+  },
+  {
+    label: 'Email',
+    href: 'mailto:hola@nestorangulo.pro',
+    display: 'hola@nestorangulo.pro',
+    note: 'For longer conversations or speaking invitations.',
+    external: false,
+  },
+  {
+    label: 'GitHub',
+    href: 'https://github.com/pharar',
+    display: 'github.com/pharar',
+    note: null,
+    external: true,
+  },
+  {
+    label: 'Bluesky',
+    href: 'https://bsky.app/profile/nestorangulo.pro',
+    display: '@nestorangulo.pro',
+    note: null,
+    external: true,
+  },
+  {
+    label: 'X',
+    href: 'https://x.com/pharar',
+    display: '@pharar',
+    note: null,
+    external: true,
+  },
+  {
+    label: 'ORCID',
+    href: 'https://orcid.org/0000-0001-6605-7761',
+    display: '0000-0001-6605-7761',
+    note: 'Academic publications and conference proceedings.',
+    external: true,
+  },
+];
+---
+
+<BaseLayout
+  title="Contact — Nestor Angulo de Ugarte"
+  description="Reach Nestor Angulo de Ugarte on LinkedIn, email, GitHub, Bluesky, X, and ORCID."
+>
+  <div class="container">
+    <div class="page-header">
+      <h1>Contact</h1>
+      <p>Professional inquiries, speaking invitations, or conversation.</p>
+    </div>
+
+    <ul class="contact-list">
+      {
+        contacts.map(({ label, href, display, note, external }) => (
+          <li class="contact-item">
+            <span class="contact-label">{label}</span>
+            <div class="contact-value">
+              <a
+                href={href}
+                class="contact-link"
+                {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >
+                {display}
+              </a>
+              {note && <span class="contact-note">{note}</span>}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>

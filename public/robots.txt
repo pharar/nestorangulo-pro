@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nestorangulo.pro/sitemap-index.xml
