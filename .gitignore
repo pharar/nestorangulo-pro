@@ -41,4 +41,3 @@ Thumbs.db
 *.pfx
 *.secret
 secrets.*
-credentials.*
