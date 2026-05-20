@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 175"
+     role="img" aria-labelledby="imago-a-title">
+
+  <defs>
+    <style type="text/css"><![CDATA[
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500&display=swap');
+    ]]></style>
+  </defs>
+
+  <title id="imago-a-title">nestorangulo.pro — Imagotipo</title>
+
+  <!--
+    ─────────────────────────────────────────────────────────────────────────
+    NR ISOTIPO
+    Source viewBox: 186 × 173. Scale to 155px height: 155/173 = 0.8959
+    Translate to add top margin: translate(12, 10)
+    Effective mark bounds after transform: x≈17–172, y≈15–158
+    ─────────────────────────────────────────────────────────────────────────
+  -->
+  <g transform="translate(12,10) scale(0.8959)">
+
+    <!-- R shape — includes top bowl, body, leg -->
+    <path fill="#2a2f32" d="
+      M 104.38 94.93
+      A 0.49 0.49 0.0 0 1 104.78 94.14
+      Q 105.70 94.19 118.25 93.89
+      C 125.06 93.73 133.74 90.51 139.17 86.05
+      C 161.31 67.89 155.80 29.28 127.41 20.24
+      Q 122.42 18.65 110.80 18.66
+      Q 87.80 18.66 73.72 18.72
+      A 2.11 2.10 -19.8 0 1 72.10 17.96
+      L 63.30 7.24
+      A 0.43 0.43 0.0 0 1 63.63 6.54
+      Q 104.47 6.49 108.41 6.41
+      Q 122.78 6.14 130.72 8.13
+      Q 146.06 11.98 156.98 26.61
+      C 163.36 35.15 165.91 48.03 165.54 57.97
+      C 164.81 77.51 155.22 93.46 137.35 101.91
+      Q 133.93 103.52 129.81 104.36
+      A 0.55 0.55 0.0 0 0 129.49 105.25
+      L 177.52 163.77
+      A 0.40 0.39 70.2 0 1 177.22 164.42
+      L 162.11 164.42
+      A 1.47 1.45 70.2 0 1 160.98 163.88
+      L 104.38 94.93
+      Z
+    "/>
+
+    <!-- N shape — diagonal letterform -->
+    <path fill="#2a2f32" d="
+      M 19.38 120.20
+      A 0.37 0.37 0.0 0 1 18.74 120.46
+      L 7.30 108.43
+      A 3.19 3.16 23.4 0 1 6.43 106.25
+      L 6.43 7.93
+      A 0.40 0.40 0.0 0 1 7.14 7.67
+      L 140.24 163.66
+      A 0.51 0.51 0.0 0 1 139.85 164.51
+      L 124.70 164.51
+      A 1.17 1.17 0.0 0 1 123.82 164.11
+      Q 118.62 158.05 114.35 152.87
+      Q 109.65 147.19 107.69 145.12
+      C 104.30 141.55 101.96 138.03 98.84 134.65
+      C 91.76 126.98 85.73 119.31 78.58 111.04
+      C 70.85 102.11 65.68 95.57 59.15 88.37
+      C 53.95 82.64 49.03 76.29 44.08 70.85
+      C 35.45 61.35 28.45 52.49 20.03 43.25
+      A 0.37 0.37 0.0 0 0 19.38 43.50
+      L 19.38 120.20
+      Z
+    "/>
+
+    <!-- Gold accent -->
+    <path fill="#c08c50" d="
+      M 45.74 164.46
+      L 29.79 164.46
+      A 0.32 0.32 0.0 0 1 29.56 164.36
+      L 6.60 140.22
+      A 0.32 0.32 0.0 0 1 6.51 140.00
+      L 6.51 123.22
+      A 0.32 0.32 0.0 0 1 7.06 123.00
+      L 45.98 163.92
+      A 0.32 0.32 0.0 0 1 45.74 164.46
+      Z
+    "/>
+
+  </g>
+
+  <!--
+    ─────────────────────────────────────────────────────────────────────────
+    VERTICAL DIVIDER
+    Positioned at the optical midpoint. Height spans cap-top to tagline
+    baseline to frame both wordmark and tagline as a unit.
+    ─────────────────────────────────────────────────────────────────────────
+  -->
+  <line x1="190" y1="25" x2="190" y2="155"
+        stroke="#C8C4BC" stroke-width="1" stroke-linecap="square"/>
+
+  <!--
+    ─────────────────────────────────────────────────────────────────────────
+    WORDMARK
+    Montserrat Light 300 · "nestorangulo" dark · ".pro" gold
+    font-size="78" positions the cap-height at approximately 78*0.72=56px.
+    With baseline at y=112: caps start at y≈56, leaving optical top margin.
+    ─────────────────────────────────────────────────────────────────────────
+  -->
+  <text
+    font-family="Montserrat, 'Helvetica Neue', Arial, sans-serif"
+    font-weight="300"
+    font-size="78"
+    y="112">
+    <tspan x="208" fill="#2a2f32">nestorangulo</tspan><tspan fill="#c08c50">.pro</tspan>
+  </text>
+
+  <!--
+    ─────────────────────────────────────────────────────────────────────────
+    TAGLINE — VERSION A
+    Montserrat Medium 500 · small caps treatment (uppercase + tracking)
+    font-size="14" · letter-spacing="10.5" distributes the tagline
+    to optically align with the right edge of "nestorangulo.pro".
+
+    Calibration note: if the tagline overruns or underruns the wordmark
+    width, adjust letter-spacing in 0.5px increments.
+    ─────────────────────────────────────────────────────────────────────────
+  -->
+  <text
+    x="210"
+    y="147"
+    font-family="Montserrat, 'Helvetica Neue', Arial, sans-serif"
+    font-weight="500"
+    font-size="13.5"
+    letter-spacing="10.5"
+    fill="#8C8F97">SECURITY · ENGINEERING · LEADERSHIP</text>
+
+</svg>

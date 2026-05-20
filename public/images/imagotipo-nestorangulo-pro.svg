@@ -1,17 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 206 206" role="img" aria-label="Nestor Angulo de Ugarte">
-  <!-- Background: dark charcoal, slight radius -->
-  <rect width="206" height="206" rx="24" fill="#2a2f32"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 175"
+     role="img" aria-labelledby="imago-b-title">
+
+  <defs>
+    <style type="text/css"><![CDATA[
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+    ]]></style>
+  </defs>
+
+  <title id="imago-b-title">nestorangulo.pro — Imagotipo sin tagline</title>
 
   <!--
-    NR mark: original 186×173 → fit in 174×162 (scale 0.936) centered in 206×206
-    Horizontal padding: (206-174)/2 = 16
-    Vertical padding: (206-162)/2 = 22
-    transform: translate(16,22) scale(0.936)
+    NR ISOTIPO — identical to Version A
+    translate(12,10) scale(0.8959): mark height = 155px
   -->
-  <g transform="translate(16,22) scale(0.936)">
+  <g transform="translate(12,10) scale(0.8959)">
 
-    <!-- R shape in off-white -->
-    <path fill="#FAF9F6" d="
+    <path fill="#2a2f32" d="
       M 104.38 94.93
       A 0.49 0.49 0.0 0 1 104.78 94.14
       Q 105.70 94.19 118.25 93.89
@@ -37,8 +42,7 @@
       Z
     "/>
 
-    <!-- N shape in off-white -->
-    <path fill="#FAF9F6" d="
+    <path fill="#2a2f32" d="
       M 19.38 120.20
       A 0.37 0.37 0.0 0 1 18.74 120.46
       L 7.30 108.43
@@ -61,7 +65,6 @@
       Z
     "/>
 
-    <!-- Gold accent -->
     <path fill="#c08c50" d="
       M 45.74 164.46
       L 29.79 164.46
@@ -76,4 +79,26 @@
     "/>
 
   </g>
+
+  <!--
+    VERTICAL DIVIDER — Version B
+    Shorter than A: spans only the wordmark cap-height to baseline
+    since there's no tagline. Vertically centered in canvas.
+  -->
+  <line x1="190" y1="32" x2="190" y2="143"
+        stroke="#C8C4BC" stroke-width="1" stroke-linecap="square"/>
+
+  <!--
+    WORDMARK — Version B
+    Same font, same size. Baseline at y=118 centers the cap-height
+    (cap-top ≈ y=62) in the 175px canvas: center ≈ (62+118)/2 = 90 vs 87.5 ≈ ✓
+  -->
+  <text
+    font-family="Montserrat, 'Helvetica Neue', Arial, sans-serif"
+    font-weight="300"
+    font-size="78"
+    y="118">
+    <tspan x="208" fill="#2a2f32">nestorangulo</tspan><tspan fill="#c08c50">.pro</tspan>
+  </text>
+
 </svg>
