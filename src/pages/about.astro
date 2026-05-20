@@ -1,19 +1,161 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Credentials from '../components/Credentials.astro';
+import Service from '../components/Service.astro';
+import Publications from '../components/Publications.astro';
+import Press from '../components/Press.astro';
+
+const SITE_URL = 'https://nestorangulo.pro';
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Nestor Angulo de Ugarte',
+  givenName: 'Nestor',
+  familyName: 'Angulo de Ugarte',
+  url: SITE_URL,
+  image: `${SITE_URL}/images/photo-nestor.jpg`,
+  jobTitle: 'Security Leader',
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'Universidad de Las Palmas de Gran Canaria',
+    alternateName: 'ULPGC',
+  },
+  knowsAbout: [
+    'Information Security',
+    'Vulnerability Intelligence',
+    'Web Security',
+    'ISO 27001',
+    'SOC 2',
+    'Incident Response',
+  ],
+  sameAs: [
+    'https://linkedin.com/in/pharar',
+    'https://x.com/pharar',
+    'https://bsky.app/profile/nestorangulo.pro',
+    'https://www.credly.com/badges/e7de5c98-5d06-416b-bc3d-cd11b64d6416/linked_in_profile',
+  ],
+};
 ---
 
 <BaseLayout
   title="About — Nestor Angulo de Ugarte"
-  description="Background, credentials, and career narrative for Nestor Angulo de Ugarte — Head of Security, CISSP."
+  description="Security leader with a decade in cybersecurity. CISSP. Most recently Head of Security at Patchstack. Builder of security programs from zero. Speaker at 25+ international conferences. Valencia."
+  canonical={`${SITE_URL}/about`}
+  ogImage="/og-default.png"
 >
-  <div class="container">
-    <div class="page-header">
-      <h1>About</h1>
-      <p>Background, credentials, and what I've built.</p>
+  <script
+    slot="head"
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify(personSchema)}
+  />
+
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="about-hero" aria-labelledby="about-h1">
+    <div class="container">
+      <div class="about-hero-inner">
+        <img
+          class="about-photo"
+          src="/images/photo-nestor.jpg"
+          alt="Nestor Angulo de Ugarte, Head of Security and CISSP."
+          width="200"
+          height="200"
+          loading="eager"
+          decoding="async"
+        />
+        <div class="about-hero-text">
+          <h1 class="about-h1" id="about-h1">About</h1>
+          <p class="about-tagline">Security leader · CISSP · Builder of security programs from zero</p>
+        </div>
+      </div>
     </div>
-    <div class="placeholder">
-      <p class="placeholder-status">Coming next.</p>
-      <a href="/" class="back-link">← Back to home</a>
+  </section>
+
+  <!-- ── Biography ─────────────────────────────────────────── -->
+  <section class="about-section" aria-label="Biography">
+    <div class="container">
+      <div class="about-bio">
+        <p>
+          I build security programs from zero inside technical organizations — programs that
+          engineering teams actually run, not policy documents that sit in a shared drive.
+        </p>
+        <p>
+          Ten years in cybersecurity, starting hands-on. Eight of them inside incident response at
+          Sucuri and GoDaddy: thousands of compromised sites per year, malware analysis at scale,
+          forensic work on e-commerce credit card skimmers. That work taught me to think like an
+          attacker before thinking like a defender, and to recognize the gap between security
+          theater and security practice.
+        </p>
+        <p>
+          Most recently, I was Head of Security at Patchstack, where I built the entire internal
+          security function from zero: secure development lifecycle, threat modeling embedded in
+          engineering, ISO 27001 and SOC 2 readiness, vendor risk, incident response, security
+          culture. Patchstack is the global #1 CNA in 2023 and 2025, ahead of GitHub and
+          Kernel.org — a ranking earned by the research team I previously led as Data &amp; Research
+          Lead. The technology was never the hard part. The organizational negotiation was.
+        </p>
+        <p>
+          CISSP. Computer Science Engineer (ULPGC), with formal academic grounding in AI — neural
+          networks, genetic algorithms, automata. 25+ international conference talks across Europe
+          and Japan. Head of Technology, ISC2 Spain Chapter. Based in Valencia.
+        </p>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <!-- ── Credentials ───────────────────────────────────────── -->
+  <section class="about-section" aria-labelledby="credentials-heading">
+    <div class="container">
+      <h2 class="about-section-heading" id="credentials-heading">Credentials</h2>
+      <Credentials />
+    </div>
+  </section>
+
+  <!-- ── Speaking ──────────────────────────────────────────── -->
+  <section class="about-section" aria-labelledby="speaking-heading">
+    <div class="container">
+      <h2 class="about-section-heading" id="speaking-heading">Speaking</h2>
+      <div class="about-speaking">
+        <p>
+          25+ international conference appearances on web security, vulnerability intelligence, CMS
+          security, and security culture. Selected venues: WordCamp Europe, WordCamp Tokyo,
+          WordCamp Osaka, WordCamp Vienna, WordCamp Geneva, WordCamp Greece, WordCamp Taiwan,
+          WordSesh EMEA. Featured in podcasts, webinars, and interviews across multiple regions.
+        </p>
+        <a
+          class="about-external-link"
+          href="https://wordpress.tv/?s=nestor+angulo"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View talks archive on WordPress.tv →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Service ───────────────────────────────────────────── -->
+  <section class="about-section" aria-labelledby="service-heading">
+    <div class="container">
+      <h2 class="about-section-heading" id="service-heading">Service</h2>
+      <Service />
+    </div>
+  </section>
+
+  <!-- ── Publications ──────────────────────────────────────── -->
+  <section class="about-section" aria-labelledby="publications-heading">
+    <div class="container">
+      <h2 class="about-section-heading" id="publications-heading">Publications</h2>
+      <Publications />
+    </div>
+  </section>
+
+  <!-- ── Press ─────────────────────────────────────────────── -->
+  <section class="about-section" aria-labelledby="press-heading">
+    <div class="container">
+      <h2 class="about-section-heading" id="press-heading">For event organizers &amp; press</h2>
+      <Press />
+    </div>
+  </section>
 </BaseLayout>

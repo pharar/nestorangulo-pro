@@ -1,0 +1,94 @@
+---
+const oneLiner =
+  'Builds security programs from zero. 10+ years in cybersecurity, came up through incident response. CISSP. 25+ international talks.';
+
+const shortBio =
+  "Nestor Angulo de Ugarte is a security leader with over a decade in cybersecurity. Most recently he was Head of Security at Patchstack — a vulnerability intelligence company ranked #1 CNA globally in 2023 and 2025 — where he built the internal security program from zero. Before Patchstack he spent eight years in incident response at Sucuri and GoDaddy, handling thousands of web compromises annually with a specialization in e-commerce malware. CISSP, Computer Science Engineer, and Head of Technology at the ISC2 Spain Chapter. 25+ international talks across Europe and Japan.";
+---
+
+<div class="press">
+  <div class="press-entry">
+    <p class="press-entry-label">One-liner</p>
+    <blockquote class="press-block">
+      <p>{oneLiner}</p>
+      <button
+        class="copy-btn"
+        data-copy={oneLiner}
+        aria-label="Copy one-liner bio to clipboard"
+      >
+        Copy
+      </button>
+    </blockquote>
+  </div>
+
+  <div class="press-entry">
+    <p class="press-entry-label">Short bio (~70 words)</p>
+    <blockquote class="press-block">
+      <p>{shortBio}</p>
+      <button
+        class="copy-btn"
+        data-copy={shortBio}
+        aria-label="Copy short bio to clipboard"
+      >
+        Copy
+      </button>
+    </blockquote>
+  </div>
+
+  <div class="press-entry">
+    <p class="press-entry-label">Speaker photo</p>
+    <div class="press-photo-block">
+      <a
+        class="about-external-link"
+        href="/images/photo-nestor-hires-a.jpg"
+        download="nestor-angulo-de-ugarte.jpg"
+      >
+        Download speaker photo — portrait (JPEG) →
+      </a>
+      <a
+        class="about-external-link"
+        href="/images/photo-nestor-hires-b.jpg"
+        download="nestor-angulo-de-ugarte-athens.jpg"
+      >
+        Download speaker photo — Athens (JPEG) →
+      </a>
+      <p class="press-photo-note">
+        Minimum 1500px on the long side. For event programs, slides, and press coverage.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
+    const originalLabel = btn.getAttribute('aria-label') ?? 'Copy to clipboard';
+
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy ?? '';
+
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        // Fallback: visually select the text so the user can Cmd+C manually
+        const p = btn.closest<HTMLElement>('.press-block')?.querySelector('p');
+        if (p) {
+          const range = document.createRange();
+          range.selectNodeContents(p);
+          const sel = window.getSelection();
+          sel?.removeAllRanges();
+          sel?.addRange(range);
+        }
+      }
+
+      btn.textContent = 'Copied!';
+      btn.classList.add('copy-btn--copied');
+      btn.setAttribute('aria-label', 'Copied to clipboard');
+
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copy-btn--copied');
+        btn.setAttribute('aria-label', originalLabel);
+      }, 2000);
+    });
+  });
+</script>

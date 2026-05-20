@@ -1,0 +1,37 @@
+---
+import { serviceRoles } from '../data/service';
+
+function formatYearMonth(str: string): string {
+  const [year, month] = str.split('-');
+  const months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
+  return month ? `${months[parseInt(month, 10) - 1]} ${year}` : year;
+}
+---
+
+<ul class="service-list">
+  {
+    serviceRoles.map((r) => (
+      <li class="service-item">
+        <div class="service-main">
+          <p class="service-role">{r.title}</p>
+          <p class="service-org">{r.organization}</p>
+          {r.type && <p class="service-badge">{r.type}</p>}
+        </div>
+        <div class="service-date-col">
+          {r.since && !r.until && (
+            <span class="service-date">Since {formatYearMonth(r.since)}</span>
+          )}
+          {r.since && r.until && (
+            <span class="service-date">
+              {formatYearMonth(r.since)} – {formatYearMonth(r.until)}
+            </span>
+          )}
+        </div>
+        {r.note && <p class="service-note">{r.note}</p>}
+      </li>
+    ))
+  }
+</ul>
