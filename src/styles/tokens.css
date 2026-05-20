@@ -28,10 +28,9 @@
   --clr-muted: #6b6663;       /* warm mid-grey */
   --clr-subtle: #a09d9a;      /* light warm-grey */
   --clr-border: #e8e4df;
-  --clr-accent: #3d6224;      /* dark lime green */
-  --clr-accent-hover: #2d4a1b;
-  --clr-accent-light: #eef4e8;
-
+  --clr-accent:       #c08c50;  /* amber gold — brand */
+  --clr-accent-hover: #a87740;  /* amber gold -15% lightness */
+  --clr-accent-light: #f5ead9;  /* amber gold 10% tint */
   /* ── Spacing ─────────────────────────────────────────────── */
   --sp-1: 0.25rem;
   --sp-2: 0.5rem;

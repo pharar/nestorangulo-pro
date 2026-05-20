@@ -131,6 +131,9 @@ a:hover {
 }
 
 .site-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
   font-family: var(--font-body);
   font-size: var(--text-sm);
   font-weight: 600;
@@ -143,6 +146,16 @@ a:hover {
 .site-logo:hover {
   color: var(--clr-accent);
 }
+
+/* Mark (isotipo): always visible, size differs by breakpoint */
+.site-logo-mark {
+  height: 40px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* Wordmark (text): hidden on mobile, shown on desktop */
+/* .site-logo-wordmark — no default rule needed; visible by default */
 
 .site-nav {
   display: flex;
@@ -182,6 +195,9 @@ a:hover {
 }
 
 .footer-copy {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--clr-subtle);
@@ -475,5 +491,18 @@ a:hover {
 
   .manifesto-body p:first-child::first-letter {
     font-size: 3em;
+  }
+
+  /* Responsive logo: show mark only, compress nav gap */
+  .site-logo-mark {
+    height: 32px;
+  }
+
+  .site-logo-wordmark {
+    display: none;
+  }
+
+  .site-nav {
+    gap: var(--sp-4);
   }
 }
