@@ -31,6 +31,7 @@
   --clr-accent:       #c08c50;  /* amber gold — brand */
   --clr-accent-hover: #a87740;  /* amber gold -15% lightness */
   --clr-accent-light: #f5ead9;  /* amber gold 10% tint */
+  --clr-accent-text:  #8a5c1a;  /* amber gold darkened for WCAG AA text (5.5:1 on bg) */
   /* ── Spacing ─────────────────────────────────────────────── */
   --sp-1: 0.25rem;
   --sp-2: 0.5rem;

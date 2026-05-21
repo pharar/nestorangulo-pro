@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import photo from '../images/photo-nestor.jpg';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Credentials from '../components/Credentials.astro';
 import Service from '../components/Service.astro';
@@ -55,14 +57,14 @@ const personSchema = {
   <section class="about-hero" aria-labelledby="about-h1">
     <div class="container">
       <div class="about-hero-inner">
-        <img
+        <Image
           class="about-photo"
-          src="/images/photo-nestor.jpg"
+          src={photo}
           alt="Nestor Angulo de Ugarte, Head of Security and CISSP."
-          width="200"
-          height="200"
+          width={200}
+          height={200}
+          format="webp"
           loading="eager"
-          decoding="async"
         />
         <div class="about-hero-text">
           <h1 class="about-h1" id="about-h1">About</h1>

@@ -348,7 +348,7 @@ a:hover {
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--clr-accent);
+  color: var(--clr-accent-text);
   margin-bottom: var(--sp-3);
 }
 
@@ -363,7 +363,7 @@ a:hover {
 .card-cta {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   transition: color var(--ease);
 }
 
@@ -555,7 +555,7 @@ a:hover {
 .about-external-link {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  color: var(--clr-accent);
+  color: var(--clr-accent-text);
   text-decoration: none;
   letter-spacing: 0.02em;
   transition: opacity var(--ease);
@@ -599,7 +599,7 @@ a:hover {
 .credential-verify {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--clr-accent);
+  color: var(--clr-accent-text);
   text-decoration: none;
   letter-spacing: 0.04em;
   white-space: nowrap;
@@ -623,7 +623,7 @@ a:hover {
 }
 
 .credential-eqf {
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
 }
 
 .credential-badge {
@@ -671,7 +671,7 @@ a:hover {
 .publication-type {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -713,7 +713,7 @@ a:hover {
 .service-badge {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   letter-spacing: 0.02em;
   margin-top: var(--sp-1);
 }
@@ -725,7 +725,7 @@ a:hover {
 .service-date {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
@@ -748,7 +748,7 @@ a:hover {
 .press-entry-label {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   margin-bottom: var(--sp-3);
