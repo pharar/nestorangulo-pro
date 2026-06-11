@@ -549,6 +549,18 @@ a:hover {
   margin-bottom: var(--sp-8);
 }
 
+/* Section-label register for Speaking page — mono eyebrow, distinct from talk titles */
+.speaking-section-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--clr-text);
+  margin-bottom: var(--sp-8);
+}
+
 .about-bio {
   display: grid;
   gap: var(--sp-5);
@@ -867,6 +879,10 @@ a:hover {
   .talks-featured-list .talk-item:first-child {
     padding-inline: var(--sp-4);
   }
+
+  .talk-card-content {
+    padding: var(--sp-4);
+  }
 }
 
 /* Logo swap + about hero at the same breakpoint */
@@ -1063,8 +1079,42 @@ a:hover {
   padding: var(--sp-6) var(--sp-8);
 }
 
+/* Cover-image cards: remove padding, use overflow to clip image corners */
+.talks-featured-list .talk-item.talk-item--has-cover,
+.talks-featured-list .talk-item.talk-item--has-cover:first-child {
+  padding: 0;
+  overflow: hidden;
+}
+
+.talk-card-cover {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.talk-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.talk-card-content {
+  padding: var(--sp-5) var(--sp-6);
+}
+
 .talks-featured-list .talk-title-link {
   font-size: var(--text-2xl);
+}
+
+/* Format label — small mono uppercase, secondary */
+.talk-format {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--clr-subtle);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-2);
 }
 
 /* Accent rule under the Featured heading */

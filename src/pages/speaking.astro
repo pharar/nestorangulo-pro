@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const SITE_URL = 'https://nestorangulo.pro';
@@ -24,6 +25,16 @@ const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
 function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
+
+const FORMAT_LABELS: Record<string, string> = {
+  'conference-talk': 'Conference Talk',
+  'meetup-talk': 'Meetup Talk',
+  'panel': 'Panel',
+  'podcast': 'Podcast',
+  'webinar': 'Webinar',
+  'ama': 'AMA',
+  'workshop': 'Workshop',
+};
 ---
 
 <BaseLayout
@@ -37,10 +48,9 @@ function isoDate(d: Date): string {
       <h1 class="about-h1" id="speaking-h1">Speaking<span class="caret" aria-hidden="true">_</span></h1>
       <p class="about-tagline">web security · vulnerability intelligence · software supply chain · security culture</p>
       <p class="talks-intro">
-        {talks.length} conference appearances spanning web and CMS security, vulnerability
-        intelligence, software supply chain risks, and building security culture inside engineering
-        organizations — delivered at WordCamps, industry conferences, and security events across
-        Europe and Japan.
+        {talks.length} appearances at WordCamps, industry conferences, podcasts, and webinars
+        spanning web security, vulnerability intelligence, software supply chain, and security
+        culture — across Europe and Japan.
       </p>
       <!-- JS injects the filter bar + count here; no-JS: empty, no space taken -->
       <div id="talks-filter-bar"></div>
@@ -52,65 +62,92 @@ function isoDate(d: Date): string {
     featured.length > 0 && (
       <section class="about-section" aria-labelledby="featured-heading" data-talks-section="featured">
         <div class="container">
-          <h2 class="about-section-heading talks-featured-heading" id="featured-heading">
+          <h2 class="speaking-section-label talks-featured-heading" id="featured-heading">
             Featured
           </h2>
           <ul class="talks-featured-list">
-            {featured.map((talk) => (
-              <li class="talk-item" data-themes={talk.data.themes.join('|')} data-featured="true">
-                <div class="talk-top">
-                  <a href={`/speaking/${talk.id}`} class="talk-title-link">
-                    {talk.data.title}
-                  </a>
-                  <time class="talk-date" datetime={talk.data.date.toISOString()}>
-                    {isoDate(talk.data.date)}
-                  </time>
-                </div>
-                <p class="talk-meta">
-                  {talk.data.event}
-                  {talk.data.location ? ` · ${talk.data.location}` : ''}
-                </p>
-                <ul class="talk-themes" aria-label="Themes">
-                  {talk.data.themes.map((theme) => (
-                    <li class="theme-tag">{theme}</li>
-                  ))}
-                </ul>
-                {(talk.data.videoUrl || talk.data.slidesUrl || talk.data.eventUrl) && (
-                  <div class="talk-links">
-                    {talk.data.videoUrl && (
-                      <a
-                        class="talk-link"
-                        href={talk.data.videoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Video ↗
+            {featured.map((talk) =>
+              talk.data.cover ? (
+                <li class="talk-item talk-item--has-cover" data-themes={talk.data.themes.join('|')} data-featured="true">
+                  <figure class="talk-card-cover">
+                    <Image
+                      src={talk.data.cover}
+                      alt={talk.data.coverAlt ?? `${talk.data.title} — ${talk.data.event}`}
+                      width={700}
+                      loading="lazy"
+                      class="talk-card-img"
+                    />
+                  </figure>
+                  <div class="talk-card-content">
+                    <div class="talk-top">
+                      <a href={`/speaking/${talk.id}`} class="talk-title-link">
+                        {talk.data.title}
                       </a>
-                    )}
-                    {talk.data.slidesUrl && (
-                      <a
-                        class="talk-link"
-                        href={talk.data.slidesUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Slides ↗
-                      </a>
-                    )}
-                    {talk.data.eventUrl && (
-                      <a
-                        class="talk-link"
-                        href={talk.data.eventUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Event ↗
-                      </a>
+                      <time class="talk-date" datetime={talk.data.date.toISOString()}>
+                        {isoDate(talk.data.date)}
+                      </time>
+                    </div>
+                    <p class="talk-meta">
+                      {talk.data.event}
+                      {talk.data.location ? ` · ${talk.data.location}` : ''}
+                    </p>
+                    <p class="talk-format">{FORMAT_LABELS[talk.data.format]}</p>
+                    <ul class="talk-themes" aria-label="Themes">
+                      {talk.data.themes.map((theme) => (
+                        <li class="theme-tag">{theme}</li>
+                      ))}
+                    </ul>
+                    {(talk.data.videoUrl || talk.data.slidesUrl || talk.data.eventUrl) && (
+                      <div class="talk-links">
+                        {talk.data.videoUrl && (
+                          <a class="talk-link" href={talk.data.videoUrl} target="_blank" rel="noopener noreferrer">Video ↗</a>
+                        )}
+                        {talk.data.slidesUrl && (
+                          <a class="talk-link" href={talk.data.slidesUrl} target="_blank" rel="noopener noreferrer">Slides ↗</a>
+                        )}
+                        {talk.data.eventUrl && (
+                          <a class="talk-link" href={talk.data.eventUrl} target="_blank" rel="noopener noreferrer">Event ↗</a>
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
-              </li>
-            ))}
+                </li>
+              ) : (
+                <li class="talk-item" data-themes={talk.data.themes.join('|')} data-featured="true">
+                  <div class="talk-top">
+                    <a href={`/speaking/${talk.id}`} class="talk-title-link">
+                      {talk.data.title}
+                    </a>
+                    <time class="talk-date" datetime={talk.data.date.toISOString()}>
+                      {isoDate(talk.data.date)}
+                    </time>
+                  </div>
+                  <p class="talk-meta">
+                    {talk.data.event}
+                    {talk.data.location ? ` · ${talk.data.location}` : ''}
+                  </p>
+                  <p class="talk-format">{FORMAT_LABELS[talk.data.format]}</p>
+                  <ul class="talk-themes" aria-label="Themes">
+                    {talk.data.themes.map((theme) => (
+                      <li class="theme-tag">{theme}</li>
+                    ))}
+                  </ul>
+                  {(talk.data.videoUrl || talk.data.slidesUrl || talk.data.eventUrl) && (
+                    <div class="talk-links">
+                      {talk.data.videoUrl && (
+                        <a class="talk-link" href={talk.data.videoUrl} target="_blank" rel="noopener noreferrer">Video ↗</a>
+                      )}
+                      {talk.data.slidesUrl && (
+                        <a class="talk-link" href={talk.data.slidesUrl} target="_blank" rel="noopener noreferrer">Slides ↗</a>
+                      )}
+                      {talk.data.eventUrl && (
+                        <a class="talk-link" href={talk.data.eventUrl} target="_blank" rel="noopener noreferrer">Event ↗</a>
+                      )}
+                    </div>
+                  )}
+                </li>
+              )
+            )}
           </ul>
         </div>
       </section>
@@ -122,7 +159,7 @@ function isoDate(d: Date): string {
     years.length > 0 && (
       <section class="about-section" aria-labelledby="archive-heading" data-talks-section="archive">
         <div class="container">
-          <h2 class="about-section-heading" id="archive-heading">
+          <h2 class="speaking-section-label" id="archive-heading">
             Archive
           </h2>
           {years.map((year) => (
@@ -143,6 +180,7 @@ function isoDate(d: Date): string {
                       {talk.data.event}
                       {talk.data.location ? ` · ${talk.data.location}` : ''}
                     </p>
+                    <p class="talk-format">{FORMAT_LABELS[talk.data.format]}</p>
                     <ul class="talk-themes" aria-label="Themes">
                       {talk.data.themes.map((theme) => (
                         <li class="theme-tag">{theme}</li>
@@ -151,34 +189,13 @@ function isoDate(d: Date): string {
                     {(talk.data.videoUrl || talk.data.slidesUrl || talk.data.eventUrl) && (
                       <div class="talk-links">
                         {talk.data.videoUrl && (
-                          <a
-                            class="talk-link"
-                            href={talk.data.videoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Video ↗
-                          </a>
+                          <a class="talk-link" href={talk.data.videoUrl} target="_blank" rel="noopener noreferrer">Video ↗</a>
                         )}
                         {talk.data.slidesUrl && (
-                          <a
-                            class="talk-link"
-                            href={talk.data.slidesUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Slides ↗
-                          </a>
+                          <a class="talk-link" href={talk.data.slidesUrl} target="_blank" rel="noopener noreferrer">Slides ↗</a>
                         )}
                         {talk.data.eventUrl && (
-                          <a
-                            class="talk-link"
-                            href={talk.data.eventUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Event ↗
-                          </a>
+                          <a class="talk-link" href={talk.data.eventUrl} target="_blank" rel="noopener noreferrer">Event ↗</a>
                         )}
                       </div>
                     )}

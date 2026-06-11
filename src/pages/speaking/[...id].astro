@@ -25,6 +25,7 @@ const {
   event,
   location,
   date,
+  format,
   themes,
   summary,
   description,
@@ -40,6 +41,16 @@ const SITE_URL = 'https://nestorangulo.pro';
 function formatDate(d: Date): string {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
+
+const FORMAT_LABELS: Record<string, string> = {
+  'conference-talk': 'Conference Talk',
+  'meetup-talk': 'Meetup Talk',
+  'panel': 'Panel',
+  'podcast': 'Podcast',
+  'webinar': 'Webinar',
+  'ama': 'AMA',
+  'workshop': 'Workshop',
+};
 ---
 
 <BaseLayout
@@ -55,6 +66,7 @@ function formatDate(d: Date): string {
       <h1 class="talk-detail-title">{title}</h1>
 
       <div class="talk-detail-meta">
+        <span class="talk-format">{FORMAT_LABELS[format]}</span>
         <span>{event}</span>
         {location && <span>{location}</span>}
         <time datetime={date.toISOString()}>{formatDate(date)}</time>
