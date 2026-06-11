@@ -307,8 +307,8 @@ a:hover {
   line-height: var(--leading-loose);
 }
 
-/* Drop-cap on the first paragraph */
-.manifesto-body p:first-child::first-letter {
+/* Drop-cap: reusable accent initial — apply via .lead-dropcap on a <p> */
+.lead-dropcap::first-letter {
   font-family: var(--font-display);
   font-size: 3.75em;
   font-weight: 300;
@@ -842,7 +842,7 @@ a:hover {
     gap: var(--sp-1);
   }
 
-  .manifesto-body p:first-child::first-letter {
+  .lead-dropcap::first-letter {
     font-size: 3em;
   }
 
@@ -861,6 +861,11 @@ a:hover {
 
   .press-block {
     padding: var(--sp-4) var(--sp-4);
+  }
+
+  .talks-featured-list .talk-item,
+  .talks-featured-list .talk-item:first-child {
+    padding-inline: var(--sp-4);
   }
 }
 
@@ -1038,6 +1043,38 @@ a:hover {
   margin: 0 0 var(--sp-2) 0;
   padding-bottom: var(--sp-2);
   border-bottom: 1px solid var(--clr-border);
+}
+
+/* ── Featured talks: card presentation ──────────────────────── */
+.talks-featured-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--sp-4);
+}
+
+/* Override list-style borders; use full card border instead */
+.talks-featured-list .talk-item,
+.talks-featured-list .talk-item:first-child {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-6) var(--sp-8);
+}
+
+.talks-featured-list .talk-title-link {
+  font-size: var(--text-2xl);
+}
+
+/* Accent rule under the Featured heading */
+.talks-featured-heading::after {
+  content: '';
+  display: block;
+  width: var(--sp-12);
+  height: 2px;
+  background: var(--clr-accent);
+  margin-top: var(--sp-3);
 }
 
 /* ── Talks filter bar ────────────────────────────────────────── */

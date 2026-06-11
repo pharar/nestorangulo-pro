@@ -1,0 +1,97 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const talks = await getCollection('talks');
+  return talks
+    .filter((t) => !t.data.draft)
+    .map((entry) => ({
+      params: { id: entry.id },
+      props: { entry },
+    }));
+}
+
+interface Props {
+  entry: CollectionEntry<'talks'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const {
+  title,
+  event,
+  location,
+  date,
+  themes,
+  summary,
+  description,
+  slidesUrl,
+  videoUrl,
+  eventUrl,
+  sourceNote,
+} = entry.data;
+
+const pageDescription = description ?? summary;
+const SITE_URL = 'https://nestorangulo.pro';
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+---
+
+<BaseLayout
+  title={`${title} — Nestor Angulo de Ugarte`}
+  description={pageDescription}
+  canonical={`${SITE_URL}/speaking/${entry.id}`}
+>
+  <div class="container">
+    <a href="/speaking" class="talk-back">← Back to speaking</a>
+
+    <!-- ── Talk header ───────────────────────────────────────── -->
+    <header class="talk-detail-header">
+      <h1 class="talk-detail-title">{title}</h1>
+
+      <div class="talk-detail-meta">
+        <span>{event}</span>
+        {location && <span>{location}</span>}
+        <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      </div>
+
+      <ul class="talk-themes" aria-label="Themes">
+        {themes.map((theme) => <li class="theme-tag">{theme}</li>)}
+      </ul>
+
+      {
+        (videoUrl || slidesUrl || eventUrl) && (
+          <div class="talk-detail-actions">
+            {videoUrl && (
+              <a class="talk-btn" href={videoUrl} target="_blank" rel="noopener noreferrer">
+                Watch video ↗
+              </a>
+            )}
+            {slidesUrl && (
+              <a class="talk-btn" href={slidesUrl} target="_blank" rel="noopener noreferrer">
+                View slides ↗
+              </a>
+            )}
+            {eventUrl && (
+              <a class="talk-btn" href={eventUrl} target="_blank" rel="noopener noreferrer">
+                View event ↗
+              </a>
+            )}
+          </div>
+        )
+      }
+
+      {sourceNote && <p class="talk-detail-note">{sourceNote}</p>}
+    </header>
+
+    <!-- ── Talk body ────────────────────────────────────────── -->
+    <div class="talk-detail-body">
+      <Content />
+    </div>
+  </div>
+</BaseLayout>
