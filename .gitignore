@@ -23,6 +23,10 @@ Thumbs.db
 # Lighthouse CI artifacts
 .lighthouseci/
 
+# Playwright browser cache (binaries, not source)
+/playwright-report/
+/test-results/
+
 # Editor
 .vscode/*
 !.vscode/extensions.json
@@ -41,3 +45,6 @@ Thumbs.db
 *.pfx
 *.secret
 secrets.*
+
+# Local Configs
+*.local.json
