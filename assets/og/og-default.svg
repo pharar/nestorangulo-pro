@@ -1,0 +1,56 @@
+<!-- OG default card — 1200×630 source
+     Render to public/og-default.png via: node scripts/generate-og.js
+     Fonts: Fraunces Variable (italic, w700), IBM Plex Sans (400/500), IBM Plex Mono (400)
+     Colors: match src/styles/tokens.css
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Fonts injected at render time by generate-og.js -->
+    <style id="font-styles">/* fonts injected at render time */</style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#faf9f7"/>
+
+  <!-- Amber top accent bar -->
+  <rect x="0" y="0" width="1200" height="7" fill="#c08c50"/>
+
+  <!-- Isotipo placeholder — composited by generate-og.js -->
+
+  <!-- Name: Fraunces Variable, italic, weight 700 -->
+  <text
+    x="80"
+    y="248"
+    font-family="'Fraunces Variable', 'Fraunces', Georgia, serif"
+    font-size="76"
+    font-weight="700"
+    font-style="italic"
+    fill="#1c1917"
+    letter-spacing="-0.5"
+  >Nestor Angulo de Ugarte</text>
+
+  <!-- Subtitle: IBM Plex Sans 500 -->
+  <text
+    x="82"
+    y="312"
+    font-family="'IBM Plex Sans', Arial, sans-serif"
+    font-size="28"
+    font-weight="500"
+    fill="#6b6663"
+    letter-spacing="0.1"
+  >Head of Security  ·  Security Program Builder  ·  CISSP</text>
+
+  <!-- Separator -->
+  <line x1="80" y1="500" x2="1120" y2="500" stroke="#e8e4df" stroke-width="1.5"/>
+
+  <!-- Domain: IBM Plex Mono -->
+  <text
+    x="80"
+    y="548"
+    font-family="'IBM Plex Mono', 'Courier New', monospace"
+    font-size="21"
+    font-weight="400"
+    fill="#c08c50"
+    letter-spacing="0.3"
+  >nestorangulo.pro</text>
+</svg>
