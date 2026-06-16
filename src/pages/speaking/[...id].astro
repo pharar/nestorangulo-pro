@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_URL } from '../../config';
 
 export async function getStaticPaths() {
   const talks = await getCollection('talks');
@@ -36,7 +37,6 @@ const {
 } = entry.data;
 
 const pageDescription = description ?? summary;
-const SITE_URL = 'https://nestorangulo.pro';
 
 function formatDate(d: Date): string {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });

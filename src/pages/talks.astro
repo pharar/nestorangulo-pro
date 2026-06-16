@@ -1,5 +1,6 @@
 ---
 // Permanent redirect: /talks → /speaking
+import { SITE_URL } from '../config';
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +8,7 @@
     <meta charset="utf-8" />
     <title>Redirecting to Speaking…</title>
     <meta http-equiv="refresh" content="0;url=/speaking" />
-    <link rel="canonical" href="https://nestorangulo.pro/speaking" />
+    <link rel="canonical" href={`${SITE_URL}/speaking`} />
     <meta name="robots" content="noindex" />
   </head>
   <body>

@@ -1,17 +1,16 @@
-const SITE_URL = 'https://nestorangulo.pro';
+import { SITE_URL, AUTHOR, JOB_TITLE, DEFAULT_DESCRIPTION, SAME_AS } from '../config';
 
 export const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   '@id': `${SITE_URL}/#person`,
-  name: 'Nestor Angulo de Ugarte',
+  name: AUTHOR,
   givenName: 'Nestor',
   familyName: 'Angulo de Ugarte',
   url: SITE_URL,
   image: `${SITE_URL}/images/photo-nestor.jpg`,
-  jobTitle: 'Head of Security',
-  description:
-    'Head of Security and CISSP. I build security programs from zero — vulnerability intelligence, incident response, ISO 27001 and SOC 2.',
+  jobTitle: JOB_TITLE,
+  description: DEFAULT_DESCRIPTION,
   alumniOf: {
     '@type': 'CollegeOrUniversity',
     name: 'Universidad de Las Palmas de Gran Canaria',
@@ -38,14 +37,5 @@ export const personSchema = {
     name: 'ISC2 Spain Chapter',
     roleName: 'Head of Technology',
   },
-  sameAs: [
-    'https://linkedin.com/in/pharar',
-    'https://github.com/pharar',
-    'https://x.com/pharar',
-    'https://bsky.app/profile/nestorangulo.pro',
-    'https://orcid.org/0000-0001-6605-7761',
-    'https://gravatar.com/pharar',
-    'https://www.credly.com/badges/e7de5c98-5d06-416b-bc3d-cd11b64d6416/linked_in_profile',
-    'https://about.me/pharar',
-  ],
+  sameAs: SAME_AS,
 };

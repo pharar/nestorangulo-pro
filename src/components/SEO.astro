@@ -1,5 +1,6 @@
 ---
 import { personSchema } from '../lib/person';
+import { SITE_URL, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '../config';
 
 interface Props {
   title?: string;
@@ -11,13 +12,6 @@ interface Props {
   /** Pass true on the homepage and /about to emit Person structured data */
   person?: boolean;
 }
-
-const SITE_URL = 'https://nestorangulo.pro';
-
-const DEFAULT_TITLE = 'Nestor Angulo de Ugarte — Head of Security · CISSP';
-
-const DEFAULT_DESCRIPTION =
-  'Head of Security and CISSP. I build security programs from zero — vulnerability intelligence, incident response, ISO 27001 and SOC 2.';
 
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.png`;
 

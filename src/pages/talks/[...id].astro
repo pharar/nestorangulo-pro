@@ -1,6 +1,7 @@
 ---
 // Permanent redirect: /talks/[id] → /speaking/[id]
 import { getCollection } from 'astro:content';
+import { SITE_URL } from '../../config';
 
 export async function getStaticPaths() {
   const talks = await getCollection('talks');
@@ -20,7 +21,7 @@ const target = `/speaking/${id}`;
     <meta charset="utf-8" />
     <title>Redirecting…</title>
     <meta http-equiv="refresh" content={`0;url=${target}`} />
-    <link rel="canonical" href={`https://nestorangulo.pro${target}`} />
+    <link rel="canonical" href={`${SITE_URL}${target}`} />
     <meta name="robots" content="noindex" />
   </head>
   <body>
