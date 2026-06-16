@@ -10,5 +10,5 @@ themes:
   - Web Security
   - Security Awareness
 summary: "Entrevista rápida sobre seguridad web en el evento anual Modular DS Connect 2025."
-# videoUrl: <paste YouTube URL>
+videoUrl: "https://www.youtube.com/watch?v=PROp69GLBAI"
 ---

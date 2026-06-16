@@ -9,5 +9,5 @@ themes:
   - Web Security
   - Security Awareness
 summary: "A Patchstack webinar unpacking what 'secure' really means for WordPress."
-# videoUrl: <paste YouTube URL>
+videoUrl: "https://www.youtube.com/watch?v=hzlqM4t3JJ0"
 ---

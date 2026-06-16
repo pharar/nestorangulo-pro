@@ -59,8 +59,8 @@ See [DEPLOY.md](./DEPLOY.md) for the full Cloudflare Pages setup.
 ## Planned chunks
 
 - **Chunk 1** ✅ Scaffolding, design system, landing, contact, CI
-- **Chunk 2** — `/about` full biography
-- **Chunk 3** — `/talks` with Astro Content Collections
+- **Chunk 2** ✅ `/about` full biography
+- **Chunk 3** ✅ `/talks` with Astro Content Collections
 - **Chunk 4** — `/writing` with MDX blog posts
 
 ## License

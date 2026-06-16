@@ -10,5 +10,5 @@ themes:
   - Vulnerability Intelligence
 featured: true
 summary: "A Patchstack webinar with Libyan Spider, a MENA-region hosting provider, on whether WordPress sites are truly ready for today's threats — and how to keep them protected."
-# videoUrl: <paste YouTube URL>
+videoUrl: "https://www.youtube.com/watch?v=pJcF0Wa1zo4"
 ---
