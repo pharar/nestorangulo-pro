@@ -1,4 +1,6 @@
 ---
+import { personSchema } from '../lib/person';
+
 interface Props {
   title?: string;
   description?: string;
@@ -6,18 +8,16 @@ interface Props {
   ogTitle?: string;
   ogDescription?: string;
   ogImage?: string;
-  /** Pass true on the homepage to emit Person structured data */
+  /** Pass true on the homepage and /about to emit Person structured data */
   person?: boolean;
 }
 
 const SITE_URL = 'https://nestorangulo.pro';
 
-const DEFAULT_TITLE =
-  'Nestor Angulo de Ugarte — Head of Security · Security Program Builder · CISSP';
+const DEFAULT_TITLE = 'Nestor Angulo de Ugarte — Head of Security · CISSP';
 
 const DEFAULT_DESCRIPTION =
-  'Building pragmatic security programs from zero inside technical scale-ups. ' +
-  'CISSP · Most recently Head of Security at Patchstack · 8 years incident response at Sucuri/GoDaddy.';
+  'Head of Security and CISSP. I build security programs from zero — vulnerability intelligence, incident response, ISO 27001 and SOC 2.';
 
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.png`;
 
@@ -30,41 +30,6 @@ const {
   ogImage = DEFAULT_OG_IMAGE,
   person = false,
 } = Astro.props;
-
-const personSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Nestor Angulo de Ugarte',
-  url: SITE_URL,
-  jobTitle: 'Head of Security',
-  description: DEFAULT_DESCRIPTION,
-  knowsAbout: [
-    'Security Program Building',
-    'Incident Response',
-    'Vulnerability Intelligence',
-    'Governance Risk and Compliance',
-    'CISSP',
-  ],
-  hasCredential: {
-    '@type': 'EducationalOccupationalCredential',
-    credentialCategory: 'certification',
-    name: 'CISSP',
-    issuedBy: { '@type': 'Organization', name: 'ISC2' },
-  },
-  memberOf: {
-    '@type': 'Organization',
-    name: 'ISC2 Spain Chapter',
-    roleName: 'Head of Technology',
-  },
-  sameAs: [
-    'https://linkedin.com/in/pharar',
-    'https://github.com/pharar',
-    'https://x.com/pharar',
-    'https://bsky.app/profile/nestorangulo.pro',
-    'https://orcid.org/0000-0001-6605-7761',
-    'https://gravatar.com/pharar',
-  ],
-};
 ---
 
 <title>{title}</title>
@@ -89,5 +54,5 @@ const personSchema = {
 <meta name="twitter:description" content={ogDescription} />
 <meta name="twitter:image" content={ogImage} />
 
-<!-- Person structured data (homepage only) -->
+<!-- Person structured data (homepage and /about) -->
 {person && <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />}

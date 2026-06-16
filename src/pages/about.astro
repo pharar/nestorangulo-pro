@@ -9,34 +9,11 @@ import Press from '../components/Press.astro';
 
 const SITE_URL = 'https://nestorangulo.pro';
 
-const personSchema = {
+const profilePageSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Nestor Angulo de Ugarte',
-  givenName: 'Nestor',
-  familyName: 'Angulo de Ugarte',
-  url: SITE_URL,
-  image: `${SITE_URL}/images/photo-nestor.jpg`,
-  jobTitle: 'Security Leader',
-  alumniOf: {
-    '@type': 'CollegeOrUniversity',
-    name: 'Universidad de Las Palmas de Gran Canaria',
-    alternateName: 'ULPGC',
-  },
-  knowsAbout: [
-    'Information Security',
-    'Vulnerability Intelligence',
-    'Web Security',
-    'ISO 27001',
-    'SOC 2',
-    'Incident Response',
-  ],
-  sameAs: [
-    'https://linkedin.com/in/pharar',
-    'https://x.com/pharar',
-    'https://bsky.app/profile/nestorangulo.pro',
-    'https://www.credly.com/badges/e7de5c98-5d06-416b-bc3d-cd11b64d6416/linked_in_profile',
-  ],
+  '@type': 'ProfilePage',
+  url: `${SITE_URL}/about`,
+  mainEntity: { '@id': `${SITE_URL}/#person` },
 };
 ---
 
@@ -44,12 +21,13 @@ const personSchema = {
   title="About — Nestor Angulo de Ugarte"
   description="Security leader with a decade in cybersecurity. CISSP. Most recently Head of Security at Patchstack. Builder of security programs from zero. Speaker at 25+ international conferences. Valencia."
   canonical={`${SITE_URL}/about`}
+  person={true}
 >
   <script
     slot="head"
     is:inline
     type="application/ld+json"
-    set:html={JSON.stringify(personSchema)}
+    set:html={JSON.stringify(profilePageSchema)}
   />
 
   <!-- ── Hero ──────────────────────────────────────────────── -->
