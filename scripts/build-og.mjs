@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import sharp from 'sharp';
 
 const svg = readFileSync('assets/og/og-default.svg', 'utf8');

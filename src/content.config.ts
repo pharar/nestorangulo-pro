@@ -1,5 +1,6 @@
+import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { defineCollection, z } from 'astro:content';
+import { z } from 'astro/zod';
 
 const talks = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/talks' }),
@@ -41,9 +42,9 @@ const talks = defineCollection({
       draft: z.boolean().default(false),
       cover: image().optional(),
       coverAlt: z.string().optional(),
-      slidesUrl: z.union([z.string().url(), z.string().regex(/^\/[^\s]*$/)]).optional(),
-      videoUrl: z.string().url().optional(),
-      eventUrl: z.string().url().optional(),
+      slidesUrl: z.union([z.url(), z.string().regex(/^\/[^\s]*$/)]).optional(),
+      videoUrl: z.url().optional(),
+      eventUrl: z.url().optional(),
       sourceNote: z.string().optional(),
     }),
 });
