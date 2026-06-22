@@ -41,7 +41,7 @@ const talks = defineCollection({
       draft: z.boolean().default(false),
       cover: image().optional(),
       coverAlt: z.string().optional(),
-      slidesUrl: z.string().url().optional(),
+      slidesUrl: z.union([z.string().url(), z.string().regex(/^\/[^\s]*$/)]).optional(),
       videoUrl: z.string().url().optional(),
       eventUrl: z.string().url().optional(),
       sourceNote: z.string().optional(),

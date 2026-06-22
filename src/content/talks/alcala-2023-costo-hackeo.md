@@ -11,7 +11,7 @@ themes:
   - Web Security
 summary: "Dos historias reales de sitios hackeados (un blog personal y un e-commerce de PYME) y el coste real para sus dueños."
 videoUrl: https://wordpress.tv/2024/02/22/el-costo-de-un-hackeo/
-slidesUrl: https://nestorangulo.pro/wp-content/uploads/2024/02/Coste_hackeo_compressed.pdf
+slidesUrl: /slides/coste-hackeo.pdf
 ---
 
 One of the most underestimated parts of being hacked — until you actually suffer it — is the real cost to you or your organization. This is a compendium of two stories of hacked sites and the real cost to their owners: a personal blog and a small-business e-commerce. Let's get the calculator out.
