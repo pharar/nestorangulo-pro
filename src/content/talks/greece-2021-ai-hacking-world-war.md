@@ -11,6 +11,7 @@ themes:
   - WordPress Security
 summary: "How attackers use AI to find vulnerable WordPress sites and recruit them into cyberterrorist botnets."
 featured: false
+slidesUrl: https://assets.nestorangulo.pro/slides/greece-2021-ai-hacking-world-war-ea85db05bc.pdf
 videoUrl: https://wordpress.tv/2022/06/23/nestor-angulo-ai-in-the-hacking-world-war/
 ---
 

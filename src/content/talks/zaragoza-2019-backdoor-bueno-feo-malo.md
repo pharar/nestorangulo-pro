@@ -10,7 +10,8 @@ themes:
   - WordPress Security
 summary: "Estilos y objetivos del código malicioso a través de una colección de backdoors reales recopilados en Sucuri."
 videoUrl: https://wordpress.tv/2019/01/29/nestor-angulo-de-ugarte-backdoor-el-bueno-el-feo-y-el-malo/
-slidesUrl: https://www.slideshare.net/Pharar/backdoor-el-bueno-el-feo-y-el-malo
+slidesUrl: https://assets.nestorangulo.pro/slides/zaragoza-2019-backdoor-bueno-feo-malo-f4b004a679.pdf
+slidesUrlExt: https://www.slideshare.net/Pharar/backdoor-el-bueno-el-feo-y-el-malo
 ---
 
 Over my years on the front line at Sucuri I came to appreciate different styles in malicious code — especially the much-hated piece blamed for 100% of web security problems, according to many: the backdoor. Through a small collection of backdoors gathered during those years of battle, and briefly analyzing how they work, I'll try to convey the different goals and approaches of those behind these malicious attempts in WordPress environments.

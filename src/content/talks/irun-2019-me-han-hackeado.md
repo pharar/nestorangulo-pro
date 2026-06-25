@@ -10,6 +10,7 @@ themes:
   - Malware
   - WordPress Security
 summary: "Galería de los horrores (defacements, black SEO, botnets, CC stealers), checklist reactiva, forense básico y medidas proactivas."
+slidesUrl: https://assets.nestorangulo.pro/slides/irun-2019-me-han-hackeado-9a9e987d05.pdf
 videoUrl: https://wordpress.tv/2019/06/02/nestor-angulo-me-han-hackeado-y-ahora-que/
 ---
 

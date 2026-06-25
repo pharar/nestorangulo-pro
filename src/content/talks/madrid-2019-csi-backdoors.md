@@ -10,6 +10,7 @@ themes:
   - Web Security
   - WordPress Security
 summary: "Análisis forense de backdoors en clave CSI: tipologías, ejemplos reales de código malicioso y cómo protegerse."
+slidesUrl: https://assets.nestorangulo.pro/slides/madrid-2019-csi-backdoors-d83101ac98.pdf
 videoUrl: https://wordpress.tv/2019/04/26/nestor-angulo-csi-madrid-el-caso-de-las-backdoors/
 ---
 

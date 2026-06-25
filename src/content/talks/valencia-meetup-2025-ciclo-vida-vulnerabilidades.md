@@ -12,6 +12,7 @@ themes:
   - GRC
 summary: "El ciclo de vida de una vulnerabilidad en WordPress, del bug al parche, con un guiño a las Fallas y a la nueva normativa europea (CRA)."
 featured: true
+slidesUrl: https://assets.nestorangulo.pro/slides/valencia-meetup-2025-ciclo-vida-vulnerabilidades-c987b09341.pdf
 videoUrl: https://wordpress.tv/2025/04/01/de-la-planta-a-la-crema-el-ciclo-de-vida-de-vulnerabilidades-de-wordpress/
 ---
 

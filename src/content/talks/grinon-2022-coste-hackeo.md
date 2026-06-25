@@ -11,7 +11,8 @@ themes:
   - Web Security
 summary: "El coste subestimado de un hackeo, con dos historias reales: un blog personal y una web de PYME."
 videoUrl: https://wordpress.tv/2022/11/22/el-coste-de-un-hackeo/
-slidesUrl: https://grinon.wordcamp.org/2022/files/2022/11/Nestor-angulo-hackeo.pdf
+slidesUrl: https://assets.nestorangulo.pro/slides/grinon-2022-coste-hackeo-78724ddde0.pdf
+slidesUrlExt: https://grinon.wordcamp.org/2022/files/2022/11/Nestor-angulo-hackeo.pdf
 ---
 
 One of the most underestimated parts of the possibility of being hacked — until you actually suffer it — is the potential cost to a person or their organization. This is a compendium of two stories of attacked sites and the real cost to their owners: a personal blog and a small-business website.

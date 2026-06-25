@@ -9,5 +9,6 @@ themes:
   - Web Security
   - Security Awareness
 summary: "A Patchstack webinar unpacking what 'secure' really means for WordPress."
+slidesUrl: https://assets.nestorangulo.pro/slides/webinar-stellarspark-wordpress-secure-or-not-7d72db360c.pdf
 videoUrl: "https://www.youtube.com/watch?v=hzlqM4t3JJ0"
 ---

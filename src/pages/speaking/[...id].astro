@@ -31,6 +31,7 @@ const {
   summary,
   description,
   slidesUrl,
+  slidesUrlExt,
   videoUrl,
   eventUrl,
   sourceNote,
@@ -77,7 +78,7 @@ const FORMAT_LABELS: Record<string, string> = {
       </ul>
 
       {
-        (videoUrl || slidesUrl || eventUrl) && (
+        (videoUrl || slidesUrl || slidesUrlExt || eventUrl) && (
           <div class="talk-detail-actions">
             {videoUrl && (
               <a class="talk-btn" href={videoUrl} target="_blank" rel="noopener noreferrer">
@@ -86,6 +87,16 @@ const FORMAT_LABELS: Record<string, string> = {
             )}
             {slidesUrl && (
               <a class="talk-btn" href={slidesUrl} target="_blank" rel="noopener noreferrer">
+                View slides ↗
+              </a>
+            )}
+            {slidesUrl && slidesUrlExt && (
+              <a class="talk-btn talk-btn--secondary" href={slidesUrlExt} target="_blank" rel="noopener noreferrer">
+                on the event site ↗
+              </a>
+            )}
+            {!slidesUrl && slidesUrlExt && (
+              <a class="talk-btn" href={slidesUrlExt} target="_blank" rel="noopener noreferrer">
                 View slides ↗
               </a>
             )}

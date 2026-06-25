@@ -12,7 +12,8 @@ themes:
 summary: "A forensic walk-through of how a favicon can turn a site into a zombie botnet node."
 featured: false
 videoUrl: https://wordpress.tv/2022/05/25/nestor-angulo-de-ugarte-the-strange-case-of-malicious-favicons/
-slidesUrl: https://geneve.wordcamp.org/2022/files/2022/04/wordcamp-geneve-2022-nestor-angulo-de-ugarte-slides.pdf
+slidesUrl: https://assets.nestorangulo.pro/slides/geneva-2022-malicious-favicons-526e4074e8.pdf
+slidesUrlExt: https://geneve.wordcamp.org/2022/files/2022/04/wordcamp-geneve-2022-nestor-angulo-de-ugarte-slides.pdf
 ---
 
 Look over the shoulder of a security analyst as a routine-looking favicon turns out to be the thread that unravels a full compromise — and shows how an innocent icon can turn a site into a zombie botnet node.

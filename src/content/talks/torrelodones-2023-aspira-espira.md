@@ -11,7 +11,8 @@ themes:
   - WordPress Security
 summary: "Respuesta a incidentes paso a paso para recuperar la calma y el control tras encontrar tu web hackeada."
 videoUrl: https://wordpress.tv/2023/03/12/aspira-espira-yoga-para-recuperar-tu-sitio-y-tu-reputacion-despues-de-un-hackeo/
-slidesUrl: https://torrelodones.wordcamp.org/2023/files/2023/03/WCTorre-2023-Nestor-Angulo.pdf
+slidesUrl: https://assets.nestorangulo.pro/slides/torrelodones-2023-aspira-espira-d669b77e0f.pdf
+slidesUrlExt: https://torrelodones.wordcamp.org/2023/files/2023/03/WCTorre-2023-Nestor-Angulo.pdf
 ---
 
 I know — the heart starts pounding, the mind races, anxiety appears. That's normal when you open your site and find it hacked. Now let's act: let's apply what we call Incident Response. First, put the case in perspective; it helps to grasp its scale and to calm down with the certainty that taking control brings. Step by step I'll guide you through the points to visit on the road to recovering the status quo, and the ones to visit afterwards so it doesn't happen again.

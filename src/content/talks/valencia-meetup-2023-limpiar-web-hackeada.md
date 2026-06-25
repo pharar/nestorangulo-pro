@@ -10,6 +10,7 @@ themes:
   - Malware
   - WordPress Security
 summary: "Tipos de hackeo más comunes y los pasos prácticos, reactivos y proactivos, para limpiar y proteger un sitio."
+slidesUrl: https://assets.nestorangulo.pro/slides/valencia-meetup-2023-limpiar-web-hackeada-ff9e0a056c.pdf
 videoUrl: https://wordpress.tv/2023/05/18/como-limpiar-una-web-hackeada-ejemplos-practicos/
 ---
 

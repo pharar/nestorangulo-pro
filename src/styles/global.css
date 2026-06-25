@@ -1253,6 +1253,16 @@ a:hover {
   background: var(--clr-accent-light);
 }
 
+.talk-btn--secondary {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.talk-btn--secondary:hover {
+  opacity: 1;
+  border-style: solid;
+}
+
 .talk-detail-note {
   margin-top: var(--sp-5);
   font-size: var(--text-sm);
