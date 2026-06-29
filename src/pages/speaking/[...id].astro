@@ -85,18 +85,8 @@ const FORMAT_LABELS: Record<string, string> = {
                 Watch video ↗
               </a>
             )}
-            {slidesUrl && (
-              <a class="talk-btn" href={slidesUrl} target="_blank" rel="noopener noreferrer">
-                View slides ↗
-              </a>
-            )}
-            {slidesUrl && slidesUrlExt && (
-              <a class="talk-btn talk-btn--secondary" href={slidesUrlExt} target="_blank" rel="noopener noreferrer">
-                on the event site ↗
-              </a>
-            )}
-            {!slidesUrl && slidesUrlExt && (
-              <a class="talk-btn" href={slidesUrlExt} target="_blank" rel="noopener noreferrer">
+            {(slidesUrl || slidesUrlExt) && (
+              <a class="talk-btn" href={slidesUrl ?? slidesUrlExt} target="_blank" rel="noopener noreferrer">
                 View slides ↗
               </a>
             )}
@@ -108,6 +98,12 @@ const FORMAT_LABELS: Record<string, string> = {
           </div>
         )
       }
+
+      {slidesUrl && slidesUrlExt && (
+        <p class="talk-provenance-note">
+          Slides also available on the <a href={slidesUrlExt} target="_blank" rel="noopener noreferrer">event site ↗</a>.
+        </p>
+      )}
 
       {sourceNote && <p class="talk-detail-note">{sourceNote}</p>}
     </header>

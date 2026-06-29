@@ -1263,6 +1263,24 @@ a:hover {
   border-style: solid;
 }
 
+.talk-provenance-note {
+  margin-top: var(--sp-3);
+  font-size: var(--text-xs);
+  color: var(--clr-subtle);
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+.talk-provenance-note a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.talk-provenance-note a:hover {
+  color: var(--clr-accent);
+}
+
 .talk-detail-note {
   margin-top: var(--sp-5);
   font-size: var(--text-sm);
