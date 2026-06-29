@@ -10,6 +10,7 @@ themes:
   - Web Security
   - WordPress Security
 summary: "A horror gallery of hacked sites to train your eye, then the triangle of security: monitoring, incident response and prevention."
+draft: true
 featured: false
 slidesUrl: https://assets.nestorangulo.pro/slides/taiwan-2021-ive-been-hacked-7257d4266c.pdf
 ---

@@ -8,6 +8,6 @@ format: conference-talk
 themes:
   - Web Security
   - Security Awareness
-summary: "Buenas prácticas de seguridad para trabajar en remoto: amenazas específicas del trabajo desde casa y cómo mitigarlas."
+draft: true
 featured: false
 ---

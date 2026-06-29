@@ -9,7 +9,7 @@ themes:
   - Incident Response
   - Web Security
   - WordPress Security
-summary: "A step-by-step incident response guide for WordPress sites — what to do in the hours and days after a confirmed hack."
+draft: true
 featured: false
 eventUrl: https://wpsessions.com/sessions/incident-response-what-happens-after-the-worst-case-scenario/
 ---

@@ -10,7 +10,7 @@ const talks = defineCollection({
       event: z.string(),
       location: z.string().optional(),
       date: z.coerce.date(),
-      summary: z.string(),
+      summary: z.string().optional(),
       description: z.string().optional(),
       format: z.enum([
         'conference-talk',

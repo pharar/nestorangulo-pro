@@ -9,7 +9,7 @@ themes:
   - Incident Response
   - Web Security
   - WordPress Security
-summary: "Practical visual cues and technical signals to detect whether your WordPress site has been compromised."
+draft: true
 featured: false
 eventUrl: https://www.wordfest.live/2021/january/speakers/nestor-angulo-ugarte/
 ---

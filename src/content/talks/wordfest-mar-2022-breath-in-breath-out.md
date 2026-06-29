@@ -10,6 +10,7 @@ themes:
   - Web Security
   - WordPress Security
 summary: "Incident response as a calm, step-by-step checklist to recover a hacked site and its reputation."
+draft: true
 featured: false
 slidesUrl: https://assets.nestorangulo.pro/slides/wordfest-mar-2022-breath-in-breath-out-b9a69a895d.pdf
 eventUrl: https://www.wordfest.live/2022/march/sessions/breath-in-breath-out-the-checklist-and-guide-to-recover-your-site-and-reputation-after-a-hack/
