@@ -67,7 +67,7 @@ const FORMAT_LABELS: Record<string, string> = {
           <ul class="talks-featured-list">
             {featured.map((talk) =>
               talk.data.cover ? (
-                <li class="talk-item talk-item--has-cover" data-themes={talk.data.themes.join('|')} data-featured="true">
+                <li class="talk-item talk-item--has-cover" data-themes={talk.data.themes.join('|')} data-featured="true" data-year={String(talk.data.date.getFullYear())}>
                   <figure class="talk-card-cover">
                     <Image
                       src={talk.data.cover}
@@ -115,7 +115,7 @@ const FORMAT_LABELS: Record<string, string> = {
                   </div>
                 </li>
               ) : (
-                <li class="talk-item" data-themes={talk.data.themes.join('|')} data-featured="true">
+                <li class="talk-item" data-themes={talk.data.themes.join('|')} data-featured="true" data-year={String(talk.data.date.getFullYear())}>
                   <div class="talk-top">
                     <a href={`/speaking/${talk.id}`} class="talk-title-link">
                       {talk.data.title}
@@ -172,7 +172,7 @@ const FORMAT_LABELS: Record<string, string> = {
               <h3 class="talks-year-heading">{year}</h3>
               <ul class="talks-list">
                 {byYear[year].map((talk) => (
-                  <li class="talk-item" data-themes={talk.data.themes.join('|')}>
+                  <li class="talk-item" data-themes={talk.data.themes.join('|')} data-year={String(talk.data.date.getFullYear())}>
                     <div class="talk-top">
                       <a href={`/speaking/${talk.id}`} class="talk-title-link">
                         {talk.data.title}
@@ -224,31 +224,44 @@ const FORMAT_LABELS: Record<string, string> = {
 
   if (placeholder && items.length) {
     const totalCount = items.length;
+
     const themeSet = new Set<string>();
+    const yearSet = new Set<string>();
     items.forEach((item) => {
       (item.dataset.themes ?? '').split('|').filter(Boolean).forEach((t) => themeSet.add(t));
+      if (item.dataset.year) yearSet.add(item.dataset.year);
     });
     const themes = [...themeSet].sort();
+    const years = [...yearSet].sort((a, b) => Number(b) - Number(a));
 
     const filterBar = document.createElement('div');
     filterBar.className = 'filter-bar';
     filterBar.setAttribute('role', 'group');
-    filterBar.setAttribute('aria-label', 'Filter by theme');
+    filterBar.setAttribute('aria-label', 'Filter talks');
 
-    const makeChip = (label: string, theme: string, active: boolean): HTMLButtonElement => {
+    type FilterKind = 'all' | 'featured' | 'year' | 'theme';
+
+    const makeChip = (
+      label: string,
+      kind: FilterKind,
+      value: string,
+      active: boolean,
+    ): HTMLButtonElement => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'filter-chip';
       btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-      btn.dataset.theme = theme;
+      btn.dataset.filterKind = kind;
+      btn.dataset.filterValue = value;
       btn.textContent = label;
       return btn;
     };
 
-    // Order: All · Featured · themes…
-    filterBar.appendChild(makeChip('All', 'all', true));
-    filterBar.appendChild(makeChip('Featured', 'featured', false));
-    themes.forEach((t) => filterBar.appendChild(makeChip(t, t, false)));
+    // Order: All · Featured · [years desc] · [themes alpha]
+    filterBar.appendChild(makeChip('All', 'all', 'all', true));
+    filterBar.appendChild(makeChip('Featured', 'featured', 'featured', false));
+    years.forEach((y) => filterBar.appendChild(makeChip(y, 'year', y, false)));
+    themes.forEach((t) => filterBar.appendChild(makeChip(t, 'theme', t, false)));
 
     const liveRegion = document.createElement('p');
     liveRegion.id = 'filter-count';
@@ -259,17 +272,21 @@ const FORMAT_LABELS: Record<string, string> = {
     placeholder.appendChild(filterBar);
     placeholder.appendChild(liveRegion);
 
-    const applyFilter = (theme: string) => {
+    const applyFilter = (kind: FilterKind, value: string) => {
       filterBar.querySelectorAll<HTMLElement>('.filter-chip').forEach((btn) => {
-        btn.setAttribute('aria-pressed', btn.dataset.theme === theme ? 'true' : 'false');
+        btn.setAttribute(
+          'aria-pressed',
+          btn.dataset.filterKind === kind && btn.dataset.filterValue === value ? 'true' : 'false',
+        );
       });
 
       let visible = 0;
       items.forEach((item) => {
         const match =
-          theme === 'all' ||
-          (theme === 'featured' && item.dataset.featured === 'true') ||
-          (item.dataset.themes ?? '').split('|').includes(theme);
+          kind === 'all' ||
+          (kind === 'featured' && item.dataset.featured === 'true') ||
+          (kind === 'year' && item.dataset.year === value) ||
+          (kind === 'theme' && (item.dataset.themes ?? '').split('|').includes(value));
         item.hidden = !match;
         if (match) visible++;
       });
@@ -299,17 +316,22 @@ const FORMAT_LABELS: Record<string, string> = {
       }
 
       liveRegion.textContent =
-        theme === 'all'
+        kind === 'all'
           ? `Showing all ${totalCount} talks`
-          : theme === 'featured'
+          : kind === 'featured'
           ? `Showing ${visible} featured ${visible === 1 ? 'talk' : 'talks'}`
-          : `Showing ${visible} ${visible === 1 ? 'talk' : 'talks'} tagged ${theme}`;
+          : kind === 'year'
+          ? `Showing ${visible} ${visible === 1 ? 'talk' : 'talks'} from ${value}`
+          : `Showing ${visible} ${visible === 1 ? 'talk' : 'talks'} tagged ${value}`;
     };
 
     filterBar.addEventListener('click', (e) => {
       const btn = (e.target as HTMLElement).closest<HTMLElement>('.filter-chip');
       if (!btn) return;
-      applyFilter(btn.dataset.theme ?? 'all');
+      applyFilter(
+        (btn.dataset.filterKind ?? 'all') as FilterKind,
+        btn.dataset.filterValue ?? 'all',
+      );
     });
   }
 </script>
