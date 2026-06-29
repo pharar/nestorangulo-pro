@@ -11,7 +11,8 @@ themes:
   - Security Awareness
 summary: "Versión en español del enfrentamiento estilo videojuego de los 80 contra un atacante: vida, golpes, defensas y combo ganador."
 videoUrl: https://wordpress.tv/2023/01/24/nestor-angulo-round-1-fight-o-como-sobrevivir-al-ataque-de-un-hacker-malicioso/
-slidesUrl: https://zaragoza.wordcamp.org/2023/files/2023/01/Round-1-FIGHT-O-como-sobrevivir-al-ataque-de-un-hacker-malicioso-Nestor-Angulo.pdf
+slidesUrl: https://assets.nestorangulo.pro/slides/zaragoza-2023-round-1-fight-11bff20d26.pdf
+slidesUrlExt: https://zaragoza.wordcamp.org/2023/files/2023/01/Round-1-FIGHT-O-como-sobrevivir-al-ataque-de-un-hacker-malicioso-Nestor-Angulo.pdf
 ---
 
 A lot is said about security, protections, plugins… but what does it all REALLY mean? Imagine you're a character from an 80s "Street Fighter" or "Mortal Kombat" facing your own fight against a "bad guy". I'll explain how security relates to your life bar, which hits and defenses work better and which work worse, with 80s–90s aesthetics. And I'll share my winning combo.

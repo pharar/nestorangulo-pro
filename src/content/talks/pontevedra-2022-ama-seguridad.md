@@ -11,7 +11,8 @@ themes:
   - WordPress Security
 summary: "Sesión Ask-Me-Anything sobre ciberseguridad: conceptos, cómo ser analista, y preguntas abiertas del público."
 videoUrl: https://wordpress.tv/2022/09/26/ama-seguridad-en-wordpress-y-eso-que-significa-realmente/
-slidesUrl: https://pontevedra.wordcamp.org/2022/files/2022/09/NestorAngulo.pdf
+slidesUrl: https://assets.nestorangulo.pro/slides/pontevedra-2022-ama-seguridad-36d76286a5.pdf
+slidesUrlExt: https://pontevedra.wordcamp.org/2022/files/2022/09/NestorAngulo.pdf
 ---
 
 Words like "hacker", "cybersecurity", "security plugins", "WAF" or "firewall" tend to raise an eyebrow in anyone outside the field. So I propose an American-style AMA (Ask Me Anything): a run-through of cybersecurity concepts and a semi-improvised session driven by the audience's questions — from how to become a security analyst and what it takes, to solving a specific problem, to my opinion on Anonymous and the series Mr. Robot.

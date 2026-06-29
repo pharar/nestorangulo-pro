@@ -11,6 +11,7 @@ themes:
   - Web Security
 summary: "El coste real de un sitio hackeado para una persona o una organización, más allá de la caída del servicio."
 featured: true
+slidesUrl: https://assets.nestorangulo.pro/slides/granada-2025-coste-web-hackeada-d7abd7b09b.pdf
 videoUrl: https://wordpress.tv/2025/12/13/una-web-hackeada-cuesta-siempre-mas-que-una-caida/
 ---
 

@@ -11,7 +11,8 @@ themes:
   - Security Awareness
 summary: "Las tres medidas que nunca deberían faltar en un sitio: WAF, plugin de seguridad y copias de seguridad. Qué, cuáles y por qué."
 videoUrl: https://wordpress.tv/2021/10/02/nestor-angulo-ugarte-el-top-3-de-mis-medidas-de-seguridad-lo-que-siempre-quisiste-saber-y-no/
-slidesUrl: https://galicia.wordcamp.org/2021/files/2021/09/WCGalicia2021-Nestor-Angulo.pdf
+slidesUrl: https://assets.nestorangulo.pro/slides/galicia-2021-top-3-medidas-9df5685ba4.pdf
+slidesUrlExt: https://galicia.wordcamp.org/2021/files/2021/09/WCGalicia2021-Nestor-Angulo.pdf
 ---
 
 A recurring question: what should I actually do to keep my site secure? In this talk I cover the TOP 3 that should always be present on sites I'd want to keep secure — a WAF, a security plugin, and backups. No half-measures, no sales pitch: I'll tell you what, which ones and exactly why, so clearly that even an octopus would get it the first time. Aimed at all audiences and levels.
