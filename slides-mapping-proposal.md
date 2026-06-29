@@ -54,7 +54,7 @@ Talk entries exist. Export the PPTX to PDF, place in the folder, then compress �
 | slug | source PPTX | notes |
 |------|-------------|-------|
 | `wordfest-live-2021-how-to-know-if-hacked` | `WordFest-Live21/howtoknowIfHacked-WordFestLive2021-2.pptx` | Video at wordfest.live/2021/january; eventUrl set |
-| `wordsesh-2022-incident-response` | `WordSesh22/Incident Response.pptx` | Session page: wpsessions.com/sessions/incident-response-…; eventUrl set |
+| `wordsesh-2022-incident-response` | `WordSesh22/Incident Response.pptx` | Live (draft: false, date 2022-05-18 verified). No slides yet — export PPTX to get slidesUrl |
 | `wework-2020-seguridad-en-remoto` | `WeWork-Charla2020/SeguridadEnRemoto.pptx` | Internal WeWork talk — no external event page |
 | `vienna-2023-round-1-fight` | `WCVienna23/Round1 Fight! Survive from a hacked.pptx` | Same "Round 1!" deck; no talk entry yet — confirm if this was a separate appearance or rehearsal for Switzerland 2023 |
 

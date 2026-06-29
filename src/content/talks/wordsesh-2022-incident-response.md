@@ -1,8 +1,8 @@
 ---
 title: "Incident Response: What Happens After the Worst Case Scenario"
-event: "WPSessions"
+event: "WordSesh 2022"
 location: "Online"
-date: 2022-05-01 # ⚠ unverified — likely May 2022 (photo uploaded 2022/05); Nestor to confirm exact date
+date: 2022-05-18
 language: en
 format: conference-talk
 themes:
@@ -10,7 +10,7 @@ themes:
   - Web Security
   - WordPress Security
 summary: "What actually happens inside the 'black box' when a hacked site is handed to a cleanup team — with real examples and tricks you can apply yourself, framed around the Blue Team's work."
-draft: true
+draft: false
 featured: false
 eventUrl: https://wpsessions.com/sessions/incident-response-what-happens-after-the-worst-case-scenario/
 ---
