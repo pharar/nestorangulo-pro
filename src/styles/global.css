@@ -1196,9 +1196,9 @@ a:hover {
 }
 
 .talk-detail-header {
-  padding-bottom: var(--sp-10);
+  padding-bottom: var(--sp-5);
   border-bottom: 1px solid var(--clr-border);
-  margin-bottom: var(--sp-10);
+  margin-bottom: var(--sp-5);
 }
 
 .talk-detail-title {
