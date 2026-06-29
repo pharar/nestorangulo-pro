@@ -2,7 +2,7 @@
 title: "Round 1! FIGHT! – O cómo sobrevivir al ataque de un hacker malicioso"
 event: "WordCamp Zaragoza 2023"
 location: "Zaragoza, Spain"
-date: 2023-01-21 # ⚠
+date: 2023-01-21
 language: es
 format: conference-talk
 themes:

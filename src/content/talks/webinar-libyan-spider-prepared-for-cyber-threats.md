@@ -1,7 +1,7 @@
 ---
 title: "Is Your WordPress Website Truly Prepared for Cyber Threats?"
 event: "Libyan Spider (Patchstack webinar)"
-date: 2024-01-01 # ⚠ Nestor: set real date
+date: 2024-02-12
 language: en
 format: webinar
 themes:
