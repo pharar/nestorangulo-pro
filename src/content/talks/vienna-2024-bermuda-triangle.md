@@ -11,5 +11,6 @@ themes:
   - Vulnerability Intelligence
 featured: true
 draft: false
+slidesUrl: https://assets.nestorangulo.pro/slides/vienna-2024-bermuda-triangle-3e02f125e6.pdf
 summary: "Three forces that keep most WordPress sites permanently exposed — and how to break the cycle."
 ---
