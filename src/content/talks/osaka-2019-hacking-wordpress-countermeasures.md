@@ -2,7 +2,7 @@
 title: "Hacking WordPress & countermeasures"
 event: "WordCamp Osaka 2019"
 location: "Osaka, Japan"
-date: 2019-12-01 # ⚠
+date: 2019-12-07
 language: en
 format: conference-talk
 themes:

@@ -2,7 +2,7 @@
 title: "The Bermuda Triangle of Web Security"
 event: "WordCamp Vienna 2024"
 location: "Vienna, Austria"
-date: 2024-10-01
+date: 2024-04-06
 language: en
 format: conference-talk
 themes:
