@@ -1,7 +1,7 @@
 ---
 title: "But Then, is WordPress Secure or Not?"
-event: "StellarSpark (Patchstack webinar)"
-date: 2024-08-06
+event: "Stellar Spark Conference 2024"
+date: 2024-07-19
 language: en
 format: webinar
 themes:
