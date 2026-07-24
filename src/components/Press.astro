@@ -1,9 +1,13 @@
 ---
+import { getPublishedTalks, talkCountRounded } from '../lib/talks';
+
+const TALK_COUNT_ROUNDED = talkCountRounded((await getPublishedTalks()).length);
+
 const oneLiner =
-  'Builds security programs from zero. 10+ years in cybersecurity, came up through incident response. CISSP. 25+ international talks.';
+  `Builds security programs from zero. 10+ years in cybersecurity, came up through incident response. CISSP. ${TALK_COUNT_ROUNDED} international talks.`;
 
 const shortBio =
-  "Nestor Angulo de Ugarte is a security leader with over a decade in cybersecurity. Most recently he was Head of Security at Patchstack — a vulnerability intelligence company ranked #1 CNA globally in 2023 and 2025 — where he built the internal security program from zero. Before Patchstack he spent eight years in incident response at Sucuri and GoDaddy, handling thousands of web compromises annually with a specialization in e-commerce malware. CISSP, Computer Science Engineer, and Head of Technology at the ISC2 Spain Chapter. 25+ international talks across Europe and Japan.";
+  `Nestor Angulo de Ugarte is a security leader with over a decade in cybersecurity. Most recently he was Head of Security at Patchstack — a vulnerability intelligence company ranked #1 CNA globally in 2023 and 2025 — where he built the internal security program from zero. Before Patchstack he spent eight years in incident response at Sucuri and GoDaddy, handling thousands of web compromises annually with a specialization in e-commerce malware. CISSP, Computer Science Engineer, and Head of Technology at the ISC2 Spain Chapter. ${TALK_COUNT_ROUNDED} international talks across Europe and Japan.`;
 ---
 
 <div class="press">

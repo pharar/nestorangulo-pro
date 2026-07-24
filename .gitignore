@@ -49,3 +49,4 @@ secrets.*
 # Local Configs
 *.local.json
 .wrangler/
+.claude

@@ -1,5 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedTalks, talkCountRounded } from '../lib/talks';
+
+const TALK_COUNT = (await getPublishedTalks()).length;
+const TALK_COUNT_ROUNDED = talkCountRounded(TALK_COUNT);
 ---
 
 <BaseLayout
@@ -47,7 +51,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	  on.
         </p>
         <p>
-          This site is a working archive. Essays on security program design, talks from 25+
+          This site is a working archive. Essays on security program design, talks from {TALK_COUNT_ROUNDED}
           international conference appearances, and the thinking behind the work.
         </p>
       </div>
@@ -73,7 +77,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <a href="/speaking">
               <span class="card-label">Speaking</span>
               <span class="card-desc">
-                25+ international conference appearances. Slides, notes, and editorial commentary
+                {TALK_COUNT} international conference appearances. Slides, notes, and editorial commentary
                 on each.
               </span>
               <span class="card-cta">Browse the archive →</span>

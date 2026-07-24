@@ -2,7 +2,7 @@
 title: "I've been hacked! So, now, what??"
 event: "WordCamp Tokyo 2019"
 location: "Tokyo, Japan"
-date: 2019-11-01 # ⚠
+date: 2019-11-02
 language: en
 format: conference-talk
 themes:

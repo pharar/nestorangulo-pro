@@ -7,6 +7,10 @@ import Service from '../components/Service.astro';
 import Publications from '../components/Publications.astro';
 import Press from '../components/Press.astro';
 import { SITE_URL } from '../config';
+import { getPublishedTalks, talkCountRounded } from '../lib/talks';
+
+const TALK_COUNT = (await getPublishedTalks()).length;
+const TALK_COUNT_ROUNDED = talkCountRounded(TALK_COUNT);
 
 const profilePageSchema = {
   '@context': 'https://schema.org',
@@ -18,7 +22,7 @@ const profilePageSchema = {
 
 <BaseLayout
   title="About — Nestor Angulo de Ugarte"
-  description="Security leader with a decade in cybersecurity. CISSP. Most recently Head of Security at Patchstack. Builder of security programs from zero. Speaker at 25+ international conferences. Valencia."
+  description={`Security leader with a decade in cybersecurity. CISSP. Most recently Head of Security at Patchstack. Builder of security programs from zero. Speaker at ${TALK_COUNT_ROUNDED} international conferences. Valencia.`}
   canonical={`${SITE_URL}/about`}
   person={true}
 >
@@ -75,7 +79,7 @@ const profilePageSchema = {
         </p>
         <p>
           CISSP. Computer Science Engineer (ULPGC), with formal academic grounding in AI — neural
-          networks, genetic algorithms, automata. 25+ international conference talks across Europe
+          networks, genetic algorithms, automata. {TALK_COUNT_ROUNDED} international conference talks across Europe
           and Japan. Head of Technology, ISC2 Spain Chapter. Based in Valencia.
         </p>
       </div>
@@ -96,10 +100,10 @@ const profilePageSchema = {
       <h2 class="about-section-heading" id="speaking-heading">Speaking</h2>
       <div class="about-speaking">
         <p>
-          25+ international conference appearances on web security, vulnerability intelligence, CMS
+          {TALK_COUNT} international conference appearances on web security, vulnerability intelligence, CMS
           security, and security culture. Selected venues: WordCamp Europe, WordCamp Tokyo,
-          WordCamp Osaka, WordCamp Vienna, WordCamp Geneva, WordCamp Greece, WordCamp Taiwan,
-          WordSesh EMEA. Featured in podcasts, webinars, and interviews across multiple regions.
+          WordCamp Osaka, WordCamp Vienna, WordCamp Geneva, WordCamp Greece,
+          WordSesh. Featured in podcasts, webinars, and interviews across multiple regions.
         </p>
         <a
           class="about-external-link"

@@ -1,8 +1,8 @@
 ---
-title: "The Bermuda Triangle of Web Security"
+title: "Vulnerabilities in WordPress, the Bermuda Triangle"
 event: "WordCamp Vienna 2024"
 location: "Vienna, Austria"
-date: 2024-10-01
+date: 2024-04-06
 language: en
 format: conference-talk
 themes:
