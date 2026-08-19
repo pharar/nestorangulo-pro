@@ -1,0 +1,2 @@
+/talks/*  /speaking/:splat  301
+/talks    /speaking         301
