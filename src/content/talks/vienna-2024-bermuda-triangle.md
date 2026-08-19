@@ -1,5 +1,5 @@
 ---
-title: "The Bermuda Triangle of Web Security"
+title: "Vulnerabilities in WordPress, the Bermuda Triangle"
 event: "WordCamp Vienna 2024"
 location: "Vienna, Austria"
 date: 2024-04-06
