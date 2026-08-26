@@ -17,7 +17,8 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
-  canonical?: string;
+  /** Pass null to omit the canonical entirely (see 404.astro). */
+  canonical?: string | null;
   ogImage?: string;
   person?: boolean;
 }
