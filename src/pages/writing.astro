@@ -1,19 +1,118 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedArticles } from '../lib/articles';
+
+const articles = await getPublishedArticles();
+
+const featured = articles.filter((a) => a.data.featured);
+const rest = articles.filter((a) => !a.data.featured);
+
+const byYear: Record<string, CollectionEntry<'articles'>[]> = {};
+for (const article of rest) {
+  const year = String(article.data.date.getFullYear());
+  if (!byYear[year]) byYear[year] = [];
+  byYear[year].push(article);
+}
+const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
+
+function isoDate(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+const INTRO =
+  'Essays on security program design, vulnerability intelligence, and operational practice.';
 ---
 
-<BaseLayout
-  title="Writing — Nestor Angulo de Ugarte"
-  description="Essays on security program design, vulnerability intelligence, incident response, and organizational security practice."
->
-  <div class="container">
-    <div class="page-header">
-      <h1>Writing</h1>
-      <p>Essays on security program design, vulnerability intelligence, and operational practice.</p>
+<BaseLayout title="Writing — Nestor Angulo de Ugarte" description={INTRO}>
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="about-hero" aria-labelledby="writing-h1">
+    <div class="container">
+      <h1 class="about-h1" id="writing-h1">
+        Writing<span class="caret" aria-hidden="true">_</span>
+      </h1>
+      <p class="about-tagline">
+        security program design · vulnerability intelligence · software supply chain · regulation
+      </p>
+      <p class="talks-intro">{INTRO}</p>
     </div>
-    <div class="placeholder">
-      <p class="placeholder-status">Coming next.</p>
-      <a href="/" class="back-link">← Back to home</a>
-    </div>
-  </div>
+  </section>
+
+  {
+    articles.length === 0 ? (
+      <div class="container">
+        <div class="placeholder">
+          <p class="placeholder-status">Coming next.</p>
+          <a href="/" class="back-link">
+            ← Back to home
+          </a>
+        </div>
+      </div>
+    ) : (
+      <>
+        {featured.length > 0 && (
+          <section class="about-section" aria-labelledby="featured-heading">
+            <div class="container">
+              <h2 class="speaking-section-label talks-featured-heading" id="featured-heading">
+                Featured
+              </h2>
+              <ul class="talks-featured-list">
+                {featured.map((article) => (
+                  <li class="talk-item">
+                    <div class="talk-top">
+                      <a href={`/writing/${article.id}/`} class="talk-title-link">
+                        {article.data.title}
+                      </a>
+                      <time class="talk-date" datetime={article.data.date.toISOString()}>
+                        {isoDate(article.data.date)}
+                      </time>
+                    </div>
+                    <p class="talk-meta">{article.data.description}</p>
+                    <ul class="talk-themes" aria-label="Themes">
+                      {article.data.themes.map((theme) => (
+                        <li class="theme-tag">{theme}</li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
+        <section class="about-section" aria-labelledby="all-articles-heading">
+          <div class="container">
+            <h2 class="speaking-section-label" id="all-articles-heading">
+              {featured.length > 0 ? 'More' : 'All articles'}
+            </h2>
+            {years.map((year) => (
+              <div class="talks-year-group">
+                <h3 class="talks-year-heading">{year}</h3>
+                <ul class="talks-list">
+                  {byYear[year].map((article) => (
+                    <li class="talk-item">
+                      <div class="talk-top">
+                        <a href={`/writing/${article.id}/`} class="talk-title-link">
+                          {article.data.title}
+                        </a>
+                        <time class="talk-date" datetime={article.data.date.toISOString()}>
+                          {isoDate(article.data.date)}
+                        </time>
+                      </div>
+                      <p class="talk-meta">{article.data.description}</p>
+                      <ul class="talk-themes" aria-label="Themes">
+                        {article.data.themes.map((theme) => (
+                          <li class="theme-tag">{theme}</li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      </>
+    )
+  }
 </BaseLayout>

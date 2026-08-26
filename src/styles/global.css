@@ -1310,3 +1310,137 @@ a:hover {
 .talk-detail-body p:last-child {
   margin-bottom: 0;
 }
+
+/* ── Article body ─────────────────────────────────────────────
+   `.talk-detail-body` only styles <p>, which is all a talk abstract needs.
+   Articles are long-form prose: headings, lists, code, tables, quotes. */
+
+.article-cover {
+  margin: 0 0 var(--sp-10);
+}
+
+.article-cover img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+
+.article-body {
+  padding-bottom: var(--sp-20);
+  font-size: var(--text-lg);
+  line-height: var(--leading-loose);
+}
+
+.article-body > * + * {
+  margin-top: var(--sp-6);
+}
+
+.article-body h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-snug);
+  margin-top: var(--sp-12);
+  scroll-margin-top: var(--sp-8);
+}
+
+.article-body h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  margin-top: var(--sp-10);
+  scroll-margin-top: var(--sp-8);
+}
+
+.article-body ul,
+.article-body ol {
+  padding-left: var(--sp-6);
+}
+
+.article-body li + li {
+  margin-top: var(--sp-3);
+}
+
+.article-body a {
+  color: var(--clr-accent-text);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.article-body a:hover {
+  color: var(--clr-accent-hover);
+}
+
+.article-body code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  padding: 0.1em 0.35em;
+}
+
+.article-body pre {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  overflow-x: auto;
+  font-size: var(--text-sm);
+  line-height: var(--leading-base);
+}
+
+.article-body pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+.article-body blockquote {
+  border-left: 3px solid var(--clr-accent);
+  padding-left: var(--sp-5);
+  color: var(--clr-muted);
+  font-style: italic;
+}
+
+/* Wide tables scroll inside their own box rather than the page. */
+.article-body table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.article-body th,
+.article-body td {
+  border-bottom: 1px solid var(--clr-border);
+  padding: var(--sp-2) var(--sp-3);
+  text-align: left;
+  vertical-align: top;
+}
+
+.article-body th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.article-body hr {
+  border: 0;
+  border-top: 1px solid var(--clr-border);
+  margin-top: var(--sp-10);
+}
+
+/* The sources + disclosure footer the writing workflow appends after the <hr>. */
+.article-body hr ~ p em,
+.article-body hr ~ p {
+  font-size: var(--text-sm);
+  line-height: var(--leading-base);
+  color: var(--clr-muted);
+}
+
+.article-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
