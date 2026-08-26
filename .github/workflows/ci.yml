@@ -83,6 +83,7 @@ jobs:
           args: >-
             --config lychee.toml
             --no-progress
+            --root-dir ${{ github.workspace }}/dist
             'dist/**/*.html'
             '*.md'
             'documentation/*.md'
