@@ -28,6 +28,7 @@ const {
   date,
   format,
   themes,
+  language,
   summary,
   description,
   slidesUrl,
@@ -59,6 +60,7 @@ const FORMAT_LABELS: Record<string, string> = {
 <BaseLayout
   title={`${title} — Nestor Angulo de Ugarte`}
   description={pageDescription}
+  lang={language}
 >
   <script
     slot="head"

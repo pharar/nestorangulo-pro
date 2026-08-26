@@ -21,13 +21,15 @@ interface Props {
   canonical?: string | null;
   ogImage?: string;
   person?: boolean;
+  /** Content language of this page. Talk pages pass their own. */
+  lang?: string;
 }
 
-const { title, description, canonical, ogImage, person = false } = Astro.props;
+const { title, description, canonical, ogImage, person = false, lang = 'en' } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -41,6 +43,7 @@ const { title, description, canonical, ogImage, person = false } = Astro.props;
       canonical={canonical}
       ogImage={ogImage}
       person={person}
+      lang={lang}
     />
     <slot name="head" />
   </head>
