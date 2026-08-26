@@ -111,10 +111,26 @@ audit entirely (see below) and published unreviewed changes directly to producti
 
 Every PR against `main`, and every push to `main`, runs `.github/workflows/ci.yml`:
 
-1. **Type-check** — `astro check` with TypeScript strict
+1. **Type check** — `astro check` with TypeScript strict
 2. **Build** — `astro build`, uploading `dist/` as an artifact
-3. **Lighthouse audit** — reuses the built artifact; asserts a11y ≥ 0.95, SEO ≥ 0.95,
-   perf ≥ 0.9, and warns under best-practices 0.9
+
+Then, in parallel off that artifact:
+
+3. **URL contract** — `npm run check:urls`. Asserts canonicals, sitemap and internal
+   links all agree on the trailing-slash form. Added because that invariant broke
+   silently: the build succeeded and Lighthouse passed while 37 of 41 canonicals
+   pointed at a redirect.
+4. **Link check** — [lychee](https://lychee.cli.rs) over the built HTML, the markdown,
+   and `security.txt`. Added because the `security.txt` Policy URL was dead for months.
+   Config in `lychee.toml`; the site's own domain is excluded there, deliberately.
+5. **Lighthouse audit** — asserts a11y ≥ 0.95, SEO ≥ 0.95, perf ≥ 0.9, and warns under
+   best-practices 0.9
+
+CodeQL also runs on every PR. It is GitHub's *default setup*, configured in the repo
+settings rather than in `.github/workflows/`, which is why no file here describes it.
+
+Dependency and action updates arrive as PRs via `.github/dependabot.yml` (weekly, npm
+and github-actions).
 
 > **Previously the Lighthouse job was gated to `pull_request` only.** Since all work
 > landed as direct pushes to `main`, it was skipped on every single run — the audit had
@@ -128,16 +144,23 @@ checks are green.
 <details>
 <summary>Enabling branch protection on <code>main</code></summary>
 
-Settings → Branches → Add branch protection rule for `main`:
+Settings → Rules → Rulesets → New ruleset, targeting `main`:
 
-- **Require a pull request before merging**
+- **Require a pull request before merging**, with **Required approvals set to 0** —
+  GitHub will not let you approve your own PR, so requiring 1 on a single-maintainer
+  repo locks you out of your own `main`.
 - **Require status checks to pass before merging**, selecting:
   - `Type check`
   - `Build`
+  - `URL contract`
+  - `Link check`
   - `Lighthouse audit`
-- **Require branches to be up to date before merging**
+  - `CodeQL`
 
-Leave "Include administrators" off if you want an escape hatch for urgent fixes.
+Do **not** require the `Cloudflare Pages` check: it reports the preview deploy, which
+duplicates `Build`, and a third-party check that stalls is a merge you cannot complete.
+
+Leave "Do not allow bypassing" off if you want an escape hatch for urgent fixes.
 
 </details>
 
