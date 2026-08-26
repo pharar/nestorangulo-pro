@@ -5,10 +5,14 @@ max_retries = 3
 retry_wait_time = 2
 timeout = 20
 
-# Some hosts refuse datacenter IPs outright, so a CI runner sees a failure that
-# no real visitor would. 999 is LinkedIn's bot-block code; 429 is rate limiting,
-# which says nothing about whether the target exists.
-accept = ["200", "206", "429", "999"]
+# Listing bare codes REPLACES lychee's default range (100..=103,200..=299) rather
+# than adding to it, so the 2xx range has to be restated or every non-200 success
+# fails. eur-lex.europa.eu answers 202, which the previous explicit list rejected.
+#
+# Beyond the defaults: some hosts refuse datacenter IPs outright, so a CI runner
+# sees a failure no real visitor would. 999 is LinkedIn's bot-block code; 429 is
+# rate limiting, which says nothing about whether the target exists.
+accept = ["100..=103", "200..=299", "429", "999"]
 
 exclude = [
   # Bot-hostile hosts: they 403/999 CI runners regardless of link validity.
