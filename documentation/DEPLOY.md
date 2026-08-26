@@ -1,7 +1,7 @@
 # Deploying to Cloudflare Pages
 
 `nestorangulo.pro` is a fully static [Astro 7](https://astro.build) site (`output: 'static'`)
-built to `dist/` and served by [Cloudflare Pages](https://pages.cloudflare.com) via its
+built to `dist/` and served by [Cloudflare Pages](https://developers.cloudflare.com/pages/) via its
 GitHub integration. There is no server runtime, no database, and no build-time secrets.
 
 **The site is already live and connected.** The [First-time setup](#first-time-setup)
