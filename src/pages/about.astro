@@ -15,7 +15,7 @@ const TALK_COUNT_ROUNDED = talkCountRounded(TALK_COUNT);
 const profilePageSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',
-  url: `${SITE_URL}/about`,
+  url: `${SITE_URL}/about/`,
   mainEntity: { '@id': `${SITE_URL}/#person` },
 };
 ---
@@ -23,7 +23,6 @@ const profilePageSchema = {
 <BaseLayout
   title="About — Nestor Angulo de Ugarte"
   description={`Security leader with a decade in cybersecurity. CISSP. Most recently Head of Security at Patchstack. Builder of security programs from zero. Speaker at ${TALK_COUNT_ROUNDED} international conferences. Valencia.`}
-  canonical={`${SITE_URL}/about`}
   person={true}
 >
   <script

@@ -1,16 +1,18 @@
 ---
 const navItems = [
-  { href: '/writing', label: 'Writing' },
-  { href: '/speaking', label: 'Speaking' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/writing/', label: 'Writing' },
+  { href: '/speaking/', label: 'Speaking' },
+  { href: '/about/', label: 'About' },
+  { href: '/contact/', label: 'Contact' },
 ];
 
 const { pathname } = Astro.url;
 
 function isActive(href: string): boolean {
   if (href === '/') return pathname === '/';
-  return pathname === href || pathname.startsWith(href + '/');
+  // navItems hrefs end in '/', so a prefix match keeps the parent active on
+  // nested pages (/speaking/ on /speaking/some-talk/) and cannot match /speakingX.
+  return pathname.startsWith(href);
 }
 ---
 

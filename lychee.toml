@@ -1,0 +1,26 @@
+# Link checking for the built site and the markdown docs.
+
+# Retry transient upstream failures before calling a link dead.
+max_retries = 3
+retry_wait_time = 2
+timeout = 20
+
+# Some hosts refuse datacenter IPs outright, so a CI runner sees a failure that
+# no real visitor would. 999 is LinkedIn's bot-block code; 429 is rate limiting,
+# which says nothing about whether the target exists.
+accept = ["200", "206", "429", "999"]
+
+exclude = [
+  # Bot-hostile hosts: they 403/999 CI runners regardless of link validity.
+  "^https://(www\\.)?linkedin\\.com",
+  "^https://(www\\.)?x\\.com",
+
+  # The dev-server URL in the README. Nothing listens on it in CI.
+  "^http://localhost",
+
+  # The site's own production domain. `dist/` is the version being *proposed* —
+  # a genuinely new page's canonical points at a URL that will not exist until
+  # this merges and deploys, so checking it here fails every PR that adds a page.
+  # Internal consistency is `scripts/check-urls.mjs`'s job instead.
+  "^https://nestorangulo\\.pro",
+]

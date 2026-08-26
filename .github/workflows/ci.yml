@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
 
+# Cancel superseded runs on the same ref (e.g. force-push to a PR branch).
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -13,9 +18,10 @@ jobs:
   typecheck:
     name: Type check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -26,29 +32,78 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: typecheck
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
           retention-days: 1
 
+  urls:
+    name: URL contract
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 5
+    # Asserts canonicals, sitemap and internal links agree on the trailing-slash
+    # form. Nothing else in CI can see that drift: the build succeeds and
+    # Lighthouse passes while every canonical points at a redirect.
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - run: npm run check:urls
+
+  links:
+    name: Link check
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --config lychee.toml
+            --no-progress
+            --root-dir ${{ github.workspace }}/dist
+            'dist/**/*.html'
+            '*.md'
+            'documentation/*.md'
+            'public/.well-known/security.txt'
+          fail: true
+        env:
+          # Lifts the anonymous rate limit on github.com links.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   lighthouse:
     name: Lighthouse audit
     runs-on: ubuntu-latest
     needs: build
-    # Only run Lighthouse on pull requests
-    if: github.event_name == 'pull_request'
+    timeout-minutes: 15
+    # Runs on PRs *and* on pushes to main. It was previously gated to
+    # pull_request only, which meant it never ran at all while work landed
+    # directly on main — the audit silently skipped on every push.
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/
