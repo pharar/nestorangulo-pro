@@ -2,7 +2,7 @@
 
 Personal authority site for Nestor Angulo de Ugarte — Head of Security, CISSP, security program builder.
 
-Built with [Astro 7](https://astro.build), deployed on [Cloudflare Pages](https://pages.cloudflare.com).
+Built with [Astro 7](https://astro.build), deployed on [Cloudflare Pages](https://developers.cloudflare.com/pages/).
 
 ## Requirements
 
