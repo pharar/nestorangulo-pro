@@ -1,10 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Served for every unmatched path, so this page has no canonical URL of its
+// own — `canonical={null}` omits the tag rather than pointing every 404 at /404/.
 ---
 
 <BaseLayout
   title="Page not found — Nestor Angulo de Ugarte"
   description="That page doesn't exist. It may have been moved or renamed."
+  canonical={null}
 >
   <div class="container">
     <div class="page-header">

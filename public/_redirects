@@ -1,2 +1,6 @@
+# Targets carry the trailing slash: it is the canonical URL form
+# (astro.config.mjs `trailingSlash: 'always'`), so these land in one hop
+# instead of handing off to Cloudflare's own 308.
+# The splat keeps whatever trailing form arrived, so /talks/x/ -> /speaking/x/.
 /talks/*  /speaking/:splat  301
-/talks    /speaking         301
+/talks    /speaking/        301

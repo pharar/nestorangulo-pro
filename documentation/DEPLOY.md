@@ -80,10 +80,16 @@ index and its children are preserved with 301s:
 
 ```
 /talks/*  /speaking/:splat  301
-/talks    /speaking         301
+/talks    /speaking/        301
 ```
 
 Add a line here — not an in-page redirect — whenever a route is renamed.
+
+**Point targets at the trailing-slash form.** Pages serves this site directory-style,
+so it 308-redirects `/speaking` to `/speaking/` on its own. A rule targeting the
+slashless form therefore costs a second hop (`301` then `308`); targeting `/speaking/`
+lands in one. The `:splat` rule preserves whatever form arrived, so `/talks/x/` →
+`/speaking/x/` in a single hop.
 
 ### `public/robots.txt`
 
@@ -99,6 +105,22 @@ look to search engines like a duplicate of the homepage.
 
 Keep the page in place. If you ever see unknown paths returning 200 again, check that
 `dist/404.html` is still being emitted.
+
+### Trailing slashes are the canonical URL form
+
+`astro.config.mjs` sets `trailingSlash: 'always'`, matching how Pages actually serves a
+directory-style build: `/about/` is the real URL and `/about` 308-redirects to it.
+
+That declaration is what keeps the three URL surfaces agreeing — the `<link rel=canonical>`
+(`SEO.astro` defaults it to `Astro.url.href`), the generated sitemap, and every internal
+`<a href>`. They previously did not: three pages hardcoded a slashless `canonical`, so 37
+of 41 pages pointed search engines at a URL that immediately redirected, while the sitemap
+listed the slashed form.
+
+**When adding a page or a link, keep the trailing slash.** Don't reintroduce a hardcoded
+`canonical` prop — the default is already correct. `/404` is the one deliberate exception:
+it passes `canonical={null}`, because it is served for every unmatched path and has no
+URL of its own.
 
 ### Content Security Policy — not in `_headers`
 

@@ -5,7 +5,8 @@ import { SITE_URL, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '../config';
 interface Props {
   title?: string;
   description?: string;
-  canonical?: string;
+  /** Pass null to omit the canonical entirely (see 404.astro). */
+  canonical?: string | null;
   ogTitle?: string;
   ogDescription?: string;
   ogImage?: string;
@@ -28,7 +29,7 @@ const {
 
 <title>{title}</title>
 <meta name="description" content={description} />
-<link rel="canonical" href={canonical} />
+{canonical && <link rel="canonical" href={canonical} />}
 <meta name="robots" content="index, follow" />
 <meta name="color-scheme" content="light" />
 <meta name="theme-color" content="#faf9f7" />
@@ -38,7 +39,7 @@ const {
 <meta property="og:site_name" content="Nestor Angulo de Ugarte" />
 <meta property="og:title" content={ogTitle} />
 <meta property="og:description" content={ogDescription} />
-<meta property="og:url" content={canonical} />
+{canonical && <meta property="og:url" content={canonical} />}
 <meta property="og:image" content={ogImage} />
 <meta property="og:locale" content="en_US" />
 
