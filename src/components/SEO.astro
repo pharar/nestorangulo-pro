@@ -1,6 +1,7 @@
 ---
 import { personSchema } from '../lib/person';
 import { SITE_URL, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '../config';
+import { ogLocale, metaDescription } from '../lib/meta';
 
 interface Props {
   title?: string;
@@ -10,6 +11,8 @@ interface Props {
   ogTitle?: string;
   ogDescription?: string;
   ogImage?: string;
+  /** BCP-47 language of this page's content. Drives <html lang> and og:locale. */
+  lang?: string;
   /** Pass true on the homepage and /about to emit Person structured data */
   person?: boolean;
 }
@@ -24,11 +27,15 @@ const {
   ogDescription = description,
   ogImage = DEFAULT_OG_IMAGE,
   person = false,
+  lang = 'en',
 } = Astro.props;
+
+const metaDesc = metaDescription(description);
+const ogDesc = metaDescription(ogDescription);
 ---
 
 <title>{title}</title>
-<meta name="description" content={description} />
+<meta name="description" content={metaDesc} />
 {canonical && <link rel="canonical" href={canonical} />}
 <meta name="robots" content="index, follow" />
 <meta name="color-scheme" content="light" />
@@ -38,15 +45,15 @@ const {
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Nestor Angulo de Ugarte" />
 <meta property="og:title" content={ogTitle} />
-<meta property="og:description" content={ogDescription} />
+<meta property="og:description" content={ogDesc} />
 {canonical && <meta property="og:url" content={canonical} />}
 <meta property="og:image" content={ogImage} />
-<meta property="og:locale" content="en_US" />
+<meta property="og:locale" content={ogLocale(lang)} />
 
 <!-- Twitter / X card -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={ogTitle} />
-<meta name="twitter:description" content={ogDescription} />
+<meta name="twitter:description" content={ogDesc} />
 <meta name="twitter:image" content={ogImage} />
 
 <!-- Person structured data (homepage and /about) -->

@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { talkSchema } from '../../lib/talkSchema';
 
 export async function getStaticPaths() {
   const talks = await getCollection('talks');
@@ -27,6 +28,7 @@ const {
   date,
   format,
   themes,
+  language,
   summary,
   description,
   slidesUrl,
@@ -37,6 +39,8 @@ const {
 } = entry.data;
 
 const pageDescription = description ?? summary;
+
+const schema = talkSchema(entry);
 
 function formatDate(d: Date): string {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -56,7 +60,15 @@ const FORMAT_LABELS: Record<string, string> = {
 <BaseLayout
   title={`${title} — Nestor Angulo de Ugarte`}
   description={pageDescription}
+  lang={language}
 >
+  <script
+    slot="head"
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify(schema)}
+  />
+
   <div class="container">
     <a href="/speaking/" class="talk-back">← Back to speaking</a>
 

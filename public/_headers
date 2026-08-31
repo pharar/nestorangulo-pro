@@ -4,3 +4,26 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+
+# Astro content-hashes everything it emits here — CSS, JS and the Fraunces
+# woff2 subsets. The filename changes whenever the bytes do, so these can never
+# go stale and a repeat visitor should never re-request them.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# NOT hashed: these filenames survive a redesign, so `immutable` would strand a
+# replaced logo or photo in caches for a year. Cache for a day, then revalidate.
+/images/*
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/og-default.png
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/favicon.ico
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/favicon.svg
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400, must-revalidate
