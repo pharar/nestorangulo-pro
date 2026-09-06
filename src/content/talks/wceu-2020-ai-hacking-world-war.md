@@ -10,7 +10,7 @@ themes:
   - Vulnerability Intelligence
   - WordPress Security
 summary: "Inside the mind of a cyberterrorist: how AI, net spiders and one-click tools crawl the web to hack vulnerable sites at scale."
-featured: true
+featured: false
 slidesUrl: https://assets.nestorangulo.pro/slides/wceu-2020-ai-hacking-world-war-0dcd53e8b8.pdf
 videoUrl: https://wordpress.tv/2020/06/21/nestor-angulo-de-ugarte-ai-in-the-hacking-world-war/
 ---
