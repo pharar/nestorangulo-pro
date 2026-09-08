@@ -28,6 +28,20 @@ Two reasons, and both matter:
 Never overwrite an existing key with different bytes — that is the one thing the
 cache header makes unrecoverable for anyone who already fetched it.
 
+## Getting wrangler
+
+Wrangler is **not** a dependency of this project and must not become one: the site
+deploys through the Cloudflare Pages ↔ GitHub integration, so `wrangler` in
+`devDependencies` would add packages to every CI install for a tool CI never runs.
+Use it on demand instead.
+
+```bash
+npx wrangler@latest login   # browser OAuth; credentials land in ~/.config/.wrangler/
+npx wrangler whoami         # confirm the account before uploading
+```
+
+The login persists, so this is a one-time step per machine.
+
 ## Preparing the PDF
 
 Work outside the repo. Order matters: compress first (Ghostscript strips metadata),
@@ -64,23 +78,30 @@ No `exiftool`? Python `pikepdf` does the same job — set `/Title`, `/Subject`,
 
 ## Uploading
 
-Requires an authenticated `wrangler` (`wrangler login` once; `wrangler whoami` to
-check). This is the one step that cannot be delegated to a sandbox — the Cloudflare
-credential lives on this machine only.
+> **`--remote` is not optional.** Wrangler 4 inverted the default for the R2 commands:
+> without it, the object is written to a local simulator under `.wrangler/state/` in
+> the current directory and never reaches Cloudflare. It still prints
+> `Upload complete.`, so the success message proves nothing. **Read the
+> `Resource location:` line** — it must say `remote`. If a stray `.wrangler/` appears
+> next to the deck, that upload went nowhere; delete it and re-run.
 
 ```bash
-wrangler r2 object put "nestorangulo-assets/slides/$SLUG-$HASH.pdf" \
+npx wrangler r2 object put "nestorangulo-assets/slides/$SLUG-$HASH.pdf" \
   --file="/tmp/slides-build/$SLUG-$HASH.pdf" \
   --content-type=application/pdf \
-  --cache-control="public, max-age=31536000, immutable"
+  --cache-control="public, max-age=31536000, immutable" \
+  --remote
 ```
 
-Then verify before merging the talk card:
+Then verify before merging the talk card — this is the check that actually proves the
+upload landed:
 
 ```bash
 curl -I "https://assets.nestorangulo.pro/slides/$SLUG-$HASH.pdf"
 # expect: HTTP/2 200, content-type: application/pdf, cache-control: ...immutable
 ```
+
+A `404` here means the object is not in the bucket, whatever wrangler said.
 
 ## Wiring it into the talk card
 
@@ -97,12 +118,14 @@ site's sitemap. It is crawlable through its link; that is enough.
 
 ## Replacing or removing a deck
 
+Same rule: every one of these needs `--remote`, or it operates on the local simulator.
+
 ```bash
-# list what is there
-wrangler r2 object get nestorangulo-assets/slides/<key>.pdf --file=/tmp/check.pdf
+# fetch an object back
+npx wrangler r2 object get nestorangulo-assets/slides/<key>.pdf --file=/tmp/check.pdf --remote
 
 # delete an object superseded by a new hash
-wrangler r2 object delete nestorangulo-assets/slides/<old-key>.pdf
+npx wrangler r2 object delete nestorangulo-assets/slides/<old-key>.pdf --remote
 ```
 
 Update `slidesUrl` in the same PR that changes the object, so a deployed page never
