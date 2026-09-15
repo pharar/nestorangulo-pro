@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# Formats staged files with prettier before they land, so the CI Format check
+# job is never the thing that tells you about a stray space.
+#
+# Installed by the `prepare` script in package.json, which points
+# core.hooksPath here. Git does not version .git/hooks, so keeping the hook in
+# the tree is what makes it travel with a clone.
+#
+# Skip a run with `git commit --no-verify`.
+
+set -eu
+
+# Staged paths, minus deletions. Newline-delimited: no tracked path in this repo
+# contains a space, and `-z` would not help anyway — command substitution drops
+# NUL bytes, so the delimiters never survive into the variable.
+files=$(git diff --cached --name-only --diff-filter=ACMR)
+[ -z "$files" ] && exit 0
+
+# Which of them would prettier rewrite? --ignore-unknown drops file types it has
+# no parser for; .prettierignore is honoured on its own.
+#
+# `--list-different` exits non-zero *because* it found differences — that is the
+# signal, not a failure — so the status has to be ignored rather than treated as
+# an error. Guarding this with `|| changed=''` silently disables the hook.
+set +e
+changed=$(printf '%s\n' "$files" | xargs npx --no-install prettier --ignore-unknown --list-different 2>/dev/null)
+set -e
+[ -z "$changed" ] && exit 0
+
+# A file that is staged *and* carries further unstaged edits is the one case
+# where auto-fixing does harm: prettier rewrites the working copy, and `git add`
+# would then sweep those unrelated edits into the commit. Refuse instead of
+# committing something the author never staged. Only files prettier would touch
+# are checked, so an ordinary partial stage of clean files still goes through.
+partial=''
+for f in $changed; do
+  if ! git diff --quiet -- "$f" 2>/dev/null; then
+    partial="$partial  $f
+"
+  fi
+done
+
+if [ -n "$partial" ]; then
+  printf '\npre-commit: these need formatting but also have unstaged changes:\n\n%s\n' "$partial"
+  printf 'Formatting them would pull those unstaged edits into the commit.\n'
+  printf 'Stage them, stash them, or run `npm run format` yourself.\n\n'
+  exit 1
+fi
+
+printf '%s\n' "$changed" | sed 's/^/pre-commit: formatted /'
+printf '%s\n' "$changed" | xargs npx --no-install prettier --ignore-unknown --write >/dev/null
+printf '%s\n' "$changed" | xargs git add
