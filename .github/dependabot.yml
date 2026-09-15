@@ -16,6 +16,17 @@ updates:
           - '@astrojs/*'
       dev-dependencies:
         dependency-type: development
+    ignore:
+      # TypeScript majors are held back by @astrojs/check, whose peer range is
+      # `^5.0.0 || ^6.0.0` as of 0.9.10 — the latest published version, so there
+      # is nothing to upgrade it to. TS 7 makes `astro check` exit 1 with no
+      # diagnostics, which took down the whole Type check job in #25. The
+      # `@astrojs/check` override in package.json pins it to the root TypeScript,
+      # so resolution cannot route around it either.
+      # Drop this entry once @astrojs/check declares support for TypeScript 7.
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
 
   - package-ecosystem: github-actions
     directory: /
