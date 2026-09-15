@@ -22,16 +22,20 @@
   --leading-loose: 1.8;
 
   /* ── Colours ─────────────────────────────────────────────── */
-  --clr-bg: #faf9f7;          /* warm off-white */
+  --clr-bg: #faf9f7; /* warm off-white */
   --clr-surface: #f3f1ee;
-  --clr-text: #1c1917;        /* near-black, warm */
-  --clr-muted: #6b6663;       /* warm mid-grey */
-  --clr-subtle: #a09d9a;      /* light warm-grey */
+  --clr-text: #1c1917; /* near-black, warm */
+  --clr-muted: #6b6663; /* warm mid-grey */
+  --clr-subtle: #a09d9a; /* light warm-grey */
   --clr-border: #e8e4df;
-  --clr-accent:       #c08c50;  /* amber gold — brand */
-  --clr-accent-hover: #a87740;  /* amber gold -15% lightness */
-  --clr-accent-light: #f5ead9;  /* amber gold 10% tint */
-  --clr-accent-text:  #8a5c1a;  /* amber gold darkened for WCAG AA text (5.5:1 on bg) */
+  --clr-accent: #c08c50; /* amber gold — brand */
+  --clr-accent-hover: #a87740; /* amber gold -15% lightness */
+  --clr-accent-light: #f5ead9; /* amber gold 10% tint */
+  --clr-accent-text: #8a5c1a; /* amber gold darkened for WCAG AA text (5.5:1 on bg) */
+  /* Ink for text sitting ON the gold. Deliberately NOT themed: --clr-accent is
+     fixed brand colour in both palettes, so its ink must stay dark too — using
+     --clr-text here would invert to off-white in dark and drop to 2.5:1. */
+  --clr-on-accent: #1c1917; /* 5.9:1 on --clr-accent */
   /* ── Spacing ─────────────────────────────────────────────── */
   --sp-1: 0.25rem;
   --sp-2: 0.5rem;
@@ -47,12 +51,56 @@
   --sp-24: 6rem;
 
   /* ── Layout ──────────────────────────────────────────────── */
-  --container-prose: 700px;   /* text content */
-  --container-wide: 1080px;   /* header / footer */
+  --container-prose: 700px; /* text content */
+  --container-wide: 1080px; /* header / footer */
   --pad-x: 1.5rem;
 
   /* ── Misc ────────────────────────────────────────────────── */
   --radius-sm: 3px;
   --radius-md: 6px;
   --ease: 150ms ease;
+}
+
+/* ── Dark theme ──────────────────────────────────────────────
+   The colour tokens above are the light theme. The two blocks below carry the
+   *same* dark values for the two ways dark can be reached:
+
+     1. the visitor's OS asks for dark and they haven't overridden it
+     2. the visitor explicitly chose dark with the header toggle
+
+   `:not([data-theme='light'])` is what lets the toggle force light back on a
+   dark-OS machine. The duplication is deliberate — CSS has no mixin, and an
+   indirection layer would cost more clarity than the ten lines it saves.
+   Keep the two lists identical when editing. */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --clr-bg: #1a1815; /* warm near-black */
+    --clr-surface: #232019;
+    --clr-text: #f0ede8; /* warm off-white */
+    --clr-muted: #a8a29a;
+    --clr-subtle: #7a746c;
+    --clr-border: #33302a;
+    --clr-accent: #c08c50; /* brand gold, unchanged in both themes */
+    --clr-accent-hover: #d4a068; /* lightened, not darkened, for dark ground */
+    --clr-accent-light: #2e2418; /* the tinted-block background */
+    --clr-accent-text: #d9a86a; /* AA on --clr-accent-light, its usual pairing */
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --clr-bg: #1a1815;
+  --clr-surface: #232019;
+  --clr-text: #f0ede8;
+  --clr-muted: #a8a29a;
+  --clr-subtle: #7a746c;
+  --clr-border: #33302a;
+  --clr-accent: #c08c50;
+  --clr-accent-hover: #d4a068;
+  --clr-accent-light: #2e2418;
+  --clr-accent-text: #d9a86a;
 }

@@ -182,6 +182,75 @@ a:hover {
   color: var(--clr-text);
 }
 
+/* ── Theme toggle ────────────────────────────────────────────── */
+.site-nav-toggle {
+  display: flex;
+  align-items: center;
+}
+
+/* Hidden by default and revealed only for scripted visitors. public/theme-init.js
+   adds `.js` before first paint, so the button is there from the first frame
+   (no layout shift) but never shown as a dead control without JavaScript. */
+.theme-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--clr-muted);
+  cursor: pointer;
+  transition:
+    color var(--ease),
+    background-color var(--ease);
+}
+
+.js .theme-toggle {
+  display: flex;
+}
+
+.theme-toggle:hover {
+  color: var(--clr-text);
+  background: var(--clr-surface);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 2px;
+}
+
+.theme-toggle-icon {
+  display: block;
+}
+
+/* Show the icon for the theme the click would take you TO: a moon while light.
+   Base case is light, so the sun stays hidden until a dark selector matches. */
+.theme-toggle-icon--sun {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .theme-toggle-icon--moon {
+    display: none;
+  }
+
+  :root:not([data-theme='light']) .theme-toggle-icon--sun {
+    display: block;
+  }
+}
+
+:root[data-theme='dark'] .theme-toggle-icon--moon {
+  display: none;
+}
+
+:root[data-theme='dark'] .theme-toggle-icon--sun {
+  display: block;
+}
+
 /* ── Footer ──────────────────────────────────────────────────── */
 .site-footer {
   margin-top: var(--sp-24);
@@ -205,6 +274,15 @@ a:hover {
   font-size: var(--text-xs);
   color: var(--clr-subtle);
   letter-spacing: 0.02em;
+}
+
+/* The mark sits inside .footer-copy, which is --clr-subtle. Left to inherit,
+   currentColor would wash it out to the same pale grey as the copyright line;
+   it has always rendered stronger than its neighbouring text, so pin it to the
+   body ink the way the header logo does. */
+.footer-mark {
+  color: var(--clr-text);
+  flex-shrink: 0;
 }
 
 .footer-links {
@@ -1161,7 +1239,7 @@ a:hover {
 
 .filter-chip[aria-pressed='true'] {
   background: var(--clr-accent);
-  color: var(--clr-text);
+  color: var(--clr-on-accent);
   border-color: var(--clr-accent);
 }
 

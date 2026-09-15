@@ -38,8 +38,9 @@ const ogDesc = metaDescription(ogDescription);
 <meta name="description" content={metaDesc} />
 {canonical && <link rel="canonical" href={canonical} />}
 <meta name="robots" content="index, follow" />
-<meta name="color-scheme" content="light" />
-<meta name="theme-color" content="#faf9f7" />
+<meta name="color-scheme" content="light dark" />
+<meta name="theme-color" content="#faf9f7" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#1a1815" media="(prefers-color-scheme: dark)" />
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />

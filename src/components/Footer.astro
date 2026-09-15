@@ -1,20 +1,18 @@
 ---
+import Isotipo from './Isotipo.astro';
+
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
   <div class="container container--wide">
     <p class="footer-copy">
-      <img src="/images/isotipo-nestorangulo-pro.svg" alt="" aria-hidden="true" width="32" height="30" />
+      <Isotipo class="footer-mark" width={32} height={30} />
       &copy; {year} nestorangulo.pro
     </p>
     <ul class="footer-links">
       <li>
-        <a
-          href="https://linkedin.com/in/pharar"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://linkedin.com/in/pharar" target="_blank" rel="noopener noreferrer">
           LinkedIn
         </a>
       </li>
