@@ -1,7 +1,7 @@
 ---
-title: "Incident Response: What Happens After the Worst Case Scenario"
-event: "WordSesh 2022"
-location: "Online"
+title: 'Incident Response: What Happens After the Worst Case Scenario'
+event: 'WordSesh 2022'
+location: 'Online'
 date: 2022-05-18
 language: en
 format: conference-talk

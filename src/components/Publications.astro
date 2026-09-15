@@ -16,30 +16,28 @@ function formatAuthors(coAuthors: string[]): string {
 ---
 
 <ol class="publications-list">
-  {
-    publications.map((p) => (
-      <li class="publication-item">
-        <p class="publication-authors">
-          Angulo de Ugarte, N.
-          {p.coAuthors && p.coAuthors.length > 0 && formatAuthors(p.coAuthors)} ({p.year}).
-        </p>
-        <p class="publication-title">
-          {p.title}.{' '}
-          {p.in && (
-            <>
-              In <em>{p.in}</em>.{' '}
-            </>
-          )}
-          {p.venue && (
-            <>
-              <em>{p.venue}</em>.{' '}
-            </>
-          )}
-          {p.publisher && <>{p.publisher}. </>}
-          {p.isbn && <>ISBN {p.isbn}.</>}
-        </p>
-        <span class="publication-type">{typeLabels[p.type] ?? p.type}</span>
-      </li>
-    ))
-  }
+  {publications.map((p) => (
+    <li class="publication-item">
+      <p class="publication-authors">
+        Angulo de Ugarte, N.
+        {p.coAuthors && p.coAuthors.length > 0 && formatAuthors(p.coAuthors)} ({p.year}).
+      </p>
+      <p class="publication-title">
+        {p.title}.{' '}
+        {p.in && (
+          <>
+            In <em>{p.in}</em>.{' '}
+          </>
+        )}
+        {p.venue && (
+          <>
+            <em>{p.venue}</em>.{' '}
+          </>
+        )}
+        {p.publisher && <>{p.publisher}. </>}
+        {p.isbn && <>ISBN {p.isbn}.</>}
+      </p>
+      <span class="publication-type">{typeLabels[p.type] ?? p.type}</span>
+    </li>
+  ))}
 </ol>

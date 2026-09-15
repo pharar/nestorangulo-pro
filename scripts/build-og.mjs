@@ -16,9 +16,14 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
 </style></head><body>${svg}</body></html>`;
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 2 });
+const page = await browser.newPage({
+  viewport: { width: 1200, height: 630 },
+  deviceScaleFactor: 2,
+});
 await page.setContent(html, { waitUntil: 'networkidle' });
-await page.evaluate(async () => { await document.fonts.ready; });
+await page.evaluate(async () => {
+  await document.fonts.ready;
+});
 const buf = await page.screenshot({ clip: { x: 0, y: 0, width: 1200, height: 630 } });
 await browser.close();
 

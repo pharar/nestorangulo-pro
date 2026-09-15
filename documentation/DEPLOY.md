@@ -16,16 +16,16 @@ Cloudflare Pages watches the GitHub repo directly — **GitHub Actions does not 
 CI (`.github/workflows/ci.yml`) type-checks, builds, and audits; it is a quality gate, not
 a delivery pipeline. The two run independently off the same push:
 
-| Trigger | Result |
-|---|---|
+| Trigger                   | Result                                         |
+| ------------------------- | ---------------------------------------------- |
 | Merge (or push) to `main` | Production deploy → `https://nestorangulo.pro` |
-| Open/update a PR | Preview deploy on its own `*.pages.dev` URL |
+| Open/update a PR          | Preview deploy on its own `*.pages.dev` URL    |
 
 A red CI run does **not** block the Cloudflare deploy — Cloudflare doesn't know or care
 what Actions did. If CI fails on `main`, assume the broken build is live and revert or
 fix forward.
 
-This is why changes go through a pull request (see the README's *Workflow* section):
+This is why changes go through a pull request (see the README's _Workflow_ section):
 CI can't stop a bad deploy, but branch protection can stop the merge that would cause
 one. Anything pushed straight to `main` is published unreviewed.
 
@@ -35,13 +35,13 @@ one. Anything pushed straight to `main` is published unreviewed.
 
 These are configured once in the Cloudflare Pages project and rarely change:
 
-| Setting | Value |
-|---|---|
-| Framework preset | Astro |
-| Build command | `npm run build` |
-| Build output directory | `dist` |
-| Root directory | *(blank)* |
-| `NODE_VERSION` | `24` |
+| Setting                | Value           |
+| ---------------------- | --------------- |
+| Framework preset       | Astro           |
+| Build command          | `npm run build` |
+| Build output directory | `dist`          |
+| Root directory         | _(blank)_       |
+| `NODE_VERSION`         | `24`            |
 
 Node 24 LTS is pinned in `.nvmrc` (which Pages does respect), but the explicit
 `NODE_VERSION` environment variable — set for **both** Production and Preview — is the

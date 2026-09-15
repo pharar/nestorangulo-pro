@@ -34,11 +34,9 @@ const { title, description, canonical, ogImage, person = false, lang = 'en' } = 
 <html lang={lang}>
   <head>
     <meta charset="utf-8" />
-    {
-      /* Theme: must run before first paint, so it is render-blocking and lives in
+    {/* Theme: must run before first paint, so it is render-blocking and lives in
         public/ rather than inline — Astro does not hash `is:inline` scripts, and
-        security.csp in astro.config.mjs only allows script-src 'self'. */
-    }
+        security.csp in astro.config.mjs only allows script-src 'self'. */}
     <script src="/theme-init.js" is:inline></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

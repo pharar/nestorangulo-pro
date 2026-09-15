@@ -5,8 +5,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedTalks } from '../lib/talks';
 import { speakingListSchema } from '../lib/talkSchema';
 
-const talks = (await getPublishedTalks())
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const talks = (await getPublishedTalks()).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
 
 const listSchema = speakingListSchema(talks);
 
@@ -28,11 +29,11 @@ function isoDate(d: Date): string {
 const FORMAT_LABELS: Record<string, string> = {
   'conference-talk': 'Conference Talk',
   'meetup-talk': 'Meetup Talk',
-  'panel': 'Panel',
-  'podcast': 'Podcast',
-  'webinar': 'Webinar',
-  'ama': 'AMA',
-  'workshop': 'Workshop',
+  panel: 'Panel',
+  podcast: 'Podcast',
+  webinar: 'Webinar',
+  ama: 'AMA',
+  workshop: 'Workshop',
 };
 ---
 
@@ -45,13 +46,19 @@ const FORMAT_LABELS: Record<string, string> = {
     is:inline
     type="application/ld+json"
     set:html={JSON.stringify(listSchema)}
-  />
-
+  ></script>
   <!-- ── Hero ──────────────────────────────────────────────── -->
   <section class="about-hero" aria-labelledby="speaking-h1">
     <div class="container">
-      <h1 class="about-h1" id="speaking-h1">Speaking<span class="caret" aria-hidden="true">_</span></h1>
-      <p class="about-tagline">web security · vulnerability intelligence · software supply chain · security culture</p>
+      <h1 class="about-h1" id="speaking-h1">
+        Speaking
+        <span class="caret" aria-hidden="true">
+          _
+        </span>
+      </h1>
+      <p class="about-tagline">
+        web security · vulnerability intelligence · software supply chain · security culture
+      </p>
       <p class="talks-intro">
         {talks.length} appearances at WordCamps, industry conferences, podcasts, and webinars
         spanning web security, vulnerability intelligence, software supply chain, and security
@@ -63,65 +70,31 @@ const FORMAT_LABELS: Record<string, string> = {
   </section>
 
   <!-- ── Featured ──────────────────────────────────────────── -->
-  {
-    featured.length > 0 && (
-      <section class="about-section" aria-labelledby="featured-heading" data-talks-section="featured">
-        <div class="container">
-          <h2 class="speaking-section-label talks-featured-heading" id="featured-heading">
-            Featured
-          </h2>
-          <ul class="talks-featured-list">
-            {featured.map((talk) =>
-              talk.data.cover ? (
-                <li class="talk-item talk-item--has-cover" data-themes={talk.data.themes.join('|')} data-featured="true" data-year={String(talk.data.date.getFullYear())}>
-                  <figure class="talk-card-cover">
-                    <Image
-                      src={talk.data.cover}
-                      alt={talk.data.coverAlt ?? `${talk.data.title} — ${talk.data.event}`}
-                      width={700}
-                      loading="lazy"
-                      class="talk-card-img"
-                    />
-                  </figure>
-                  <div class="talk-card-content">
-                    <div class="talk-top">
-                      <a href={`/speaking/${talk.id}/`} class="talk-title-link">
-                        {talk.data.title}
-                      </a>
-                      <time class="talk-date" datetime={talk.data.date.toISOString()}>
-                        {isoDate(talk.data.date)}
-                      </time>
-                    </div>
-                    <p class="talk-meta">
-                      {talk.data.event}
-                      {talk.data.location ? ` · ${talk.data.location}` : ''}
-                    </p>
-                    <p class="talk-format">{FORMAT_LABELS[talk.data.format]}</p>
-                    <ul class="talk-themes" aria-label="Themes">
-                      {talk.data.themes.map((theme) => (
-                        <li class="theme-tag">{theme}</li>
-                      ))}
-                    </ul>
-                    {(talk.data.videoUrl || talk.data.slidesUrl || talk.data.slidesUrlExt || talk.data.eventUrl) && (
-                      <div class="talk-links">
-                        {talk.data.videoUrl && (
-                          <a class="talk-link" href={talk.data.videoUrl} target="_blank" rel="noopener noreferrer">Video ↗</a>
-                        )}
-                        {talk.data.slidesUrl && (
-                          <a class="talk-link" href={talk.data.slidesUrl} target="_blank" rel="noopener noreferrer">Slides ↗</a>
-                        )}
-                        {!talk.data.slidesUrl && talk.data.slidesUrlExt && (
-                          <a class="talk-link" href={talk.data.slidesUrlExt} target="_blank" rel="noopener noreferrer">Slides ↗</a>
-                        )}
-                        {talk.data.eventUrl && (
-                          <a class="talk-link" href={talk.data.eventUrl} target="_blank" rel="noopener noreferrer">Event ↗</a>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </li>
-              ) : (
-                <li class="talk-item" data-themes={talk.data.themes.join('|')} data-featured="true" data-year={String(talk.data.date.getFullYear())}>
+  {featured.length > 0 && (
+    <section class="about-section" aria-labelledby="featured-heading" data-talks-section="featured">
+      <div class="container">
+        <h2 class="speaking-section-label talks-featured-heading" id="featured-heading">
+          Featured
+        </h2>
+        <ul class="talks-featured-list">
+          {featured.map((talk) =>
+            talk.data.cover ? (
+              <li
+                class="talk-item talk-item--has-cover"
+                data-themes={talk.data.themes.join('|')}
+                data-featured="true"
+                data-year={String(talk.data.date.getFullYear())}
+              >
+                <figure class="talk-card-cover">
+                  <Image
+                    src={talk.data.cover}
+                    alt={talk.data.coverAlt ?? `${talk.data.title} — ${talk.data.event}`}
+                    width={700}
+                    loading="lazy"
+                    class="talk-card-img"
+                  />
+                </figure>
+                <div class="talk-card-content">
                   <div class="talk-top">
                     <a href={`/speaking/${talk.id}/`} class="talk-title-link">
                       {talk.data.title}
@@ -140,88 +113,225 @@ const FORMAT_LABELS: Record<string, string> = {
                       <li class="theme-tag">{theme}</li>
                     ))}
                   </ul>
-                  {(talk.data.videoUrl || talk.data.slidesUrl || talk.data.slidesUrlExt || talk.data.eventUrl) && (
+                  {(talk.data.videoUrl ||
+                    talk.data.slidesUrl ||
+                    talk.data.slidesUrlExt ||
+                    talk.data.eventUrl) && (
                     <div class="talk-links">
                       {talk.data.videoUrl && (
-                        <a class="talk-link" href={talk.data.videoUrl} target="_blank" rel="noopener noreferrer">Video ↗</a>
+                        <a
+                          class="talk-link"
+                          href={talk.data.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Video ↗
+                        </a>
                       )}
                       {talk.data.slidesUrl && (
-                        <a class="talk-link" href={talk.data.slidesUrl} target="_blank" rel="noopener noreferrer">Slides ↗</a>
+                        <a
+                          class="talk-link"
+                          href={talk.data.slidesUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Slides ↗
+                        </a>
                       )}
                       {!talk.data.slidesUrl && talk.data.slidesUrlExt && (
-                        <a class="talk-link" href={talk.data.slidesUrlExt} target="_blank" rel="noopener noreferrer">Slides ↗</a>
+                        <a
+                          class="talk-link"
+                          href={talk.data.slidesUrlExt}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Slides ↗
+                        </a>
                       )}
                       {talk.data.eventUrl && (
-                        <a class="talk-link" href={talk.data.eventUrl} target="_blank" rel="noopener noreferrer">Event ↗</a>
+                        <a
+                          class="talk-link"
+                          href={talk.data.eventUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Event ↗
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </li>
+            ) : (
+              <li
+                class="talk-item"
+                data-themes={talk.data.themes.join('|')}
+                data-featured="true"
+                data-year={String(talk.data.date.getFullYear())}
+              >
+                <div class="talk-top">
+                  <a href={`/speaking/${talk.id}/`} class="talk-title-link">
+                    {talk.data.title}
+                  </a>
+                  <time class="talk-date" datetime={talk.data.date.toISOString()}>
+                    {isoDate(talk.data.date)}
+                  </time>
+                </div>
+                <p class="talk-meta">
+                  {talk.data.event}
+                  {talk.data.location ? ` · ${talk.data.location}` : ''}
+                </p>
+                <p class="talk-format">{FORMAT_LABELS[talk.data.format]}</p>
+                <ul class="talk-themes" aria-label="Themes">
+                  {talk.data.themes.map((theme) => (
+                    <li class="theme-tag">{theme}</li>
+                  ))}
+                </ul>
+                {(talk.data.videoUrl ||
+                  talk.data.slidesUrl ||
+                  talk.data.slidesUrlExt ||
+                  talk.data.eventUrl) && (
+                  <div class="talk-links">
+                    {talk.data.videoUrl && (
+                      <a
+                        class="talk-link"
+                        href={talk.data.videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Video ↗
+                      </a>
+                    )}
+                    {talk.data.slidesUrl && (
+                      <a
+                        class="talk-link"
+                        href={talk.data.slidesUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Slides ↗
+                      </a>
+                    )}
+                    {!talk.data.slidesUrl && talk.data.slidesUrlExt && (
+                      <a
+                        class="talk-link"
+                        href={talk.data.slidesUrlExt}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Slides ↗
+                      </a>
+                    )}
+                    {talk.data.eventUrl && (
+                      <a
+                        class="talk-link"
+                        href={talk.data.eventUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Event ↗
+                      </a>
+                    )}
+                  </div>
+                )}
+              </li>
+            )
+          )}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- ── Archive by year ───────────────────────────────────── -->
+  {years.length > 0 && (
+    <section class="about-section" aria-labelledby="archive-heading" data-talks-section="archive">
+      <div class="container">
+        <h2 class="speaking-section-label" id="archive-heading">
+          Archive
+        </h2>
+        {years.map((year) => (
+          <div class="talks-year-group">
+            <h3 class="talks-year-heading">{year}</h3>
+            <ul class="talks-list">
+              {byYear[year].map((talk) => (
+                <li
+                  class="talk-item"
+                  data-themes={talk.data.themes.join('|')}
+                  data-year={String(talk.data.date.getFullYear())}
+                >
+                  <div class="talk-top">
+                    <a href={`/speaking/${talk.id}/`} class="talk-title-link">
+                      {talk.data.title}
+                    </a>
+                    <time class="talk-date" datetime={talk.data.date.toISOString()}>
+                      {isoDate(talk.data.date)}
+                    </time>
+                  </div>
+                  <p class="talk-meta">
+                    {talk.data.event}
+                    {talk.data.location ? ` · ${talk.data.location}` : ''}
+                  </p>
+                  <p class="talk-format">{FORMAT_LABELS[talk.data.format]}</p>
+                  <ul class="talk-themes" aria-label="Themes">
+                    {talk.data.themes.map((theme) => (
+                      <li class="theme-tag">{theme}</li>
+                    ))}
+                  </ul>
+                  {(talk.data.videoUrl ||
+                    talk.data.slidesUrl ||
+                    talk.data.slidesUrlExt ||
+                    talk.data.eventUrl) && (
+                    <div class="talk-links">
+                      {talk.data.videoUrl && (
+                        <a
+                          class="talk-link"
+                          href={talk.data.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Video ↗
+                        </a>
+                      )}
+                      {talk.data.slidesUrl && (
+                        <a
+                          class="talk-link"
+                          href={talk.data.slidesUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Slides ↗
+                        </a>
+                      )}
+                      {!talk.data.slidesUrl && talk.data.slidesUrlExt && (
+                        <a
+                          class="talk-link"
+                          href={talk.data.slidesUrlExt}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Slides ↗
+                        </a>
+                      )}
+                      {talk.data.eventUrl && (
+                        <a
+                          class="talk-link"
+                          href={talk.data.eventUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Event ↗
+                        </a>
                       )}
                     </div>
                   )}
                 </li>
-              )
-            )}
-          </ul>
-        </div>
-      </section>
-    )
-  }
-
-  <!-- ── Archive by year ───────────────────────────────────── -->
-  {
-    years.length > 0 && (
-      <section class="about-section" aria-labelledby="archive-heading" data-talks-section="archive">
-        <div class="container">
-          <h2 class="speaking-section-label" id="archive-heading">
-            Archive
-          </h2>
-          {years.map((year) => (
-            <div class="talks-year-group">
-              <h3 class="talks-year-heading">{year}</h3>
-              <ul class="talks-list">
-                {byYear[year].map((talk) => (
-                  <li class="talk-item" data-themes={talk.data.themes.join('|')} data-year={String(talk.data.date.getFullYear())}>
-                    <div class="talk-top">
-                      <a href={`/speaking/${talk.id}/`} class="talk-title-link">
-                        {talk.data.title}
-                      </a>
-                      <time class="talk-date" datetime={talk.data.date.toISOString()}>
-                        {isoDate(talk.data.date)}
-                      </time>
-                    </div>
-                    <p class="talk-meta">
-                      {talk.data.event}
-                      {talk.data.location ? ` · ${talk.data.location}` : ''}
-                    </p>
-                    <p class="talk-format">{FORMAT_LABELS[talk.data.format]}</p>
-                    <ul class="talk-themes" aria-label="Themes">
-                      {talk.data.themes.map((theme) => (
-                        <li class="theme-tag">{theme}</li>
-                      ))}
-                    </ul>
-                    {(talk.data.videoUrl || talk.data.slidesUrl || talk.data.slidesUrlExt || talk.data.eventUrl) && (
-                      <div class="talk-links">
-                        {talk.data.videoUrl && (
-                          <a class="talk-link" href={talk.data.videoUrl} target="_blank" rel="noopener noreferrer">Video ↗</a>
-                        )}
-                        {talk.data.slidesUrl && (
-                          <a class="talk-link" href={talk.data.slidesUrl} target="_blank" rel="noopener noreferrer">Slides ↗</a>
-                        )}
-                        {!talk.data.slidesUrl && talk.data.slidesUrlExt && (
-                          <a class="talk-link" href={talk.data.slidesUrlExt} target="_blank" rel="noopener noreferrer">Slides ↗</a>
-                        )}
-                        {talk.data.eventUrl && (
-                          <a class="talk-link" href={talk.data.eventUrl} target="_blank" rel="noopener noreferrer">Event ↗</a>
-                        )}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
-    )
-  }
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
 </BaseLayout>
 
 <script>
@@ -234,7 +344,10 @@ const FORMAT_LABELS: Record<string, string> = {
     const themeSet = new Set<string>();
     const yearSet = new Set<string>();
     items.forEach((item) => {
-      (item.dataset.themes ?? '').split('|').filter(Boolean).forEach((t) => themeSet.add(t));
+      (item.dataset.themes ?? '')
+        .split('|')
+        .filter(Boolean)
+        .forEach((t) => themeSet.add(t));
       if (item.dataset.year) yearSet.add(item.dataset.year);
     });
     const themes = [...themeSet].sort();
@@ -251,7 +364,7 @@ const FORMAT_LABELS: Record<string, string> = {
       label: string,
       kind: FilterKind,
       value: string,
-      active: boolean,
+      active: boolean
     ): HTMLButtonElement => {
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -282,7 +395,7 @@ const FORMAT_LABELS: Record<string, string> = {
       filterBar.querySelectorAll<HTMLElement>('.filter-chip').forEach((btn) => {
         btn.setAttribute(
           'aria-pressed',
-          btn.dataset.filterKind === kind && btn.dataset.filterValue === value ? 'true' : 'false',
+          btn.dataset.filterKind === kind && btn.dataset.filterValue === value ? 'true' : 'false'
         );
       });
 
@@ -299,25 +412,23 @@ const FORMAT_LABELS: Record<string, string> = {
 
       document.querySelectorAll<HTMLElement>('.talks-year-group').forEach((group) => {
         group.hidden = !Array.from(group.querySelectorAll<HTMLElement>('.talk-item')).some(
-          (i) => !i.hidden,
+          (i) => !i.hidden
         );
       });
 
       const featuredSection = document.querySelector<HTMLElement>(
-        '[data-talks-section="featured"]',
+        '[data-talks-section="featured"]'
       );
       if (featuredSection) {
         featuredSection.hidden = !Array.from(
-          featuredSection.querySelectorAll<HTMLElement>('.talk-item'),
+          featuredSection.querySelectorAll<HTMLElement>('.talk-item')
         ).some((i) => !i.hidden);
       }
 
-      const archiveSection = document.querySelector<HTMLElement>(
-        '[data-talks-section="archive"]',
-      );
+      const archiveSection = document.querySelector<HTMLElement>('[data-talks-section="archive"]');
       if (archiveSection) {
         archiveSection.hidden = !Array.from(
-          archiveSection.querySelectorAll<HTMLElement>('.talks-year-group'),
+          archiveSection.querySelectorAll<HTMLElement>('.talks-year-group')
         ).some((g) => !g.hidden);
       }
 
@@ -325,10 +436,10 @@ const FORMAT_LABELS: Record<string, string> = {
         kind === 'all'
           ? `Showing all ${totalCount} talks`
           : kind === 'featured'
-          ? `Showing ${visible} featured ${visible === 1 ? 'talk' : 'talks'}`
-          : kind === 'year'
-          ? `Showing ${visible} ${visible === 1 ? 'talk' : 'talks'} from ${value}`
-          : `Showing ${visible} ${visible === 1 ? 'talk' : 'talks'} tagged ${value}`;
+            ? `Showing ${visible} featured ${visible === 1 ? 'talk' : 'talks'}`
+            : kind === 'year'
+              ? `Showing ${visible} ${visible === 1 ? 'talk' : 'talks'} from ${value}`
+              : `Showing ${visible} ${visible === 1 ? 'talk' : 'talks'} tagged ${value}`;
     };
 
     filterBar.addEventListener('click', (e) => {
@@ -336,7 +447,7 @@ const FORMAT_LABELS: Record<string, string> = {
       if (!btn) return;
       applyFilter(
         (btn.dataset.filterKind ?? 'all') as FilterKind,
-        btn.dataset.filterValue ?? 'all',
+        btn.dataset.filterValue ?? 'all'
       );
     });
   }

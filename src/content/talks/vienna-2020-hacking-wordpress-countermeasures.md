@@ -1,7 +1,7 @@
 ---
-title: "Hacking WordPress… and Countermeasures"
-event: "WordCamp Vienna 2020"
-location: "Vienna, Austria"
+title: 'Hacking WordPress… and Countermeasures'
+event: 'WordCamp Vienna 2020'
+location: 'Vienna, Austria'
 date: 2020-02-29 # ⚠
 language: en
 format: conference-talk
@@ -9,7 +9,7 @@ themes:
   - Web Security
   - WordPress Security
   - Incident Response
-summary: "Know your weaknesses and your enemy: a layer-based security model and real Sucuri examples, framed through the Art of War."
+summary: 'Know your weaknesses and your enemy: a layer-based security model and real Sucuri examples, framed through the Art of War.'
 videoUrl: https://wordpress.tv/2020/04/19/nestor-angulo-de-ugarte-hacking-wordpress-and-countermeasures/
 slidesUrl: https://assets.nestorangulo.pro/slides/vienna-2020-hacking-wordpress-countermeasures-906d8adc8e.pdf
 slidesUrlExt: https://2020.vienna.wordcamp.org/files/2020/02/HackingWordPress-countermeasures_reduced.pdf

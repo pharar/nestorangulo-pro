@@ -1,7 +1,7 @@
 ---
-title: "¿Cómo sé si me han hackeado? Ejemplos y contramedidas"
-event: "WordCamp Barcelona 2018"
-location: "Barcelona, Spain"
+title: '¿Cómo sé si me han hackeado? Ejemplos y contramedidas'
+event: 'WordCamp Barcelona 2018'
+location: 'Barcelona, Spain'
 date: 2018-10-20 # ⚠
 language: es
 format: conference-talk
@@ -9,14 +9,14 @@ themes:
   - Incident Response
   - Web Security
   - WordPress Security
-summary: "Cómo detectar anomalías en tu sitio con ejemplos reales, qué hacer si ocurre y cómo evitar que vuelva a pasar."
+summary: 'Cómo detectar anomalías en tu sitio con ejemplos reales, qué hacer si ocurre y cómo evitar que vuelva a pasar.'
 slidesUrl: https://assets.nestorangulo.pro/slides/barcelona-2018-como-se-si-me-han-hackeado-bd5305e889.pdf
 videoUrl: https://wordpress.tv/2018/10/22/nestor-angulo-de-ugarte-como-se-si-me-han-hackeado-ejemplos-y-contramedidas/
 ---
 
 The three recurring questions when people learn I work in web security: how do I know if my site has been hacked, what to do if it happened, and how to avoid it. We'll go through several real examples that help an untrained eye detect anomalies as soon as possible, a checklist of countermeasures for each case, and finally some recommendations so it doesn't happen again.
 
-> *English translation, provided for accessibility. This talk was delivered in Spanish; the original abstract is available via the video link above. Translation is best-effort and may contain errors.*
+> _English translation, provided for accessibility. This talk was delivered in Spanish; the original abstract is available via the video link above. Translation is best-effort and may contain errors._
 
 **Original (Español)**
 

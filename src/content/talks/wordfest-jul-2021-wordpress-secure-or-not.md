@@ -1,7 +1,7 @@
 ---
-title: "So, then… Is WordPress Secure or Not?"
-event: "WordFest Live — July 2021"
-location: "Online"
+title: 'So, then… Is WordPress Secure or Not?'
+event: 'WordFest Live — July 2021'
+location: 'Online'
 date: 2021-07-23
 language: en
 format: conference-talk
@@ -9,7 +9,7 @@ themes:
   - WordPress Security
   - Web Security
   - Security Awareness
-summary: "No human-made software is ever perfect. Security in WordPress is built in layers — and how you organise them for your needs is what makes a site more or less secure."
+summary: 'No human-made software is ever perfect. Security in WordPress is built in layers — and how you organise them for your needs is what makes a site more or less secure.'
 draft: false
 featured: false
 slidesUrl: https://assets.nestorangulo.pro/slides/wordfest-jul-2021-wordpress-secure-or-not-0df64736c3.pdf

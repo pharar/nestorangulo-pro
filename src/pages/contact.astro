@@ -61,28 +61,31 @@ const contacts: Contact[] = [
 >
   <div class="container">
     <div class="page-header">
-      <h1>Contact<span class="caret" aria-hidden="true">_</span></h1>
+      <h1>
+        Contact
+        <span class="caret" aria-hidden="true">
+          _
+        </span>
+      </h1>
       <p>Professional inquiries, speaking invitations, or conversation.</p>
     </div>
 
     <ul class="contact-list">
-      {
-        contacts.map(({ label, href, display, note, external }) => (
-          <li class="contact-item">
-            <span class="contact-label">{label}</span>
-            <div class="contact-value">
-              <a
-                href={href}
-                class="contact-link"
-                {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              >
-                {display}
-              </a>
-              {note && <span class="contact-note">{note}</span>}
-            </div>
-          </li>
-        ))
-      }
+      {contacts.map(({ label, href, display, note, external }) => (
+        <li class="contact-item">
+          <span class="contact-label">{label}</span>
+          <div class="contact-value">
+            <a
+              href={href}
+              class="contact-link"
+              {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
+              {display}
+            </a>
+            {note && <span class="contact-note">{note}</span>}
+          </div>
+        </li>
+      ))}
     </ul>
   </div>
 </BaseLayout>
