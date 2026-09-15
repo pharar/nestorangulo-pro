@@ -1,7 +1,7 @@
 ---
 title: "How to… Know if I've Been Hacked"
-event: "WordFest Live — January 2021"
-location: "Online"
+event: 'WordFest Live — January 2021'
+location: 'Online'
 date: 2021-01-22
 language: en
 format: conference-talk

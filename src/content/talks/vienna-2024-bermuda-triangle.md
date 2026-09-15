@@ -1,7 +1,7 @@
 ---
-title: "Vulnerabilities in WordPress, the Bermuda Triangle"
-event: "WordCamp Vienna 2024"
-location: "Vienna, Austria"
+title: 'Vulnerabilities in WordPress, the Bermuda Triangle'
+event: 'WordCamp Vienna 2024'
+location: 'Vienna, Austria'
 date: 2024-04-06
 language: en
 format: conference-talk
@@ -12,5 +12,5 @@ themes:
 featured: true
 draft: false
 slidesUrl: https://assets.nestorangulo.pro/slides/vienna-2024-bermuda-triangle-3e02f125e6.pdf
-summary: "Three forces that keep most WordPress sites permanently exposed — and how to break the cycle."
+summary: 'Three forces that keep most WordPress sites permanently exposed — and how to break the cycle.'
 ---

@@ -1,7 +1,7 @@
 ---
-title: "Pero entonces… ¿Es WordPress seguro o no?"
-event: "WordCamp Spain 2020"
-location: "Online"
+title: 'Pero entonces… ¿Es WordPress seguro o no?'
+event: 'WordCamp Spain 2020'
+location: 'Online'
 date: 2020-05-09
 language: es
 format: conference-talk
@@ -17,7 +17,7 @@ slidesUrlExt: https://2020.spain.wordcamp.org/files/2020/05/07B02_03_EsWordPress
 
 Software made by humans can never be perfect, and never will be. Depending on your case and your risk tolerance, you might consider something a bit over 90% security to be "secure"… or not.
 
-> *English translation, provided for accessibility. This talk was delivered in Spanish; the original abstract is available via the video link above. Translation is best-effort and may contain errors.*
+> _English translation, provided for accessibility. This talk was delivered in Spanish; the original abstract is available via the video link above. Translation is best-effort and may contain errors._
 
 **Original (Español)**
 

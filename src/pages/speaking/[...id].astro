@@ -49,11 +49,11 @@ function formatDate(d: Date): string {
 const FORMAT_LABELS: Record<string, string> = {
   'conference-talk': 'Conference Talk',
   'meetup-talk': 'Meetup Talk',
-  'panel': 'Panel',
-  'podcast': 'Podcast',
-  'webinar': 'Webinar',
-  'ama': 'AMA',
-  'workshop': 'Workshop',
+  panel: 'Panel',
+  podcast: 'Podcast',
+  webinar: 'Webinar',
+  ama: 'AMA',
+  workshop: 'Workshop',
 };
 ---
 
@@ -67,10 +67,11 @@ const FORMAT_LABELS: Record<string, string> = {
     is:inline
     type="application/ld+json"
     set:html={JSON.stringify(schema)}
-  />
-
+  ></script>
   <div class="container">
-    <a href="/speaking/" class="talk-back">← Back to speaking</a>
+    <a href="/speaking/" class="talk-back">
+      ← Back to speaking
+    </a>
 
     <!-- ── Talk header ───────────────────────────────────────── -->
     <header class="talk-detail-header">
@@ -84,34 +85,43 @@ const FORMAT_LABELS: Record<string, string> = {
       </div>
 
       <ul class="talk-themes" aria-label="Themes">
-        {themes.map((theme) => <li class="theme-tag">{theme}</li>)}
+        {themes.map((theme) => (
+          <li class="theme-tag">{theme}</li>
+        ))}
       </ul>
 
-      {
-        (videoUrl || slidesUrl || slidesUrlExt || eventUrl) && (
-          <div class="talk-detail-actions">
-            {videoUrl && (
-              <a class="talk-btn" href={videoUrl} target="_blank" rel="noopener noreferrer">
-                Watch video ↗
-              </a>
-            )}
-            {(slidesUrl || slidesUrlExt) && (
-              <a class="talk-btn" href={slidesUrl ?? slidesUrlExt} target="_blank" rel="noopener noreferrer">
-                View slides ↗
-              </a>
-            )}
-            {eventUrl && (
-              <a class="talk-btn" href={eventUrl} target="_blank" rel="noopener noreferrer">
-                View event ↗
-              </a>
-            )}
-          </div>
-        )
-      }
+      {(videoUrl || slidesUrl || slidesUrlExt || eventUrl) && (
+        <div class="talk-detail-actions">
+          {videoUrl && (
+            <a class="talk-btn" href={videoUrl} target="_blank" rel="noopener noreferrer">
+              Watch video ↗
+            </a>
+          )}
+          {(slidesUrl || slidesUrlExt) && (
+            <a
+              class="talk-btn"
+              href={slidesUrl ?? slidesUrlExt}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View slides ↗
+            </a>
+          )}
+          {eventUrl && (
+            <a class="talk-btn" href={eventUrl} target="_blank" rel="noopener noreferrer">
+              View event ↗
+            </a>
+          )}
+        </div>
+      )}
 
       {slidesUrl && slidesUrlExt && (
         <p class="talk-provenance-note">
-          Slides also available on the <a href={slidesUrlExt} target="_blank" rel="noopener noreferrer">event site ↗</a>.
+          Slides also available on the{' '}
+          <a href={slidesUrlExt} target="_blank" rel="noopener noreferrer">
+            event site ↗
+          </a>
+          .
         </p>
       )}
 

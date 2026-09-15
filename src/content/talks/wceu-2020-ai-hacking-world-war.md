@@ -1,7 +1,7 @@
 ---
-title: "AI in the Hacking world war"
-event: "WordCamp Europe 2020"
-location: "Online"
+title: 'AI in the Hacking world war'
+event: 'WordCamp Europe 2020'
+location: 'Online'
 date: 2020-06-05
 language: en
 format: conference-talk
@@ -9,7 +9,7 @@ themes:
   - AI Security
   - Vulnerability Intelligence
   - WordPress Security
-summary: "Inside the mind of a cyberterrorist: how AI, net spiders and one-click tools crawl the web to hack vulnerable sites at scale."
+summary: 'Inside the mind of a cyberterrorist: how AI, net spiders and one-click tools crawl the web to hack vulnerable sites at scale.'
 featured: false
 slidesUrl: https://assets.nestorangulo.pro/slides/wceu-2020-ai-hacking-world-war-0dcd53e8b8.pdf
 videoUrl: https://wordpress.tv/2020/06/21/nestor-angulo-de-ugarte-ai-in-the-hacking-world-war/

@@ -1,7 +1,7 @@
 ---
-title: "AI in the hacking world war"
-event: "WordCamp Greece 2021"
-location: "Greece"
+title: 'AI in the hacking world war'
+event: 'WordCamp Greece 2021'
+location: 'Greece'
 date: 2021-04-17 # ⚠
 language: en
 format: conference-talk
@@ -9,7 +9,7 @@ themes:
   - AI Security
   - Vulnerability Intelligence
   - WordPress Security
-summary: "How attackers use AI to find vulnerable WordPress sites and recruit them into cyberterrorist botnets."
+summary: 'How attackers use AI to find vulnerable WordPress sites and recruit them into cyberterrorist botnets.'
 featured: false
 slidesUrl: https://assets.nestorangulo.pro/slides/greece-2021-ai-hacking-world-war-ea85db05bc.pdf
 videoUrl: https://wordpress.tv/2022/06/23/nestor-angulo-ai-in-the-hacking-world-war/

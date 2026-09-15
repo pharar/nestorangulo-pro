@@ -22,7 +22,7 @@ Two reasons, and both matter:
    trying `slides/wordcamp-madrid-2019.pdf` and friends. The bucket has no listing.
 2. **Safe immutable caching.** Because the key changes whenever the bytes change, the
    object can be served with a one-year immutable cache with no risk of a stale copy.
-   Re-uploading a corrected deck produces a *new* key; update `slidesUrl` in the talk
+   Re-uploading a corrected deck produces a _new_ key; update `slidesUrl` in the talk
    card and the old object can be deleted at leisure.
 
 Never overwrite an existing key with different bytes — that is the one thing the

@@ -58,4 +58,6 @@ const ogDesc = metaDescription(ogDescription);
 <meta name="twitter:image" content={ogImage} />
 
 <!-- Person structured data (homepage and /about) -->
-{person && <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />}
+{person && (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)}></script>
+)}

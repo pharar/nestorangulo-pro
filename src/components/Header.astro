@@ -20,13 +20,14 @@ function isActive(href: string): boolean {
 ---
 
 <!-- Skip-to-content: visually hidden until keyboard-focused -->
-<a href="#main-content" class="skip-link">Skip to content</a>
+<a href="#main-content" class="skip-link">
+  Skip to content
+</a>
 
 <header class="site-header">
   <div class="container container--wide">
     <a href="/" class="site-logo" aria-label="Nestor Angulo de Ugarte — home">
-      {
-        /*
+      {/*
           The logos are inlined rather than <img src>, so the dark strokes can
           follow `currentColor` and flip with the theme. `.site-logo` sets
           `color: var(--clr-text)`, so they theme themselves; the #c08c50 gold is
@@ -34,8 +35,7 @@ function isActive(href: string): boolean {
 
           Source of truth remains public/images/*.svg (favicon + OG generation
           still read them). If you edit the mark there, mirror it here.
-        */
-      }
+        */}
       <svg
         class="site-logo-imagotipo"
         viewBox="0 0 950 175"
@@ -68,7 +68,8 @@ function isActive(href: string): boolean {
           stroke="currentColor"
           stroke-opacity="0.3"
           stroke-width="1"
-          stroke-linecap="square"></line>
+          stroke-linecap="square"
+        ></line>
 
         <text
           font-family="Montserrat, 'Helvetica Neue', Arial, sans-serif"
@@ -76,7 +77,10 @@ function isActive(href: string): boolean {
           font-size="78"
           y="118"
         >
-          <tspan x="208" fill="currentColor">nestorangulo</tspan><tspan fill="#c08c50">.pro</tspan>
+          <tspan x="208" fill="currentColor">
+            nestorangulo
+          </tspan>
+          <tspan fill="#c08c50">.pro</tspan>
         </text>
       </svg>
 
@@ -84,15 +88,13 @@ function isActive(href: string): boolean {
     </a>
     <nav aria-label="Main navigation">
       <ul class="site-nav">
-        {
-          navItems.map(({ href, label }) => (
-            <li>
-              <a href={href} aria-current={isActive(href) ? 'page' : undefined}>
-                {label}
-              </a>
-            </li>
-          ))
-        }
+        {navItems.map(({ href, label }) => (
+          <li>
+            <a href={href} aria-current={isActive(href) ? 'page' : undefined}>
+              {label}
+            </a>
+          </li>
+        ))}
         <li class="site-nav-toggle">
           <ThemeToggle />
         </li>

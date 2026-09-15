@@ -1,7 +1,7 @@
 ---
-title: "The strange case of malicious favicons"
-event: "WordCamp Geneva 2022"
-location: "Geneva, Switzerland"
+title: 'The strange case of malicious favicons'
+event: 'WordCamp Geneva 2022'
+location: 'Geneva, Switzerland'
 date: 2022-04-08 # ⚠
 language: en
 format: conference-talk
@@ -9,7 +9,7 @@ themes:
   - Malware
   - Web Security
   - WordPress Security
-summary: "A forensic walk-through of how a favicon can turn a site into a zombie botnet node."
+summary: 'A forensic walk-through of how a favicon can turn a site into a zombie botnet node.'
 featured: false
 videoUrl: https://wordpress.tv/2022/05/25/nestor-angulo-de-ugarte-the-strange-case-of-malicious-favicons/
 slidesUrl: https://assets.nestorangulo.pro/slides/geneva-2022-malicious-favicons-526e4074e8.pdf

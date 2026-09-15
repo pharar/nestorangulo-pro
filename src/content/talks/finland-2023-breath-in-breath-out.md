@@ -1,7 +1,7 @@
 ---
-title: "Breath in, breath out… The Checklist to recover your site and reputation after a hack"
-event: "WordCamp Finland 2023"
-location: "Finland"
+title: 'Breath in, breath out… The Checklist to recover your site and reputation after a hack'
+event: 'WordCamp Finland 2023'
+location: 'Finland'
 date: 2023-11-03 # ⚠
 language: en
 format: conference-talk
@@ -9,7 +9,7 @@ themes:
   - Incident Response
   - Web Security
   - WordPress Security
-summary: "Incident response as a calm, step-by-step checklist to recover a hacked site and its reputation."
+summary: 'Incident response as a calm, step-by-step checklist to recover a hacked site and its reputation.'
 featured: false
 slidesUrl: https://assets.nestorangulo.pro/slides/finland-2023-breath-in-breath-out-8f3bcac81f.pdf
 videoUrl: https://wordpress.tv/2024/08/11/breath-in-breath-out-the-checklist-to-recover-your-site-and-reputation-after-a-hack/

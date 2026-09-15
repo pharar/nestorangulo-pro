@@ -36,7 +36,7 @@ const talks = defineCollection({
           'Industrial Cybersecurity',
           'AI Security',
           'Security Awareness',
-        ]),
+        ])
       ),
       featured: z.boolean().default(false),
       draft: z.boolean().default(false),

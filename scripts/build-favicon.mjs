@@ -4,7 +4,7 @@ import sharp from 'sharp';
 // Replace the slightly-off-white background with the exact site cream
 const svgSrc = readFileSync('public/images/isotipo-nestorangulo-pro.svg', 'utf8').replace(
   /#fbfafb/gi,
-  '#FAF9F7',
+  '#FAF9F7'
 );
 
 async function rasterize(size) {
