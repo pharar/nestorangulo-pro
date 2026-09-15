@@ -15,6 +15,23 @@ permissions:
   contents: read
 
 jobs:
+  # Deliberately independent of the other jobs: formatting says nothing about
+  # whether the site builds, and a misplaced comma shouldn't hide a real failure
+  # behind a skipped build. Added after the repo-wide reformat that made it pass
+  # — before that it had been failing on 58 files with nothing enforcing it.
+  format:
+    name: Format check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+
   typecheck:
     name: Type check
     runs-on: ubuntu-latest
