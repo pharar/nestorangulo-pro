@@ -49,11 +49,11 @@
     "astro": "^7.3.2"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
-    "playwright": "^1.63.0",
-    "prettier": "^3.9.6",
-    "prettier-plugin-astro": "^1.0.0",
-    "sharp": "^0.35.3",
+    "@astrojs/check": "^0.9.12",
+    "playwright": "^1.64.1",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.2",
+    "sharp": "^0.35.5",
     "typescript": "^6.0.3"
   },
   "overrides": {
