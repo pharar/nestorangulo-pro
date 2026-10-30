@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import heroImage from '../images/home-hero.jpg';
 import { getPublishedTalks, talkCountRounded } from '../lib/talks';
 
 const TALK_COUNT = (await getPublishedTalks()).length;
@@ -10,7 +12,13 @@ const TALK_COUNT_ROUNDED = talkCountRounded(TALK_COUNT);
   <!-- ── Hero ──────────────────────────────────────────────── -->
   <section class="hero" aria-labelledby="hero-headline">
     <div class="container">
-      <p class="hero-eyebrow">Nestor Angulo de Ugarte &middot; Head of Security &middot; CISSP</p>
+      <p class="hero-eyebrow">
+        <span class="hero-eyebrow-name">Nestor Angulo de Ugarte</span>
+        <span class="hero-eyebrow-sep" aria-hidden="true">
+          &middot;
+        </span>
+        <span class="hero-eyebrow-role">Head of Security &middot; CISSP</span>
+      </p>
       <h1 class="hero-headline title-decorated" id="hero-headline">
         Building security programs from zero
         <span class="caret" aria-hidden="true">
@@ -20,6 +28,19 @@ const TALK_COUNT_ROUNDED = talkCountRounded(TALK_COUNT);
       <p class="hero-tagline">
         Builder of programs.&ensp;Operator at incident scale.&ensp;Strategist at the exec table.
       </p>
+    </div>
+    <div class="container container--wide">
+      <figure class="hero-figure">
+        <Image
+          src={heroImage}
+          alt="Close-up of a katana's hand guard and wrapped grip, lit from the side."
+          widths={[800, 1200, 1800, 2400]}
+          sizes="(max-width: 1080px) 100vw, 1080px"
+          loading="eager"
+          fetchpriority="high"
+          class="hero-img"
+        />
+      </figure>
     </div>
   </section>
 
