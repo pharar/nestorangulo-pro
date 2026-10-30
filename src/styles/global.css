@@ -1388,3 +1388,134 @@ a:hover {
 .talk-detail-body p:last-child {
   margin-bottom: 0;
 }
+
+/* ── Writing: listing ────────────────────────────────────────── */
+.essay-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--sp-20);
+}
+
+.essay-item {
+  padding-block: var(--sp-6);
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.essay-item:first-child {
+  padding-top: 0;
+}
+
+.essay-card-link {
+  display: block;
+  margin-bottom: var(--sp-5);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--clr-border);
+}
+
+.essay-card-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform var(--ease);
+}
+
+.essay-card-link:hover .essay-card-img {
+  transform: scale(1.01);
+}
+
+.essay-item-subtitle {
+  font-size: var(--text-base);
+  color: var(--clr-text);
+  line-height: var(--leading-snug);
+  margin-bottom: var(--sp-2);
+}
+
+.essay-item-summary {
+  font-size: var(--text-sm);
+  color: var(--clr-muted);
+  line-height: var(--leading-base);
+  margin-bottom: var(--sp-3);
+  max-width: 62ch;
+}
+
+/* ── Writing: essay page ─────────────────────────────────────── */
+.essay-subtitle {
+  font-size: var(--text-lg);
+  color: var(--clr-muted);
+  line-height: var(--leading-snug);
+  margin-top: calc(-1 * var(--sp-3));
+  margin-bottom: var(--sp-5);
+  max-width: 52ch;
+}
+
+.essay-cover {
+  margin: 0 0 var(--sp-10);
+}
+
+.essay-cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.essay-body h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  line-height: var(--leading-snug);
+  margin-top: var(--sp-12);
+  margin-bottom: var(--sp-4);
+}
+
+.essay-body h2:first-child {
+  margin-top: 0;
+}
+
+.essay-body p {
+  font-size: var(--text-lg);
+  line-height: var(--leading-loose);
+}
+
+.essay-body ul {
+  margin: 0 0 var(--sp-6) var(--sp-5);
+  padding: 0;
+}
+
+.essay-body li {
+  font-size: var(--text-lg);
+  line-height: var(--leading-base);
+  margin-bottom: var(--sp-3);
+  padding-left: var(--sp-2);
+}
+
+.essay-body li::marker {
+  color: var(--clr-accent);
+}
+
+.essay-body strong {
+  font-weight: 600;
+}
+
+.essay-body a {
+  color: var(--clr-accent-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.essay-body a:hover {
+  color: var(--clr-accent);
+}
+
+/* Inline figures authored in Markdown come out as <p><img></p>. */
+.essay-body p:has(> img:only-child) {
+  margin-block: var(--sp-10);
+}
+
+.essay-body img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

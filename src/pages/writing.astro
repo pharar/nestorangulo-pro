@@ -1,11 +1,31 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { writingListSchema } from '../lib/writingSchema';
+
+const essays = (await getCollection('writing'))
+  .filter((e) => !e.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const listSchema = writingListSchema(essays);
+
+function isoDate(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
 ---
 
 <BaseLayout
   title="Writing — Nestor Angulo de Ugarte"
   description="Essays on security program design, vulnerability intelligence, incident response, and organizational security practice."
 >
+  {essays.length > 0 && (
+    <script
+      slot="head"
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(listSchema)}
+    ></script>
+  )}
   <div class="container">
     <div class="page-header">
       <h1>Writing</h1>
@@ -13,11 +33,56 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         Essays on security program design, vulnerability intelligence, and operational practice.
       </p>
     </div>
-    <div class="placeholder">
-      <p class="placeholder-status">Coming next.</p>
-      <a href="/" class="back-link">
-        ← Back to home
-      </a>
-    </div>
+
+    {essays.length === 0 ? (
+      <div class="placeholder">
+        <p class="placeholder-status">Coming next.</p>
+        <a href="/" class="back-link">
+          ← Back to home
+        </a>
+      </div>
+    ) : (
+      <ul class="essay-list">
+        {essays.map((essay) => (
+          <li class="essay-item">
+            {essay.data.ogImage && (
+              <a
+                href={`/writing/${essay.id}/`}
+                class="essay-card-link"
+                aria-hidden="true"
+                tabindex="-1"
+              >
+                <img
+                  src={essay.data.ogImage}
+                  alt=""
+                  width="1200"
+                  height="630"
+                  loading="lazy"
+                  decoding="async"
+                  class="essay-card-img"
+                />
+              </a>
+            )}
+            <div class="talk-top">
+              <a href={`/writing/${essay.id}/`} class="talk-title-link">
+                {essay.data.title}
+              </a>
+              <time class="talk-date" datetime={essay.data.date.toISOString()}>
+                {isoDate(essay.data.date)}
+              </time>
+            </div>
+            {essay.data.subtitle && <p class="essay-item-subtitle">{essay.data.subtitle}</p>}
+            <p class="essay-item-summary">{essay.data.summary}</p>
+            {essay.data.themes.length > 0 && (
+              <ul class="talk-themes" aria-label="Themes">
+                {essay.data.themes.map((theme) => (
+                  <li class="theme-tag">{theme}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    )}
   </div>
 </BaseLayout>

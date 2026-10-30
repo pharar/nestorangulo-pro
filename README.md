@@ -46,20 +46,22 @@ them.
 │   ├── components/            — SEO, Header, Footer, Credentials, Press,
 │   │                            Publications, Service
 │   ├── content/talks/         — Talk entries (Markdown, one file per talk)
-│   ├── content.config.ts      — `talks` collection schema (Zod)
+│   ├── content/writing/       — Essays (Markdown, one file per essay)
+│   ├── content.config.ts      — `talks` and `writing` collection schemas (Zod)
 │   ├── config.ts              — Site constants: URL, author, sameAs profiles
 │   ├── data/                  — credentials.ts, publications.ts, service.ts
 │   ├── images/                — Images processed by Astro's asset pipeline
 │   ├── layouts/               — BaseLayout
 │   ├── lib/                   — person.ts, talks.ts (structured data + helpers)
 │   ├── pages/                 — index, about, speaking, speaking/[...id],
-│   │                            writing, contact, 404
+│   │                            writing, writing/[...id], contact, 404
 │   └── styles/                — tokens.css (design system), global.css
 ├── public/                    — Copied verbatim into dist/
 │   ├── _headers               — Security headers (Cloudflare Pages)
 │   ├── _redirects             — /talks → /speaking 301s (Cloudflare Pages)
 │   ├── .well-known/security.txt
 │   ├── robots.txt             — Points at the generated sitemap
+│   ├── og/                    — Per-essay social cards (generated, committed)
 │   └── favicon / OG images
 ├── astro.config.mjs           — site, static output, sitemap, CSP
 ├── lighthouserc.json
@@ -74,6 +76,12 @@ against the schema in `src/content.config.ts`. Each entry requires `title`, `eve
 the build. Adding a talk means adding a Markdown file — no code change.
 
 `/speaking` lists them; `/speaking/[...id]` renders each one.
+
+Essays work the same way: `src/content/writing/*.md`, schema in the same file, `draft: true`
+to hold one back. `/writing` lists them; `/writing/[...id]` renders each one. Figures live in
+`src/images/writing/` and are referenced relatively from the Markdown so Astro processes them.
+A per-essay social card lives at `public/og/<slug>.png` (1200×630, committed like the other
+generated assets) and is declared in the essay's `ogImage` frontmatter.
 
 ## Security & SEO
 
