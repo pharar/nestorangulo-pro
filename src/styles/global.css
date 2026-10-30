@@ -253,7 +253,7 @@ a:hover {
 
 /* ── Footer ──────────────────────────────────────────────────── */
 .site-footer {
-  margin-top: var(--sp-24);
+  margin-top: var(--sp-10);
   padding-block: var(--sp-8);
   border-top: 1px solid var(--clr-border);
 }
@@ -308,8 +308,29 @@ a:hover {
 
 /* ── Hero ────────────────────────────────────────────────────── */
 .hero {
-  padding-top: var(--sp-20);
-  padding-bottom: var(--sp-16);
+  padding-top: var(--sp-16);
+  padding-bottom: var(--sp-12);
+}
+
+.hero-figure {
+  margin: var(--sp-12) 0 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 2.4 / 1;
+}
+
+.hero-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 640px) {
+  .hero-figure {
+    aspect-ratio: 16 / 10;
+    margin-top: var(--sp-8);
+  }
 }
 
 .hero-eyebrow {
@@ -319,6 +340,27 @@ a:hover {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: var(--sp-4);
+}
+
+/* Name on one line, role on the next when the eyebrow would wrap mid-role. */
+.hero-eyebrow-name,
+.hero-eyebrow-role {
+  white-space: nowrap;
+}
+
+.hero-eyebrow-sep {
+  margin-inline: 0.6em;
+}
+
+@media (max-width: 640px) {
+  .hero-eyebrow-sep {
+    display: none;
+  }
+
+  .hero-eyebrow-role {
+    display: block;
+    margin-top: var(--sp-1);
+  }
 }
 
 .hero-headline {
@@ -371,7 +413,7 @@ a:hover {
 
 /* ── Manifesto ───────────────────────────────────────────────── */
 .manifesto {
-  padding-block: var(--sp-16);
+  padding-block: var(--sp-12);
   border-top: 1px solid var(--clr-border);
 }
 
@@ -399,8 +441,27 @@ a:hover {
 
 /* ── Section cards ───────────────────────────────────────────── */
 .section-cards {
-  padding-block: var(--sp-16);
+  padding-block: var(--sp-12) var(--sp-8);
   border-top: 1px solid var(--clr-border);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-top: var(--sp-10);
+    padding-bottom: var(--sp-8);
+  }
+
+  .manifesto {
+    padding-block: var(--sp-8);
+  }
+
+  .section-cards {
+    padding-block: var(--sp-8) var(--sp-6);
+  }
+
+  .site-footer {
+    margin-top: var(--sp-6);
+  }
 }
 
 .cards-grid {
@@ -1507,6 +1568,72 @@ a:hover {
 
 .essay-body a:hover {
   color: var(--clr-accent);
+}
+
+/* Footnotes (GFM). remark renders <section class="footnotes"> with an
+   sr-only heading; we show it as a small "Notes" rule instead. */
+.essay-body .footnotes {
+  margin-top: var(--sp-16);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--clr-border);
+}
+
+.essay-body .footnotes h2 {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 var(--sp-4);
+  clip: auto;
+  overflow: visible;
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--clr-subtle);
+  /* The generated text says "Footnotes"; show "Notes" instead. */
+  font-size: 0;
+}
+
+.essay-body .footnotes h2::before {
+  content: 'Notes';
+  font-size: var(--text-xs);
+}
+
+.essay-body .footnotes ol {
+  margin: 0 0 0 var(--sp-5);
+  padding: 0;
+}
+
+.essay-body .footnotes li {
+  font-size: var(--text-sm);
+  line-height: var(--leading-base);
+  color: var(--clr-muted);
+  margin-bottom: var(--sp-2);
+  padding-left: var(--sp-1);
+}
+
+.essay-body .footnotes li::marker {
+  color: var(--clr-subtle);
+}
+
+.essay-body .footnotes p {
+  display: inline;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.essay-body sup a {
+  font-family: var(--font-mono);
+  font-size: 0.7em;
+  text-decoration: none;
+  color: var(--clr-accent-text);
+  padding-inline: 0.15em;
+}
+
+.essay-body a[data-footnote-backref] {
+  text-decoration: none;
+  margin-left: 0.3em;
 }
 
 /* Inline figures authored in Markdown come out as <p><img></p>. */

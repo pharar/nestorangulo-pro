@@ -20,13 +20,13 @@ There is a question I get asked a lot, usually by people who know I have been do
 
 is the world less safe now, with AI?
 
-My answer hasn't changed. AI is a tool, and attackers and defenders use exactly the same one. It's like those mecha films: a giant monster shows up to flatten a city, and there is always a giant robot, the same size, that fights it. Same tool, same capabilities on both sides. What makes the difference is the pilot. I call it the AI conundrum.
+My answer hasn't changed. AI is a tool, and attackers and defenders use exactly the same one. It's like those mecha films: a giant monster shows up to flatten a city, and there is always a giant robot, the same size, that fights it. Same tool, same capabilities on both sides. What makes the difference is the pilot. I call it the AI conundrum.[^1]
 
 Leave aside the new attack surface, the models and the AI systems themselves, which is a real but separate problem. The attacks come from the same places and work the same way they always did: a phishing email, a reused password, an unpatched library, a forgotten server. What changed is who carries them out. A machine, not a person, and at the speed a machine runs. Everything is as it was before AI, only at the speed of light.
 
 ## Discovery got cheap
 
-At my last company we built a tool that found vulnerabilities in WordPress plugins. Not triage. Discovery. It matched code against a corpus of vulnerabilities and proofs of concept we already had, and a human checked every hit, because the false positives came back confident, well written... and impossible to reproduce. It worked, sort of. It found real bugs.
+At my last company we built a tool that found vulnerabilities in WordPress plugins. Not triage. Discovery. It matched code against a corpus of vulnerabilities and proofs of concept we already had, and a human checked every hit, because the false positives came back confident, well written... and impossible to reproduce. It worked, sort of. It found real bugs.[^2]
 
 The lesson I took from it wasn't about the tool. It was simpler: if a team of three people could build that, so can anyone with a similar corpus and a free weekend. And most likely some of them are not on your side.
 
@@ -63,7 +63,7 @@ Notice what the regulation asks for. Not perfect code.
 
 To notice, and to say so, on a clock.
 
-This is where SBOMs stop being a compliance deliverable. Most SBOMs I have seen are generated from a package manifest, which means they list what the developer declared, not what the build contains. At the CloudFest Hackathon last year we built a CMS-agnostic SBOM tool precisely because the manifest readers missed the includes and the vendored and bundled code, which is where the old bugs live.
+This is where SBOMs stop being a compliance deliverable.[^3] Most SBOMs I have seen are generated from a package manifest, which means they list what the developer declared, not what the build contains. At the CloudFest Hackathon last year we built a CMS-agnostic SBOM tool precisely because the manifest readers missed the includes and the vendored and bundled code, which is where the old bugs live.
 
 The useful question about an SBOM is not "do we have one". It's: when the next Log4j drops, can someone answer within the hour which of our products ship it and which customers run which version. If the answer is a PDF in a shared drive, you have a document, not a capability.
 
@@ -78,3 +78,9 @@ That makes vulnerability response a feature of the product. It is visible, it is
 Nobody will ask you whether your code is perfect. They will ask what you do when it isn't, and they will check the clock.
 
 The robot is the same size on both sides. What they should be looking at is the pilot: whoever owns the response, and the decisions, once that clock starts.
+
+[^1]: The same argument, before the current wave of models: [AI in the Hacking world war](/speaking/wceu-2020-ai-hacking-world-war/), WordCamp Europe 2020.
+
+[^2]: The full account of that tool, including what it never managed to do: [We Built an AI That Finds Vulnerabilities in Plugins. So Can Everyone Else.](/speaking/kozhikode-2026-ai-finds-vulnerabilities/), WP Future Conclave, September 2026. This essay is its written version.
+
+[^3]: The lifecycle from bug to patch, with the CRA in the background: [De la Plantà a la Cremà](/speaking/valencia-meetup-2025-ciclo-vida-vulnerabilidades/), WordPress Meetup Valencia, April 2025 (in Spanish).
