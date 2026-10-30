@@ -1,6 +1,6 @@
 ---
 title: 'The response is the product now'
-subtitle: 'Finding vulnerabilities got cheap. What customers are buying is what happens next, and how fast.'
+subtitle: 'Finding vulnerabilities got cheap. What customers should be looking at now is what happens next, and how fast.'
 date: 2026-10-30
 summary: 'AI made finding bugs cheap for everyone at once. What did not get cheap is responding: knowing what you ship, having a door for reports, getting the fix to the people running your code. Since September the Cyber Resilience Act puts that on a clock.'
 language: en
@@ -77,4 +77,4 @@ That makes vulnerability response a feature of the product. It is visible, it is
 
 Nobody will ask you whether your code is perfect. They will ask what you do when it isn't, and they will check the clock.
 
-The robot is the same size on both sides. What they are buying is the pilot: whoever owns the response, and the decisions, once that clock starts.
+The robot is the same size on both sides. What they should be looking at is the pilot: whoever owns the response, and the decisions, once that clock starts.
