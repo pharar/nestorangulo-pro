@@ -9,8 +9,8 @@ themes:
   - Software Supply Chain
   - AI Security
   - Security Leadership
-cover: ../../images/writing/ai-conundrum.svg
-coverAlt: 'Two identical silhouettes face each other across a skyline. The one on the right carries a small gold mark at its head, labelled "the pilot".'
+cover: ../../images/writing/ai-conundrum-robots.jpg
+coverAlt: 'Two identical fighting robots, one red and one white, squaring up to each other with fists raised.'
 ogImage: /og/the-response-is-the-product-now.png
 ---
 
@@ -72,6 +72,8 @@ The useful question about an SBOM is not "do we have one". It's: when the next L
 Customers used to buy software and assume it was secure, or ask for a pentest report once a year. Now the questionnaire arrives before the contract, and the question underneath it is not "have you found all your bugs". Nobody has. It is: when something is found, what happens, and how fast. And the questionnaire isn't curiosity either. It is liability moving down the chain, which deserves a piece of its own.
 
 That makes vulnerability response a feature of the product. It is visible, it is comparable across vendors, and from this autumn it runs on a regulatory clock. The teams that treat it as a side job of the security person will lose deals to the teams that treat it as part of what they sell.
+
+![A karateka in a white gi delivering a high kick, backlit against a dark dojo floor.](../../images/writing/the-pilot.jpg)
 
 Nobody will ask you whether your code is perfect. They will ask what you do when it isn't, and they will check the clock.
 

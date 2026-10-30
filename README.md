@@ -80,9 +80,8 @@ the build. Adding a talk means adding a Markdown file — no code change.
 Essays work the same way: `src/content/writing/*.md`, schema in the same file, `draft: true`
 to hold one back. `/writing` lists them; `/writing/[...id]` renders each one. Figures live in
 `src/images/writing/` and are referenced relatively from the Markdown so Astro processes them.
-A per-essay social card is rendered from `assets/og/writing/<slug>.svg` with
-`node scripts/build-og-writing.mjs <slug>` into `public/og/<slug>.png` (committed, like the
-other generated assets) and declared in the essay's `ogImage` frontmatter.
+A per-essay social card lives at `public/og/<slug>.png` (1200×630, committed like the other
+generated assets) and is declared in the essay's `ogImage` frontmatter.
 
 ## Security & SEO
 
