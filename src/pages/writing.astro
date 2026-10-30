@@ -45,6 +45,24 @@ function isoDate(d: Date): string {
       <ul class="essay-list">
         {essays.map((essay) => (
           <li class="essay-item">
+            {essay.data.ogImage && (
+              <a
+                href={`/writing/${essay.id}/`}
+                class="essay-card-link"
+                aria-hidden="true"
+                tabindex="-1"
+              >
+                <img
+                  src={essay.data.ogImage}
+                  alt=""
+                  width="1200"
+                  height="630"
+                  loading="lazy"
+                  decoding="async"
+                  class="essay-card-img"
+                />
+              </a>
+            )}
             <div class="talk-top">
               <a href={`/writing/${essay.id}/`} class="talk-title-link">
                 {essay.data.title}

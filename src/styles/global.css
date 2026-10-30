@@ -1405,6 +1405,25 @@ a:hover {
   padding-top: 0;
 }
 
+.essay-card-link {
+  display: block;
+  margin-bottom: var(--sp-5);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--clr-border);
+}
+
+.essay-card-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform var(--ease);
+}
+
+.essay-card-link:hover .essay-card-img {
+  transform: scale(1.01);
+}
+
 .essay-item-subtitle {
   font-size: var(--text-base);
   color: var(--clr-text);
