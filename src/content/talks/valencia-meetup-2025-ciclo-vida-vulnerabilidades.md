@@ -11,7 +11,7 @@ themes:
   - Software Supply Chain
   - GRC
 summary: 'The life cycle of a WordPress vulnerability, from bug to patch, with a nod to the Fallas and the new European regulation (CRA).'
-featured: true
+featured: false
 slidesUrl: https://assets.nestorangulo.pro/slides/valencia-meetup-2025-ciclo-vida-vulnerabilidades-c987b09341.pdf
 videoUrl: https://wordpress.tv/2025/04/01/de-la-planta-a-la-crema-el-ciclo-de-vida-de-vulnerabilidades-de-wordpress/
 ---
