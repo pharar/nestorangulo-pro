@@ -4,10 +4,11 @@
  *
  * The Zod schema in `src/content.config.ts` knows the *shape* of a card — a
  * `summary` is a string, a `cover` is an image. It cannot know what the rest of
- * the site assumes about it: that a published talk has a blurb to show, that the
- * featured shelf holds six, that a slides URL names the file it was built from,
- * that an essay's social card really is 1200×630. Each of those breaks quietly
- * (a blank card, a seventh talk silently cut, a slide link that 404s) and the
+ * the site assumes about it: that a published talk has a blurb to show and a
+ * Spanish overlay, that the featured shelf holds six, that a slides URL names the
+ * file it was built from, that an essay's social card really is 1200×630. Each of
+ * those breaks quietly (a blank card, a talk left out of the Spanish sitemap, a
+ * seventh talk silently cut, a slide link that 404s) and the
  * build, the type check and Lighthouse all stay green.
  *
  * Reads `src/content/` and `public/` directly — no build needed, so it runs
@@ -46,6 +47,8 @@ function entries(collection) {
 
 const talks = entries('talks');
 const writing = entries('writing');
+/** Spanish overlays of the talks, by file stem (documentation/I18N.md). */
+const talkOverlays = new Map(entries('talks-es').map((e) => [e.stem, e]));
 const all = [...talks, ...writing];
 
 const failures = [];
@@ -121,6 +124,27 @@ check(
   talks
     .filter((e) => !e.data.draft && blank(e.data.summary))
     .map((e) => `${where(e)}: empty summary`)
+);
+
+// The Spanish page of a talk is its `talks-es/` overlay. Without one, /es/ still
+// renders the talk, in English, while links, hreflang and the sitemap treat it as
+// untranslated, so check:i18n fails after the build with a sitemap error. Caught
+// here from the sources, naming the file to write. An overlay body may be empty
+// only when the English card has none: an empty body replaces the English one.
+check(
+  'published talks have a talks-es/ overlay with a summary, and a body if the card has one',
+  talks
+    .filter((e) => !e.data.draft)
+    .flatMap((e) => {
+      const o = talkOverlays.get(e.stem);
+      if (!o) return [`${where(e)}: no talks-es/${e.stem}.md (see the i18n skill)`];
+      const problems = [];
+      if (blank(o.data.summary)) problems.push(`${where(o)}: empty summary`);
+      if (!blank(e.body) && blank(o.body)) {
+        problems.push(`${where(o)}: empty body, but ${where(e)} has one`);
+      }
+      return problems;
+    })
 );
 
 const featured = talks.filter((e) => e.data.featured && !e.data.draft);

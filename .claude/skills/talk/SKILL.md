@@ -62,11 +62,14 @@ conference, `webinar-<host>-<topic>` for a webinar.
 
 Video later: `npm run talk -- video <slug> <url>`.
 
-Spanish talks, as the cards stand on `main`: an English translation of the abstract, the
-standard accessibility blockquote (copy it from `granada-2025-coste-web-hackeada.md`
-rather than retyping it), then `**Original (Español)**` followed by the original. English
-talks carry the abstract only. A Spanish-content overlay is in progress on another
-branch; this step will change when it lands.
+The English card: a talk delivered in Spanish carries an English translation of the
+abstract, the standard accessibility blockquote (copy it from
+`granada-2025-coste-web-hackeada.md` rather than retyping it), then `**Original (Español)**`
+followed by the original. A talk delivered in English carries the abstract only.
+
+The Spanish page: every published talk also needs `src/content/talks-es/<slug>.md`, its
+Spanish overlay. Its shape is the `i18n` skill's (New talk); do not restate it here.
+`check:content` fails on a published talk without one, so write it before un-drafting.
 
 ## 3. The deck
 

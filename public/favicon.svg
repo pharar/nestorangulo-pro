@@ -1,6 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 206 206" role="img" aria-label="Nestor Angulo de Ugarte">
-  <!-- Background: dark charcoal, slight radius -->
-  <rect width="206" height="206" rx="24" fill="#2a2f32"/>
+  <!--
+    Follows the browser's colour scheme. Light is the default (and what the
+    .ico / apple-touch-icon fallbacks show); dark swaps to the site's dark
+    tokens (clr-bg / clr-text in src/styles/tokens.css). The gold accent is
+    fixed brand colour in both. Note: a favicon can only see the OS/browser
+    preference, never the page's manual theme toggle.
+  -->
+  <style>
+    .bg { fill: #faf9f7; }
+    .mark { fill: #2a2f32; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #1a1815; }
+      .mark { fill: #f0ede8; }
+    }
+  </style>
+
+  <rect class="bg" width="206" height="206" rx="24"/>
 
   <!--
     NR mark: original 186×173 → fit in 174×162 (scale 0.936) centered in 206×206
@@ -10,8 +25,8 @@
   -->
   <g transform="translate(16,22) scale(0.936)">
 
-    <!-- R shape in off-white -->
-    <path fill="#FAF9F6" d="
+    <!-- R shape -->
+    <path class="mark" d="
       M 104.38 94.93
       A 0.49 0.49 0.0 0 1 104.78 94.14
       Q 105.70 94.19 118.25 93.89
@@ -37,8 +52,8 @@
       Z
     "/>
 
-    <!-- N shape in off-white -->
-    <path fill="#FAF9F6" d="
+    <!-- N shape -->
+    <path class="mark" d="
       M 19.38 120.20
       A 0.37 0.37 0.0 0 1 18.74 120.46
       L 7.30 108.43
