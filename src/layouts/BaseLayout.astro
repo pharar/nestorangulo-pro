@@ -3,6 +3,7 @@ import SEO from '../components/SEO.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import type { PageStructuredData } from '../lib/structuredData';
+import { langFromUrl } from '../i18n/utils';
 
 // Fontsource: self-hosted, no external requests
 import '@fontsource-variable/fraunces'; // wght axis, normal
@@ -24,8 +25,18 @@ interface Props {
   canonical?: string | null;
   ogImage?: string;
   person?: boolean;
-  /** Content language of this page. Talk pages pass their own. */
+  /**
+   * Content language of this page (`<html lang>`, og:locale, JSON-LD
+   * inLanguage). Defaults to the route's locale; a Spanish-language talk on
+   * the English route passes its own.
+   */
   lang?: string;
+  /**
+   * Does the equivalent page exist in the other language? Drives hreflang
+   * alternates, og:locale:alternate and where the language switch points.
+   * Pass false for e.g. an essay without a translation, and on the 404.
+   */
+  hasAlternate?: boolean;
   /** Forwarded to SEO.astro: this page's JSON-LD @graph contribution. */
   structuredData?: PageStructuredData;
 }
@@ -36,9 +47,14 @@ const {
   canonical,
   ogImage,
   person = false,
-  lang = 'en',
+  lang: contentLang,
+  hasAlternate = true,
   structuredData,
 } = Astro.props;
+
+// Route locale (chrome language) vs content language (usually the same).
+const locale = langFromUrl(Astro.url);
+const lang = contentLang ?? locale;
 ---
 
 <!doctype html>
@@ -62,15 +78,17 @@ const {
       ogImage={ogImage}
       person={person}
       lang={lang}
+      locale={locale}
+      hasAlternate={hasAlternate && canonical !== null}
       structuredData={structuredData}
     />
     <slot name="head" />
   </head>
   <body>
-    <Header />
+    <Header lang={locale} hasAlternate={hasAlternate && canonical !== null} />
     <main id="main-content">
       <slot />
     </main>
-    <Footer />
+    <Footer lang={locale} />
   </body>
 </html>

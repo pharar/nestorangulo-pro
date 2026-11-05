@@ -9,7 +9,7 @@ themes:
   - Web Security
   - WordPress Security
   - Security Awareness
-summary: 'Versión en español del enfrentamiento estilo videojuego de los 80 contra un atacante: vida, golpes, defensas y combo ganador.'
+summary: 'Spanish-language version of the 80s video game-style fight against an attacker: health, blows, defenses and a winning combo.'
 videoUrl: https://wordpress.tv/2023/01/24/nestor-angulo-round-1-fight-o-como-sobrevivir-al-ataque-de-un-hacker-malicioso/
 slidesUrl: https://assets.nestorangulo.pro/slides/zaragoza-2023-round-1-fight-11bff20d26.pdf
 slidesUrlExt: https://zaragoza.wordcamp.org/2023/files/2023/01/Round-1-FIGHT-O-como-sobrevivir-al-ataque-de-un-hacker-malicioso-Nestor-Angulo.pdf

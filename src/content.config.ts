@@ -64,4 +64,33 @@ const writing = defineCollection({
     }),
 });
 
-export const collections = { talks, writing };
+/**
+ * Spanish overlay for `talks`, matched by id (same filename). Any field left
+ * out falls back to the English entry. The body replaces the English body.
+ */
+const talksEs = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/talks-es' }),
+  schema: z.object({
+    title: z.string().optional(),
+    summary: z.string().optional(),
+    description: z.string().optional(),
+    sourceNote: z.string().optional(),
+  }),
+});
+
+/**
+ * Spanish translation of a `writing` entry with the same id. Dates, themes,
+ * cover, ogImage and draft come from the English entry.
+ */
+const writingEs = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/writing-es' }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string().optional(),
+    summary: z.string(),
+    description: z.string().optional(),
+    coverAlt: z.string().optional(),
+  }),
+});
+
+export const collections = { talks, writing, talksEs, writingEs };

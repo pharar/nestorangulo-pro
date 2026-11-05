@@ -37,6 +37,7 @@
     "check": "astro check",
     "check:urls": "node scripts/check-urls.mjs",
     "check:ai": "node scripts/check-ai-layer.mjs",
+    "check:i18n": "node scripts/check-i18n.mjs",
     "check:csp": "node scripts/check-csp.mjs",
     "check:content": "node scripts/check-content.mjs",
     "format": "prettier --write .",
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@astrojs/markdown-satteri": "^0.4.6",
     "playwright": "^1.64.1",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.2",

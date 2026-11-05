@@ -1,0 +1,274 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TalkItem from './parts/TalkItem.astro';
+import { getLocalizedTalks, type LocalizedTalk } from '../lib/i18nContent';
+import { SPEAKING_LIST_ID, speakingListId, speakingListNode } from '../lib/talkSchema';
+import { SITE_URL } from '../config';
+import { useSpeaking } from '../i18n/ui/speaking';
+import { themeLabel } from '../i18n/ui/themes';
+import { localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
+
+// Speaking listing for every language. src/pages/speaking.astro and
+// src/pages/es/speaking.astro are thin wrappers that pass `lang`; all copy lives
+// in src/i18n/ui/speaking.ts (shared with the Markdown twin).
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useSpeaking(lang);
+
+const talks = (await getLocalizedTalks(lang)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const listNode = speakingListNode(
+  talks.map((x) => x.entry),
+  lang,
+  t('navLabel')
+);
+
+const featured = talks.filter((x) => x.data.featured);
+const rest = talks.filter((x) => !x.data.featured);
+
+const byYear: Record<string, LocalizedTalk[]> = {};
+for (const talk of rest) {
+  const year = String(talk.data.date.getFullYear());
+  if (!byYear[year]) byYear[year] = [];
+  byYear[year].push(talk);
+}
+const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
+
+// Strings for the client-side filter bar, as JSON in a data attribute (the
+// script is a hashed bundle, so it cannot see this frontmatter). Placeholders
+// ({count}, {value}) are filled in the browser. `themes` maps the stored
+// English theme value, which the filter matches on, to its display label.
+const allThemes = [...new Set(talks.flatMap((x) => x.data.themes))];
+const filterLabels = {
+  lang,
+  group: t('filterGroup'),
+  all: t('filterAll'),
+  featured: t('filterFeatured'),
+  countAll: t('countAll'),
+  countFeaturedOne: t('countFeaturedOne'),
+  countFeaturedMany: t('countFeaturedMany'),
+  countYearOne: t('countYearOne'),
+  countYearMany: t('countYearMany'),
+  countThemeOne: t('countThemeOne'),
+  countThemeMany: t('countThemeMany'),
+  themes: Object.fromEntries(allThemes.map((theme) => [theme, themeLabel(theme, lang)])),
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={t('title')}
+  description={t('description', { count: talks.length })}
+  structuredData={{
+    type: 'CollectionPage',
+    breadcrumbs: [{ name: t('navLabel'), url: `${SITE_URL}${localizePath('/speaking/', lang)}` }],
+    mainEntity: lang === 'en' ? SPEAKING_LIST_ID : speakingListId(lang),
+    nodes: [listNode],
+  }}
+>
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="about-hero" aria-labelledby="speaking-h1">
+    <div class="container">
+      <h1 class="about-h1" id="speaking-h1">
+        {t('h1')}
+        <span class="caret" aria-hidden="true">
+          _
+        </span>
+      </h1>
+      <p class="about-tagline">{t('tagline')}</p>
+      <p class="talks-intro">{t('intro', { count: talks.length })}</p>
+      <!-- JS injects the filter bar + count here; no-JS: empty, no space taken -->
+      <div id="talks-filter-bar" data-labels={JSON.stringify(filterLabels)}></div>
+    </div>
+  </section>
+
+  <!-- ── Featured ──────────────────────────────────────────── -->
+  {featured.length > 0 && (
+    <section class="about-section" aria-labelledby="featured-heading" data-talks-section="featured">
+      <div class="container">
+        <h2 class="speaking-section-label talks-featured-heading" id="featured-heading">
+          {t('featured')}
+        </h2>
+        <ul class="talks-featured-list">
+          {featured.map((talk) => (
+            <TalkItem talk={talk} lang={lang} featured />
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- ── Archive by year ───────────────────────────────────── -->
+  {years.length > 0 && (
+    <section class="about-section" aria-labelledby="archive-heading" data-talks-section="archive">
+      <div class="container">
+        <h2 class="speaking-section-label" id="archive-heading">
+          {t('archive')}
+        </h2>
+        {years.map((year) => (
+          <div class="talks-year-group">
+            <h3 class="talks-year-heading">{year}</h3>
+            <ul class="talks-list">
+              {byYear[year].map((talk) => (
+                <TalkItem talk={talk} lang={lang} />
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<script>
+  type FilterKind = 'all' | 'featured' | 'year' | 'theme';
+
+  interface FilterLabels {
+    lang: string;
+    group: string;
+    all: string;
+    featured: string;
+    countAll: string;
+    countFeaturedOne: string;
+    countFeaturedMany: string;
+    countYearOne: string;
+    countYearMany: string;
+    countThemeOne: string;
+    countThemeMany: string;
+    themes: Record<string, string>;
+  }
+
+  const placeholder = document.getElementById('talks-filter-bar');
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.talk-item[data-themes]'));
+
+  if (placeholder && items.length) {
+    const labels = JSON.parse(placeholder.dataset.labels ?? '{}') as FilterLabels;
+    const fill = (tpl: string, vars: Record<string, string | number>) =>
+      tpl.replace(/\{(\w+)\}/g, (m, k: string) => String(vars[k] ?? m));
+    const themeName = (theme: string) => labels.themes[theme] ?? theme;
+    const totalCount = items.length;
+
+    const themeSet = new Set<string>();
+    const yearSet = new Set<string>();
+    items.forEach((item) => {
+      (item.dataset.themes ?? '')
+        .split('|')
+        .filter(Boolean)
+        .forEach((t) => themeSet.add(t));
+      if (item.dataset.year) yearSet.add(item.dataset.year);
+    });
+    // Chips show the display label; filtering always uses the stored value.
+    const themes = [...themeSet].sort(
+      labels.lang === 'en'
+        ? undefined
+        : (a, b) => themeName(a).localeCompare(themeName(b), labels.lang)
+    );
+    const years = [...yearSet].sort((a, b) => Number(b) - Number(a));
+
+    const filterBar = document.createElement('div');
+    filterBar.className = 'filter-bar';
+    filterBar.setAttribute('role', 'group');
+    filterBar.setAttribute('aria-label', labels.group);
+
+    const makeChip = (
+      label: string,
+      kind: FilterKind,
+      value: string,
+      active: boolean
+    ): HTMLButtonElement => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-chip';
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.dataset.filterKind = kind;
+      btn.dataset.filterValue = value;
+      btn.textContent = label;
+      return btn;
+    };
+
+    // Order: All · Featured · [years desc] · [themes alpha]
+    filterBar.appendChild(makeChip(labels.all, 'all', 'all', true));
+    filterBar.appendChild(makeChip(labels.featured, 'featured', 'featured', false));
+    years.forEach((y) => filterBar.appendChild(makeChip(y, 'year', y, false)));
+    themes.forEach((t) => filterBar.appendChild(makeChip(themeName(t), 'theme', t, false)));
+
+    const liveRegion = document.createElement('p');
+    liveRegion.id = 'filter-count';
+    liveRegion.className = 'filter-count';
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.textContent = fill(labels.countAll, { count: totalCount });
+
+    placeholder.appendChild(filterBar);
+    placeholder.appendChild(liveRegion);
+
+    const applyFilter = (kind: FilterKind, value: string) => {
+      filterBar.querySelectorAll<HTMLElement>('.filter-chip').forEach((btn) => {
+        btn.setAttribute(
+          'aria-pressed',
+          btn.dataset.filterKind === kind && btn.dataset.filterValue === value ? 'true' : 'false'
+        );
+      });
+
+      let visible = 0;
+      items.forEach((item) => {
+        const match =
+          kind === 'all' ||
+          (kind === 'featured' && item.dataset.featured === 'true') ||
+          (kind === 'year' && item.dataset.year === value) ||
+          (kind === 'theme' && (item.dataset.themes ?? '').split('|').includes(value));
+        item.hidden = !match;
+        if (match) visible++;
+      });
+
+      document.querySelectorAll<HTMLElement>('.talks-year-group').forEach((group) => {
+        group.hidden = !Array.from(group.querySelectorAll<HTMLElement>('.talk-item')).some(
+          (i) => !i.hidden
+        );
+      });
+
+      const featuredSection = document.querySelector<HTMLElement>(
+        '[data-talks-section="featured"]'
+      );
+      if (featuredSection) {
+        featuredSection.hidden = !Array.from(
+          featuredSection.querySelectorAll<HTMLElement>('.talk-item')
+        ).some((i) => !i.hidden);
+      }
+
+      const archiveSection = document.querySelector<HTMLElement>('[data-talks-section="archive"]');
+      if (archiveSection) {
+        archiveSection.hidden = !Array.from(
+          archiveSection.querySelectorAll<HTMLElement>('.talks-year-group')
+        ).some((g) => !g.hidden);
+      }
+
+      const one = visible === 1;
+      liveRegion.textContent =
+        kind === 'all'
+          ? fill(labels.countAll, { count: totalCount })
+          : kind === 'featured'
+            ? fill(one ? labels.countFeaturedOne : labels.countFeaturedMany, { count: visible })
+            : kind === 'year'
+              ? fill(one ? labels.countYearOne : labels.countYearMany, { count: visible, value })
+              : fill(one ? labels.countThemeOne : labels.countThemeMany, {
+                  count: visible,
+                  value: themeName(value),
+                });
+    };
+
+    filterBar.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLElement>('.filter-chip');
+      if (!btn) return;
+      applyFilter(
+        (btn.dataset.filterKind ?? 'all') as FilterKind,
+        btn.dataset.filterValue ?? 'all'
+      );
+    });
+  }
+</script>

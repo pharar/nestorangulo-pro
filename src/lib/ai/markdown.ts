@@ -6,6 +6,8 @@
  * HTML tag. Authored Markdown (talk bodies) is passed through as-is, with only
  * its root-relative links made absolute.
  */
+import type { Lang } from '../../i18n/config';
+import { localizeMarkdownLinks } from '../i18nLinks.mjs';
 import { absoluteUrl } from './paths';
 
 /** Escape plain text for use inline in Markdown. */
@@ -56,11 +58,13 @@ export function blocks(...parts: Array<string | false | null | undefined>): stri
 
 /**
  * Authored Markdown (a collection entry body): make root-relative link and
- * image targets absolute so the document still works off-site.
+ * image targets absolute so the document still works off-site. With `lang`
+ * `es` (a Spanish overlay body) neutral links are first localised, as the HTML
+ * build does.
  */
-export function authored(md: string | undefined): string {
+export function authored(md: string | undefined, lang: Lang = 'en'): string {
   if (!md) return '';
-  return md
+  return (lang === 'es' ? localizeMarkdownLinks(md) : md)
     .replace(
       /(\]\()(\/(?!\/)[^)\s]*)/g,
       (_, open: string, path: string) => open + absoluteUrl(path)

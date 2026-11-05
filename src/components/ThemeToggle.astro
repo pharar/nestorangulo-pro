@@ -9,14 +9,23 @@
 // theme-init.js reads the stored choice; the script below only writes it and
 // keeps the button's accessible state in sync. It is a processed (bundled)
 // script, not `is:inline`, so Astro covers it under the CSP automatically.
+import { useCommon } from '../i18n/ui/common';
+import type { Lang } from '../i18n/config';
+
+interface Props {
+  lang?: Lang;
+}
+const t = useCommon(Astro.props.lang ?? 'en');
 ---
 
 <button
   type="button"
   class="theme-toggle"
   aria-pressed="false"
-  aria-label="Switch to dark theme"
-  title="Switch theme"
+  aria-label={t('themeToDark')}
+  title={t('themeTitle')}
+  data-label-to-dark={t('themeToDark')}
+  data-label-to-light={t('themeToLight')}
 >
   <svg
     class="theme-toggle-icon theme-toggle-icon--moon"
@@ -54,7 +63,7 @@
   (function () {
     // `const`, not `var`: the null check below only narrows the type for the
     // closures underneath if the binding cannot be reassigned.
-    const btn = document.querySelector('.theme-toggle');
+    const btn = document.querySelector<HTMLElement>('.theme-toggle');
     if (!btn) return;
     const root = document.documentElement;
 
@@ -72,7 +81,10 @@
     const sync = () => {
       const isDark = current() === 'dark';
       btn.setAttribute('aria-pressed', String(isDark));
-      btn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+      btn.setAttribute(
+        'aria-label',
+        (isDark ? btn.dataset.labelToLight : btn.dataset.labelToDark) ?? ''
+      );
     };
 
     sync();

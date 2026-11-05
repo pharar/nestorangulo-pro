@@ -1,58 +1,35 @@
 /**
- * Markdown for `/contact/`.
+ * Markdown for `/contact/` and `/es/contact/`.
  *
- * DUPLICATION: the contact list is declared inline in `src/pages/contact.astro`
- * and reproduced here. Edit both together (or move it to `src/data/`).
+ * The contact list is `src/data/contacts.ts` and the copy is
+ * `src/i18n/ui/contact.ts`, both shared with `src/views/Contact.astro`.
  */
-import { AUTHOR } from '../../../config';
+import { contacts } from '../../../data/contacts';
+import type { Lang } from '../../../i18n/config';
+import { useContact } from '../../../i18n/ui/contact';
+import { localizePath } from '../../../i18n/utils';
 import { blocks, link, list, paragraph, text } from '../markdown';
 import { makePage } from '../page';
 import type { MarkdownPage } from '../types';
 
-const CONTACTS: Array<{ label: string; href: string; display: string; note?: string }> = [
-  {
-    label: 'LinkedIn',
-    href: 'https://linkedin.com/in/pharar',
-    display: '/in/pharar',
-    note: 'Primary channel for professional contact and conversation.',
-  },
-  {
-    label: 'Email',
-    href: 'mailto:hello@nestorangulo.pro',
-    display: 'hello@nestorangulo.pro',
-    note: 'For longer conversations or speaking invitations.',
-  },
-  { label: 'GitHub', href: 'https://github.com/pharar', display: 'github.com/pharar' },
-  {
-    label: 'Bluesky',
-    href: 'https://bsky.app/profile/nestorangulo.pro',
-    display: '@nestorangulo.pro',
-  },
-  { label: 'X', href: 'https://x.com/pharar', display: '@pharar' },
-  {
-    label: 'ORCID',
-    href: 'https://orcid.org/0000-0001-6605-7761',
-    display: '0000-0001-6605-7761',
-    note: 'Academic publications and conference proceedings.',
-  },
-];
-
-export function contactPage(): MarkdownPage {
+export function contactPage(lang: Lang = 'en'): MarkdownPage {
+  const t = useContact(lang);
   const body = blocks(
-    paragraph('Professional inquiries, speaking invitations, or conversation.'),
+    paragraph(t('intro')),
     list(
-      CONTACTS.map(
+      contacts.map(
         (c) =>
-          `**${text(c.label)}**: ${link(c.display, c.href)}${c.note ? ` — ${text(c.note)}` : ''}`
+          `**${text(c.label)}**: ${link(c.display, c.href)}${c.note ? ` — ${text(t(c.note))}` : ''}`
       )
     )
   );
 
   return makePage({
-    path: '/contact/',
-    title: `Contact — ${AUTHOR}`,
-    label: 'Contact',
-    description: `Reach ${AUTHOR} on LinkedIn, email, GitHub, Bluesky, X, and ORCID.`,
+    path: localizePath('/contact/', lang),
+    title: t('title'),
+    label: t('breadcrumb'),
+    description: t('description'),
+    lang,
     section: 'core',
     body,
   });

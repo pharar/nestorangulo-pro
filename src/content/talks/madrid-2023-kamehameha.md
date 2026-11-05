@@ -9,7 +9,7 @@ themes:
   - Web Security
   - WordPress Security
   - Security Awareness
-summary: 'Qué significa de verdad la seguridad, explicado con estética de videojuego de los 80: golpes, defensas y un combo ganador.'
+summary: 'What security really means, explained with 80s video game aesthetics: blows, defenses and a winning combo.'
 videoUrl: https://wordpress.tv/2023/11/05/kamehameha-o-como-defenderse-de-un-atacante-malicioso-nivel-freezer/
 slidesUrl: https://assets.nestorangulo.pro/slides/madrid-2023-kamehameha-748c78599d.pdf
 slidesUrlExt: https://madrid.wordcamp.org/2023/files/2023/11/Nestor-Angulo-de-Ugarte-KameHameHa-O-como-defenderse-de-un-atacante-malicioso-nivel-Freezer.pdf

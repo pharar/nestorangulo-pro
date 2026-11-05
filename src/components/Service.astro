@@ -1,24 +1,16 @@
 ---
 import { serviceRoles } from '../data/service';
+import { useAbout } from '../i18n/ui/about';
+import { localized } from '../i18n/localized';
+import { formatYearMonth } from '../lib/yearMonth';
+import type { Lang } from '../i18n/config';
 
-function formatYearMonth(str: string): string {
-  const [year, month] = str.split('-');
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  return month ? `${months[parseInt(month, 10) - 1]} ${year}` : year;
+interface Props {
+  lang: Lang;
 }
+
+const { lang } = Astro.props;
+const t = useAbout(lang);
 ---
 
 <ul class="service-list">
@@ -27,17 +19,19 @@ function formatYearMonth(str: string): string {
       <div class="service-main">
         <p class="service-role">{r.title}</p>
         <p class="service-org">{r.organization}</p>
-        {r.type && <p class="service-badge">{r.type}</p>}
+        {r.type && <p class="service-badge">{localized(r.type, lang)}</p>}
       </div>
       <div class="service-date-col">
-        {r.since && !r.until && <span class="service-date">Since {formatYearMonth(r.since)}</span>}
+        {r.since && !r.until && (
+          <span class="service-date">{t('since', { date: formatYearMonth(r.since, lang) })}</span>
+        )}
         {r.since && r.until && (
           <span class="service-date">
-            {formatYearMonth(r.since)} – {formatYearMonth(r.until)}
+            {formatYearMonth(r.since, lang)} – {formatYearMonth(r.until, lang)}
           </span>
         )}
       </div>
-      {r.note && <p class="service-note">{r.note}</p>}
+      {r.note && <p class="service-note">{localized(r.note, lang)}</p>}
     </li>
   ))}
 </ul>

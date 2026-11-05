@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_URL } from '../config';
+import { getLocalizedEssays } from '../lib/i18nContent';
+import { writingListId, writingListNode } from '../lib/writingSchema';
+import { useWriting } from '../i18n/ui/writing';
+import { themeLabel } from '../i18n/ui/themes';
+import { localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
+
+// Writing index markup for every language. Thin wrappers: src/pages/writing.astro
+// and src/pages/es/writing.astro. Copy lives in src/i18n/ui/writing.ts. The
+// Spanish list only has essays with a `writing-es/` translation.
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useWriting(lang);
+const essays = await getLocalizedEssays(lang);
+
+function isoDate(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+---
+
+<BaseLayout
+  lang={lang}
+  title={t('listTitle')}
+  description={t('listDescription')}
+  structuredData={{
+    type: 'CollectionPage',
+    breadcrumbs: [{ name: t('listCrumb'), url: `${SITE_URL}${localizePath('/writing/', lang)}` }],
+    ...(essays.length > 0
+      ? { mainEntity: writingListId(lang), nodes: [writingListNode(essays, lang)] }
+      : {}),
+  }}
+>
+  <div class="container">
+    <div class="page-header">
+      <h1>{t('h1')}</h1>
+      <p>{t('intro')}</p>
+    </div>
+
+    {essays.length === 0 ? (
+      <div class="placeholder">
+        <p class="placeholder-status">{t('comingNext')}</p>
+        <a href={localizePath('/', lang)} class="back-link">
+          {t('backHome')}
+        </a>
+      </div>
+    ) : (
+      <ul class="essay-list">
+        {essays.map((essay) => (
+          <li class="essay-item">
+            {essay.data.ogImage && (
+              <a
+                href={localizePath(`/writing/${essay.id}/`, lang)}
+                class="essay-card-link"
+                aria-hidden="true"
+                tabindex="-1"
+              >
+                <img
+                  src={essay.data.ogImage}
+                  alt=""
+                  width="1200"
+                  height="630"
+                  loading="lazy"
+                  decoding="async"
+                  class="essay-card-img"
+                />
+              </a>
+            )}
+            <div class="talk-top">
+              <a href={localizePath(`/writing/${essay.id}/`, lang)} class="talk-title-link">
+                {essay.data.title}
+              </a>
+              <time class="talk-date" datetime={essay.data.date.toISOString()}>
+                {isoDate(essay.data.date)}
+              </time>
+            </div>
+            {essay.data.subtitle && <p class="essay-item-subtitle">{essay.data.subtitle}</p>}
+            <p class="essay-item-summary">{essay.data.summary}</p>
+            {essay.data.themes.length > 0 && (
+              <ul class="talk-themes" aria-label={t('themesLabel')}>
+                {essay.data.themes.map((theme) => (
+                  <li class="theme-tag">{themeLabel(theme, lang)}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</BaseLayout>

@@ -1,0 +1,17 @@
+---
+import SpeakingTalk from '../../../views/SpeakingTalk.astro';
+import { getLocalizedTalks, type LocalizedTalk } from '../../../lib/i18nContent';
+
+export async function getStaticPaths() {
+  const talks = await getLocalizedTalks('es');
+  return talks.map((talk) => ({ params: { id: talk.id }, props: { talk } }));
+}
+
+interface Props {
+  talk: LocalizedTalk;
+}
+
+const { talk } = Astro.props;
+---
+
+<SpeakingTalk lang="es" talk={talk} />

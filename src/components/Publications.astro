@@ -1,16 +1,31 @@
 ---
 import { publications } from '../data/publications';
+import { useAbout } from '../i18n/ui/about';
+import type { Lang } from '../i18n/config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useAbout(lang);
 
 const typeLabels: Record<string, string> = {
-  book_chapter: 'Book Chapter',
-  conference_paper: 'Conference Paper',
+  book_chapter: t('pubBookChapter'),
+  conference_paper: t('pubConferencePaper'),
 };
 
+// English: "A, B, & C" (APA); Spanish: "A, B y C".
 function formatAuthors(coAuthors: string[]): string {
   if (coAuthors.length === 0) return '';
-  if (coAuthors.length === 1) return `, & ${coAuthors[0]}`;
   const last = coAuthors[coAuthors.length - 1];
   const rest = coAuthors.slice(0, -1);
+  if (lang === 'es') {
+    return rest.length === 0
+      ? ` ${t('pubAnd')} ${last}`
+      : `, ${rest.join(', ')} ${t('pubAnd')} ${last}`;
+  }
+  if (coAuthors.length === 1) return `, & ${coAuthors[0]}`;
   return `, ${rest.join(', ')}, & ${last}`;
 }
 ---
@@ -26,7 +41,7 @@ function formatAuthors(coAuthors: string[]): string {
         {p.title}.{' '}
         {p.in && (
           <>
-            In <em>{p.in}</em>.{' '}
+            {t('pubIn')} <em>{p.in}</em>.{' '}
           </>
         )}
         {p.venue && (

@@ -39,6 +39,7 @@ npm run build && npm run check:ai && npm run check:urls && npm run check:csp
 | `npm run check:urls`    | URL contract of the built site (canonicals, sitemap, links)        |
 | `npm run check:csp`     | CSP contract of the built site (inline scripts/styles vs policy)   |
 | `npm run check:ai`      | AI-readable layer of the built site (llms.txt, twins, JSON-LD)     |
+| `npm run check:i18n`    | Bilingual contract of the built site (en/es pairs, switch, links)  |
 | `npm run check:content` | Content contract of the Markdown sources (no build needed)         |
 | `npm run test:scripts`  | Unit tests for the scripts (`node --test`)                         |
 | `npm run gate`          | Every local check in one go — run before handing work over         |
@@ -149,6 +150,7 @@ Code, the `ai-readable-layer` skill lists what to touch for each kind of change.
 - **AI-readable layer** — `/llms.txt`, `/llms-full.txt`, a Markdown twin of every page
   (`/about/` → `/about.md`, linked via `rel="alternate"`) and a JSON-LD `@graph`, checked
   by `npm run check:ai`. See [documentation/AI-READABLE.md](./documentation/AI-READABLE.md).
+- **Languages** — English at the root, Spanish under `/es/`, language link in the header, no auto-redirect. See [documentation/I18N.md](./documentation/I18N.md).
 - **Canonical URLs** — `trailingSlash: 'always'`. `/about/` is the real URL; `/about`
   308-redirects to it. Canonicals come from `Astro.url.href` (never hardcode the prop),
   and internal links carry the slash so they resolve in one hop. See
@@ -275,10 +277,11 @@ verification, and rollback.
   essays linked to their related talks
 - **Chunk 5** ✅ AI-readable layer: `/llms.txt`, `/llms-full.txt`, Markdown twins, JSON-LD
   `@graph`, AI-crawler `robots.txt` with Content-Signal, `check:ai` in CI
-- **Chunk 6** 🚧 i18n: Spanish (`/es/…`) versions of pages, talks and essays. The AI layer
-  must follow: Spanish Markdown twins, localised breadcrumbs, and `inLanguage`
-- **Chunk 7** 🛠️ Skills / MCP: Claude Code skills for repeatable site procedures (two
-  exist today: `housekeeping` and `ai-readable-layer`) and an MCP surface for the site's
+- **Chunk 6** ✅ i18n: Spanish (`/es/…`) versions of every page, talk and translated essay,
+  with Spanish Markdown twins, localised breadcrumbs and `inLanguage`; internal links
+  localised by the build, `check:i18n` in CI — see [documentation/I18N.md](./documentation/I18N.md)
+- **Chunk 7** 🛠️ Skills / MCP: Claude Code skills for repeatable site procedures (three
+  exist today: `housekeeping`, `ai-readable-layer` and `i18n`) and an MCP surface for the site's
   content
 
 Alongside the chunks, ✅ **Housekeeping** (#49) scripted dependency and runtime updates.

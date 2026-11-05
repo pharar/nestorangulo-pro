@@ -9,7 +9,7 @@ themes:
   - Incident Response
   - Web Security
   - WordPress Security
-summary: 'Respuesta a incidentes paso a paso para recuperar la calma y el control tras encontrar tu web hackeada.'
+summary: 'Step-by-step incident response to regain calm and control after finding your website hacked.'
 videoUrl: https://wordpress.tv/2023/03/12/aspira-espira-yoga-para-recuperar-tu-sitio-y-tu-reputacion-despues-de-un-hackeo/
 slidesUrl: https://assets.nestorangulo.pro/slides/torrelodones-2023-aspira-espira-d669b77e0f.pdf
 slidesUrlExt: https://torrelodones.wordcamp.org/2023/files/2023/03/WCTorre-2023-Nestor-Angulo.pdf

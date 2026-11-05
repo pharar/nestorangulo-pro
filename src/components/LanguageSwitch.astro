@@ -1,0 +1,30 @@
+---
+// Plain link to the equivalent page in the other language. No JavaScript, no
+// automatic redirect: the visitor chooses. It shows the TARGET language code
+// ("ES" on English pages), with `lang`/`hreflang`/aria-label in that language.
+import { useCommon } from '../i18n/ui/common';
+import { switchTarget } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
+
+interface Props {
+  lang: Lang;
+  /** False when this page has no translation: link to the section index instead. */
+  hasAlternate?: boolean;
+}
+
+const { lang, hasAlternate = true } = Astro.props;
+// The `switch*` keys of the CURRENT language's dictionary already describe the target.
+const here = useCommon(lang);
+const href = switchTarget(Astro.url.pathname, hasAlternate);
+---
+
+<a
+  class="lang-switch"
+  href={href}
+  hreflang={here('switchLang')}
+  aria-label={here('switchLabel')}
+  title={here('switchLabel')}
+  data-lang-switch
+>
+  <span lang={here('switchLang')}>{here('switchCode')}</span>
+</a>

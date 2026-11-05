@@ -1,125 +1,123 @@
 /**
- * Markdown for `/about/`.
+ * Markdown for `/about/` and `/es/about/`.
  *
- * Credentials, service roles and publications come from `src/data/*`.
+ * Copy comes from `src/i18n/ui/about.ts` (shared with `src/views/About.astro` and
+ * its components, so page and twin cannot drift); credentials, service roles and
+ * publications from `src/data/*`.
  *
- * DUPLICATION: the tagline, biography, speaking blurb and the press bios are
- * hard-coded in `src/pages/about.astro` and `src/components/Press.astro`;
- * the publication citation format mirrors `Publications.astro`. Edit together.
+ * DUPLICATION: only the structure is repeated — the credential/service meta lines
+ * mirror `Credentials.astro` / `Service.astro`, and the publication citation
+ * format (`authors()` below) mirrors `Publications.astro`. Edit together.
  */
-import { AUTHOR } from '../../../config';
 import { credentials } from '../../../data/credentials';
 import { publications, type Publication } from '../../../data/publications';
 import { serviceRoles } from '../../../data/service';
+import type { Lang } from '../../../i18n/config';
+import { localized } from '../../../i18n/localized';
+import { useAbout } from '../../../i18n/ui/about';
+import { localizePath } from '../../../i18n/utils';
+import { formatYearMonth } from '../../yearMonth';
 import { getPublishedTalks, talkCountRounded } from '../../talks';
-import { blocks, link, list, paragraph, text, yearMonth } from '../markdown';
+import { blocks, link, list, paragraph, text } from '../markdown';
 import { makePage } from '../page';
 import type { MarkdownPage } from '../types';
 
-const PUBLICATION_TYPES: Record<Publication['type'], string> = {
-  book_chapter: 'Book Chapter',
-  conference_paper: 'Conference Paper',
-};
+type T = ReturnType<typeof useAbout>;
 
-function credentialItem(c: (typeof credentials)[number]): string {
+function credentialItem(c: (typeof credentials)[number], t: T, lang: Lang): string {
   const meta = [
     c.issuer,
-    c.type,
-    c.eqfLevel ? `EQF Level ${c.eqfLevel}` : undefined,
-    c.validUntil ? `Valid until ${yearMonth(c.validUntil)}` : undefined,
+    c.type ? localized(c.type, lang) : undefined,
+    c.eqfLevel ? t('eqf', { n: c.eqfLevel }) : undefined,
+    c.validUntil ? t('validUntil', { date: formatYearMonth(c.validUntil, lang) }) : undefined,
     c.yearCompleted ? String(c.yearCompleted) : undefined,
-    c.since ? `Since ${yearMonth(c.since)}` : undefined,
+    c.since ? t('since', { date: formatYearMonth(c.since, lang) }) : undefined,
   ].filter(Boolean) as string[];
-  let line = `**${text(c.title)}** — ${text(meta.join(' · '))}`;
-  if (c.verifyUrl) line += ` (${link('Verify', c.verifyUrl)})`;
-  if (c.note) line += `. ${text(c.note)}`;
+  let line = `**${text(localized(c.title, lang))}** — ${text(meta.join(' · '))}`;
+  if (c.verifyUrl) line += ` (${link(t('verify'), c.verifyUrl)})`;
+  if (c.note) line += `. ${text(localized(c.note, lang))}`;
   return line;
 }
 
-function serviceItem(r: (typeof serviceRoles)[number]): string {
+function serviceItem(r: (typeof serviceRoles)[number], t: T, lang: Lang): string {
   const when = r.since
     ? r.until
-      ? `${yearMonth(r.since)} – ${yearMonth(r.until)}`
-      : `Since ${yearMonth(r.since)}`
+      ? `${formatYearMonth(r.since, lang)} – ${formatYearMonth(r.until, lang)}`
+      : t('since', { date: formatYearMonth(r.since, lang) })
     : undefined;
-  const parts = [r.organization, r.type, when].filter(Boolean) as string[];
+  const parts = [r.organization, r.type ? localized(r.type, lang) : undefined, when].filter(
+    Boolean
+  ) as string[];
   let line = `**${text(r.title)}** — ${text(parts.join(' · '))}`;
-  if (r.note) line += `. ${text(r.note)}`;
+  if (r.note) line += `. ${text(localized(r.note, lang))}`;
   return line;
 }
 
-function authors(coAuthors: string[] = []): string {
+function authors(coAuthors: string[] = [], t: T, lang: Lang): string {
   const all = ['Angulo de Ugarte, N.', ...coAuthors];
   if (all.length === 1) return all[0];
-  return `${all.slice(0, -1).join(', ')}, & ${all[all.length - 1]}`;
+  const last = all[all.length - 1];
+  const rest = all.slice(0, -1).join(', ');
+  return lang === 'es' ? `${rest} ${t('pubAnd')} ${last}` : `${rest}, & ${last}`;
 }
 
-function publicationItem(p: Publication): string {
+function publicationItem(p: Publication, t: T, lang: Lang): string {
+  const type = p.type === 'book_chapter' ? t('pubBookChapter') : t('pubConferencePaper');
   const parts = [
-    `${text(authors(p.coAuthors))} (${p.year}). ${text(p.title)}.`,
-    p.in ? `In _${text(p.in)}_.` : '',
+    `${text(authors(p.coAuthors, t, lang))} (${p.year}). ${text(p.title)}.`,
+    p.in ? `${t('pubIn')} _${text(p.in)}_.` : '',
     p.venue ? `_${text(p.venue)}_.` : '',
     p.publisher ? `${text(p.publisher)}.` : '',
     p.isbn ? `ISBN ${text(p.isbn)}.` : '',
-    `(${PUBLICATION_TYPES[p.type] ?? p.type})`,
+    `(${type})`,
   ];
   return parts.filter(Boolean).join(' ');
 }
 
-export async function aboutPage(): Promise<MarkdownPage> {
+export async function aboutPage(lang: Lang = 'en'): Promise<MarkdownPage> {
+  const t = useAbout(lang);
   const count = (await getPublishedTalks()).length;
   const rounded = talkCountRounded(count);
-
-  const oneLiner = `Builds security programs from zero. 10+ years in cybersecurity, came up through incident response. CISSP. ${rounded} international talks.`;
-  const shortBio = `${AUTHOR} is a security leader with over a decade in cybersecurity. Most recently he was Head of Security at Patchstack — a vulnerability intelligence company ranked #1 CNA globally in 2023 and 2025 — where he built the internal security program from zero. Before Patchstack he spent eight years in incident response at Sucuri and GoDaddy, handling thousands of web compromises annually with a specialization in e-commerce malware. CISSP, Computer Science Engineer, and Head of Technology at the ISC2 Spain Chapter. ${rounded} international talks across Europe and Japan.`;
+  const to = (path: string) => localizePath(path, lang);
 
   const body = blocks(
-    paragraph('Security leader · CISSP · Builder of security programs from zero'),
-    '## Biography',
-    paragraph(
-      'I build security programs from zero inside technical organizations — programs that engineering teams actually run, not policy documents that sit in a shared drive.'
-    ),
-    paragraph(
-      'Ten years in cybersecurity, starting hands-on. Eight of them inside incident response at Sucuri and GoDaddy: thousands of compromised sites per year, malware analysis at scale, forensic work on e-commerce credit card skimmers. That work taught me to think like an attacker before thinking like a defender, and to recognize the gap between security theater and security practice.'
-    ),
-    paragraph(
-      'Most recently, I was Head of Security at Patchstack, where I built the entire internal security function from zero: secure development lifecycle, threat modeling embedded in engineering, ISO 27001 and SOC 2 readiness, vendor risk, incident response, security culture. Patchstack is the global #1 CNA in 2023 and 2025, ahead of GitHub and Kernel.org — a ranking earned by the research team I previously led as Data & Research Lead. The technology was never the hard part. The organizational negotiation was.'
-    ),
-    paragraph(
-      `CISSP. Computer Science Engineer (ULPGC), with formal academic grounding in AI — neural networks, genetic algorithms, automata. ${rounded} international conference talks across Europe and Japan. Head of Technology, ISC2 Spain Chapter. Based in Valencia.`
-    ),
-    '## Credentials',
-    list(credentials.map(credentialItem)),
-    '## Speaking',
-    paragraph(
-      `${count} international conference appearances on web security, vulnerability intelligence, CMS security, and security culture. Selected venues: WordCamp Europe, WordCamp Tokyo, WordCamp Osaka, WordCamp Vienna, WordCamp Geneva, WordCamp Greece, WordSesh. Featured in podcasts, webinars, and interviews across multiple regions.`
-    ),
+    paragraph(t('tagline')),
+    `## ${t('bioLabel')}`,
+    paragraph(t('bio1')),
+    paragraph(t('bio2')),
+    paragraph(t('bio3')),
+    paragraph(t('bio4', { rounded })),
+    `## ${t('credentialsHeading')}`,
+    list(credentials.map((c) => credentialItem(c, t, lang))),
+    `## ${t('speakingHeading')}`,
+    paragraph(t('speakingText', { count })),
     list([
-      link('Full speaking archive on this site', '/speaking/'),
-      link('Talks archive on WordPress.tv', 'https://wordpress.tv/?s=nestor+angulo'),
+      link(t('speakingArchive'), to('/speaking/')),
+      link(t('speakingWptv'), 'https://wordpress.tv/?s=nestor+angulo'),
     ]),
-    '## Service',
-    list(serviceRoles.map(serviceItem)),
-    '## Publications',
-    publications.map((p, i) => `${i + 1}. ${publicationItem(p)}`).join('\n'),
-    '## For event organizers & press',
-    '### One-liner',
-    `> ${text(oneLiner)}`,
-    '### Short bio (~70 words)',
-    `> ${text(shortBio)}`,
-    '### Speaker photo',
+    `## ${t('serviceHeading')}`,
+    list(serviceRoles.map((r) => serviceItem(r, t, lang))),
+    `## ${t('publicationsHeading')}`,
+    publications.map((p, i) => `${i + 1}. ${publicationItem(p, t, lang)}`).join('\n'),
+    `## ${t('pressHeading')}`,
+    `### ${t('oneLinerLabel')}`,
+    `> ${text(t('oneLiner', { rounded }))}`,
+    `### ${t('shortBioLabel')}`,
+    `> ${text(t('shortBio', { rounded }))}`,
+    `### ${t('photoLabel')}`,
     list([
-      link('Speaker photo — portrait (JPEG)', '/images/photo-nestor-hires-a.jpg'),
-      link('Speaker photo — Athens (JPEG)', '/images/photo-nestor-hires-b.jpg'),
+      link(t('photoPortraitMd'), '/images/photo-nestor-hires-a.jpg'),
+      link(t('photoAthensMd'), '/images/photo-nestor-hires-b.jpg'),
     ]),
-    paragraph('Minimum 1500px on the long side. For event programs, slides, and press coverage.')
+    paragraph(t('photoNote'))
   );
 
   return makePage({
-    path: '/about/',
-    title: `About — ${AUTHOR}`,
-    label: 'About',
-    description: `CISSP and security leader, a decade in the field. Head of Security at Patchstack. Builds security programs from zero. ${rounded} international talks. Valencia.`,
+    path: to('/about/'),
+    title: t('title'),
+    label: t('breadcrumb'),
+    description: t('description', { rounded }),
+    lang,
     section: 'core',
     body,
   });

@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { useNotFound } from '../i18n/ui/notFound';
+import { localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
+
+// Served for every unmatched path (`/404.html`, and `/es/404.html` under /es/),
+// so this page has no canonical URL of its own — `canonical={null}` omits the
+// tag rather than pointing every 404 at /404/. It has no alternate language
+// either: the language link goes to the other language's home.
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useNotFound(lang);
+---
+
+<BaseLayout
+  lang={lang}
+  title={t('title')}
+  description={t('description')}
+  canonical={null}
+  hasAlternate={false}
+>
+  <div class="container">
+    <div class="page-header">
+      <h1>{t('h1')}</h1>
+      <p>{t('lead')}</p>
+    </div>
+    <div class="placeholder">
+      <p class="placeholder-status">404</p>
+      <a href={localizePath('/', lang)} class="back-link">
+        {t('backHome')}
+      </a>
+    </div>
+  </div>
+</BaseLayout>

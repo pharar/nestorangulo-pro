@@ -8,7 +8,7 @@ format: conference-talk
 themes:
   - Web Security
   - WordPress Security
-summary: 'En la mente del ciberterrorista: buscar las debilidades de un sitio para aprender a defender el propio.'
+summary: 'In the mind of the cyberterrorist: looking for the weaknesses of a site to learn how to defend your own.'
 slidesUrl: https://assets.nestorangulo.pro/slides/zaragoza-2020-hacking-wordpress-65b2908273.pdf
 videoUrl: https://wordpress.tv/2020/01/21/nestor-angulo-de-ugarte-hacking-wordpress/
 ---

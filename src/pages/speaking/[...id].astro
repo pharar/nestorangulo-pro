@@ -1,139 +1,17 @@
 ---
-import { getCollection, render } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { talkEventId, talkEventNode, talkUrl } from '../../lib/talkSchema';
-import { SITE_URL } from '../../config';
+import SpeakingTalk from '../../views/SpeakingTalk.astro';
+import { getLocalizedTalks, type LocalizedTalk } from '../../lib/i18nContent';
 
 export async function getStaticPaths() {
-  const talks = await getCollection('talks');
-  return talks
-    .filter((t) => !t.data.draft)
-    .map((entry) => ({
-      params: { id: entry.id },
-      props: { entry },
-    }));
+  const talks = await getLocalizedTalks('en');
+  return talks.map((talk) => ({ params: { id: talk.id }, props: { talk } }));
 }
 
 interface Props {
-  entry: CollectionEntry<'talks'>;
+  talk: LocalizedTalk;
 }
 
-const { entry } = Astro.props;
-const { Content } = await render(entry);
-
-const {
-  title,
-  event,
-  location,
-  date,
-  format,
-  themes,
-  language,
-  summary,
-  description,
-  slidesUrl,
-  slidesUrlExt,
-  videoUrl,
-  eventUrl,
-  sourceNote,
-} = entry.data;
-
-const pageDescription = description ?? summary;
-
-const structuredData = {
-  breadcrumbs: [
-    { name: 'Speaking', url: `${SITE_URL}/speaking/` },
-    { name: title, url: talkUrl(entry.id) },
-  ],
-  mainEntity: talkEventId(entry.id),
-  nodes: [talkEventNode(entry)],
-};
-
-function formatDate(d: Date): string {
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-const FORMAT_LABELS: Record<string, string> = {
-  'conference-talk': 'Conference Talk',
-  'meetup-talk': 'Meetup Talk',
-  panel: 'Panel',
-  podcast: 'Podcast',
-  webinar: 'Webinar',
-  ama: 'AMA',
-  workshop: 'Workshop',
-};
+const { talk } = Astro.props;
 ---
 
-<BaseLayout
-  title={`${title} — Nestor Angulo de Ugarte`}
-  description={pageDescription}
-  lang={language}
-  structuredData={structuredData}
->
-  <div class="container">
-    <a href="/speaking/" class="talk-back">
-      ← Back to speaking
-    </a>
-
-    <!-- ── Talk header ───────────────────────────────────────── -->
-    <header class="talk-detail-header">
-      <h1 class="talk-detail-title">{title}</h1>
-
-      <div class="talk-detail-meta">
-        <span class="talk-format">{FORMAT_LABELS[format]}</span>
-        <span>{event}</span>
-        {location && <span>{location}</span>}
-        <time datetime={date.toISOString()}>{formatDate(date)}</time>
-      </div>
-
-      <ul class="talk-themes" aria-label="Themes">
-        {themes.map((theme) => (
-          <li class="theme-tag">{theme}</li>
-        ))}
-      </ul>
-
-      {(videoUrl || slidesUrl || slidesUrlExt || eventUrl) && (
-        <div class="talk-detail-actions">
-          {videoUrl && (
-            <a class="talk-btn" href={videoUrl} target="_blank" rel="noopener noreferrer">
-              Watch video ↗
-            </a>
-          )}
-          {(slidesUrl || slidesUrlExt) && (
-            <a
-              class="talk-btn"
-              href={slidesUrl ?? slidesUrlExt}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View slides ↗
-            </a>
-          )}
-          {eventUrl && (
-            <a class="talk-btn" href={eventUrl} target="_blank" rel="noopener noreferrer">
-              View event ↗
-            </a>
-          )}
-        </div>
-      )}
-
-      {slidesUrl && slidesUrlExt && (
-        <p class="talk-provenance-note">
-          Slides also available on the{' '}
-          <a href={slidesUrlExt} target="_blank" rel="noopener noreferrer">
-            event site ↗
-          </a>
-          .
-        </p>
-      )}
-
-      {sourceNote && <p class="talk-detail-note">{sourceNote}</p>}
-    </header>
-
-    <!-- ── Talk body ────────────────────────────────────────── -->
-    <div class="talk-detail-body">
-      <Content />
-    </div>
-  </div>
-</BaseLayout>
+<SpeakingTalk lang="en" talk={talk} />

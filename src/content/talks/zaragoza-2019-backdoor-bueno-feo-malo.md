@@ -8,7 +8,7 @@ format: conference-talk
 themes:
   - Malware
   - WordPress Security
-summary: 'Estilos y objetivos del código malicioso a través de una colección de backdoors reales recopilados en Sucuri.'
+summary: 'Styles and goals of malicious code through a collection of real backdoors gathered by Sucuri.'
 videoUrl: https://wordpress.tv/2019/01/29/nestor-angulo-de-ugarte-backdoor-el-bueno-el-feo-y-el-malo/
 slidesUrl: https://assets.nestorangulo.pro/slides/zaragoza-2019-backdoor-bueno-feo-malo-f4b004a679.pdf
 slidesUrlExt: https://www.slideshare.net/Pharar/backdoor-el-bueno-el-feo-y-el-malo

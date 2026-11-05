@@ -19,7 +19,7 @@ change that forgets this layer ships silently broken or silently stale. Read
 | A collection schema (`src/content.config.ts`)                | The builder that reads it, and its JSON-LD node (`src/lib/talkSchema.ts`, `src/lib/writingSchema.ts`). Only emit facts the page shows.                                                                                                                                                              |
 | A new collection                                             | A `<x>Page(entry)` + lister in `src/lib/ai/pages/`, appended in `src/lib/ai/registry.ts`; a `src/pages/<x>/[id].md.ts` endpoint with the same draft filter as the HTML route; a section in `llms.txt.ts` if it deserves one; its schema node passed via `structuredData`.                           |
 | A new page or route                                          | A builder + `src/pages/<path>.md.ts`, registered in `registry.ts`; pass `structuredData` (type, breadcrumbs, `mainEntity`, `nodes`) to `BaseLayout`. Every page except the 404 needs a twin, or `check:ai` fails (`NO_MARKDOWN` in `src/lib/ai/paths.ts` and the checker both exempt only the 404). |
-| Localised routes (`/es/…`)                                   | Twins follow the same path rule (`/es/about/` → `/es/about.md`); pass `lang` to `makePage` and to `BaseLayout`; decide whether `llms.txt` lists them (one section per language, or a separate file) and say so in the docs.                                                                         |
+| Localised routes (`/es/…`)                                   | Twins follow the same path rule (`/es/about/` → `/es/about.md`); pass `lang` to `makePage` and to `BaseLayout`; `/es/` is `/es/index.md`. Append the `('es')` builder to `registry.ts`; `llms.txt` lists all `/es/` twins in its `## Español` section automatically. See `documentation/I18N.md`.   |
 | `src/config.ts`, `src/lib/person.ts`, `src/data/*`           | Usually flows through on its own (`personNode`, `llms.txt` facts paragraph, about twin). Re-read the generated `llms.txt` and `/about.md`.                                                                                                                                                          |
 | `public/robots.txt`                                          | Keep the `Sitemap:` line, the `/llms.txt` comment, the named AI-crawler group and the `Content-Signal` line on every group.                                                                                                                                                                         |
 | `public/_headers`                                            | Keep the `text/markdown` rules for `/llms.txt`, `/llms-full.txt`, `/*.md`, and `noindex` on `/*.md` only.                                                                                                                                                                                           |
@@ -36,7 +36,7 @@ change that forgets this layer ships silently broken or silently stale. Read
 ## 3. Verify
 
 ```bash
-npm run build && npm run check:ai && npm run check:urls && npm run check:csp
+npm run build && npm run check:ai && npm run check:urls && npm run check:csp && npm run check:i18n
 npx astro check && npx prettier --check .
 ```
 

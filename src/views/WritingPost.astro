@@ -1,0 +1,91 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_URL } from '../config';
+import { getPublishedTalks } from '../lib/talks';
+import { hasSpanishEssay, renderLocalized, type LocalizedEssay } from '../lib/i18nContent';
+import { essayNode, essayPostingId, essayUrl, talksLinkedFrom } from '../lib/writingSchema';
+import { useWriting } from '../i18n/ui/writing';
+import { themeLabel } from '../i18n/ui/themes';
+import { formatDate, localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
+
+// Essay page markup for every language. Thin wrappers: src/pages/writing/[...id].astro
+// and src/pages/es/writing/[...id].astro (each owns its getStaticPaths).
+interface Props {
+  lang: Lang;
+  item: LocalizedEssay;
+}
+
+const { lang, item } = Astro.props;
+const t = useWriting(lang);
+const { Content } = await renderLocalized(item);
+
+const { title, subtitle, date, updated, summary, description, themes, cover, coverAlt } = item.data;
+
+// English: the Spanish alternate only exists for translated essays.
+// Spanish: every page here is a translation, so the English original exists.
+const hasAlternate = lang === 'es' ? true : await hasSpanishEssay(item.id);
+
+const pageDescription = description ?? summary;
+const ogImage = item.data.ogImage ? `${SITE_URL}${item.data.ogImage}` : undefined;
+const body = item.overlay?.body ?? item.entry.body;
+const structuredData = {
+  breadcrumbs: [
+    { name: t('listCrumb'), url: `${SITE_URL}${localizePath('/writing/', lang)}` },
+    { name: title, url: essayUrl(item.id, lang) },
+  ],
+  mainEntity: essayPostingId(item.id, lang),
+  nodes: [
+    essayNode(item.entry, {
+      lang,
+      data: item.data,
+      linkedTalks: talksLinkedFrom({ body }, await getPublishedTalks()),
+      hasTranslation: hasAlternate,
+    }),
+  ],
+};
+---
+
+<BaseLayout
+  lang={lang === 'en' ? item.entry.data.language : lang}
+  title={`${title} — Nestor Angulo de Ugarte`}
+  description={pageDescription}
+  ogImage={ogImage}
+  hasAlternate={hasAlternate}
+  structuredData={structuredData}
+>
+  <article class="container essay">
+    <a href={localizePath('/writing/', lang)} class="talk-back">
+      {t('backToWriting')}
+    </a>
+
+    <header class="talk-detail-header essay-header">
+      <h1 class="talk-detail-title">{title}</h1>
+      {subtitle && <p class="essay-subtitle">{subtitle}</p>}
+
+      <div class="talk-detail-meta">
+        <time datetime={date.toISOString()}>{formatDate(date, lang)}</time>
+        {updated && <span>{t('updated', { date: formatDate(updated, lang) })}</span>}
+      </div>
+
+      {themes.length > 0 && (
+        <ul class="talk-themes" aria-label={t('themesLabel')}>
+          {themes.map((theme) => (
+            <li class="theme-tag">{themeLabel(theme, lang)}</li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    {cover && (
+      <figure class="essay-cover">
+        <Image src={cover} alt={coverAlt ?? ''} width={1200} loading="eager" />
+      </figure>
+    )}
+
+    <div class="talk-detail-body essay-body">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

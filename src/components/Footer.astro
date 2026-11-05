@@ -1,5 +1,15 @@
 ---
 import Isotipo from './Isotipo.astro';
+import { useCommon } from '../i18n/ui/common';
+import { localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
+
+interface Props {
+  lang?: Lang;
+}
+
+const lang = Astro.props.lang ?? 'en';
+const t = useCommon(lang);
 
 const year = new Date().getFullYear();
 ---
@@ -13,11 +23,11 @@ const year = new Date().getFullYear();
     <ul class="footer-links">
       <li>
         <a href="https://linkedin.com/in/pharar" target="_blank" rel="noopener noreferrer">
-          LinkedIn
+          {t('footerLinkedin')}
         </a>
       </li>
       <li>
-        <a href="/contact/">Contact</a>
+        <a href={localizePath('/contact/', lang)}>{t('footerContact')}</a>
       </li>
       <li>
         <a
@@ -25,7 +35,7 @@ const year = new Date().getFullYear();
           target="_blank"
           rel="noopener noreferrer"
         >
-          Source
+          {t('footerSource')}
         </a>
       </li>
     </ul>

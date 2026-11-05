@@ -9,7 +9,7 @@ themes:
   - Malware
   - Web Security
   - WordPress Security
-summary: 'Tres ejemplos de estilos de malware web para entrar en la mente del atacante, en tono satírico y con moraleja.'
+summary: 'Three examples of web malware styles to get inside the mind of the attacker, in a satirical tone and with a moral.'
 slidesUrl: https://assets.nestorangulo.pro/slides/valencia-2022-hazlo-bonito-1bae0d532b.pdf
 videoUrl: https://wordpress.tv/2022/10/25/si-vas-a-hackear-hazlo-bonito-guia-de-estilo/
 ---

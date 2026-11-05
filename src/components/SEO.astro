@@ -4,6 +4,8 @@ import { SITE_URL, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '../config';
 import { ogLocale, metaDescription } from '../lib/meta';
 import { absoluteUrl, markdownPathFor } from '../lib/ai/paths';
 import { getMarkdownPages } from '../lib/ai/registry';
+import { LANGS, OG_LOCALES, DEFAULT_LANG, otherLang, type Lang } from '../i18n/config';
+import { localizePath } from '../i18n/utils';
 
 interface Props {
   title?: string;
@@ -15,6 +17,10 @@ interface Props {
   ogImage?: string;
   /** BCP-47 language of this page's content. Drives <html lang> and og:locale. */
   lang?: string;
+  /** Route locale (`en` / `es`); drives hreflang. Defaults to `en`. */
+  locale?: Lang;
+  /** The equivalent page exists in the other language: emit hreflang + og:locale:alternate. */
+  hasAlternate?: boolean;
   /** Pass true on the homepage and /about to emit the full Person node */
   person?: boolean;
   /** This page's contribution to the JSON-LD @graph (page type, crumbs, nodes). */
@@ -32,6 +38,8 @@ const {
   ogImage = DEFAULT_OG_IMAGE,
   person = false,
   lang = 'en',
+  locale = 'en',
+  hasAlternate = false,
   structuredData = {},
 } = Astro.props;
 
@@ -46,12 +54,23 @@ const markdownAlternate =
     ? absoluteUrl(mdPath)
     : null;
 
+// hreflang: only for pages that exist in both languages. Each language's URL is
+// the same path in its own locale; x-default is the English one.
+const alternates = hasAlternate
+  ? LANGS.map((l) => ({
+      hreflang: l,
+      href: absoluteUrl(localizePath(Astro.url.pathname, l)),
+    }))
+  : [];
+const defaultHref = alternates.find((a) => a.hreflang === DEFAULT_LANG)?.href;
+
 const graph = pageGraph({
   ...structuredData,
   url: canonical,
   name: title,
   description,
   lang,
+  locale,
   fullPerson: person,
 });
 ---
@@ -59,6 +78,10 @@ const graph = pageGraph({
 <title>{title}</title>
 <meta name="description" content={metaDesc} />
 {canonical && <link rel="canonical" href={canonical} />}
+{alternates.map((a) => (
+  <link rel="alternate" hreflang={a.hreflang} href={a.href} />
+))}
+{defaultHref && <link rel="alternate" hreflang="x-default" href={defaultHref} />}
 {markdownAlternate && <link rel="alternate" type="text/markdown" href={markdownAlternate} />}
 <meta name="robots" content="index, follow" />
 <meta name="color-scheme" content="light dark" />
@@ -73,6 +96,7 @@ const graph = pageGraph({
 {canonical && <meta property="og:url" content={canonical} />}
 <meta property="og:image" content={ogImage} />
 <meta property="og:locale" content={ogLocale(lang)} />
+{hasAlternate && <meta property="og:locale:alternate" content={OG_LOCALES[otherLang(locale)]} />}
 
 <!-- Twitter / X card -->
 <meta name="twitter:card" content="summary_large_image" />

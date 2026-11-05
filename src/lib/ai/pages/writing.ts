@@ -1,34 +1,41 @@
 /**
- * Markdown for `/writing/` and every `/writing/<id>/`.
+ * Markdown for `/writing/` and every `/writing/<id>/`, and the `/es/` versions
+ * (only essays with a Spanish translation).
  *
  * Facts come from the `writing` collection frontmatter; the essay body is the
  * entry's authored Markdown, in the essay's own `language`.
  *
  * DUPLICATION: the intro line, the empty-state copy and the listing fields
- * mirror `src/pages/writing.astro` and `src/pages/writing/[...id].astro`.
+ * mirror `src/views/Writing.astro` and `src/views/WritingPost.astro` (the
+ * copy lives in `src/i18n/ui/writing.ts`, shared with them).
  * Edit together.
  */
-import type { CollectionEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
 import { AUTHOR } from '../../../config';
-import { getPublishedEssays } from '../../writing';
+import type { Lang } from '../../../i18n/config';
+import { useWriting } from '../../../i18n/ui/writing';
+import { themeLabel } from '../../../i18n/ui/themes';
+import { formatDate, localizePath } from '../../../i18n/utils';
+import { getLocalizedEssays, type LocalizedEssay } from '../../i18nContent';
 import { authored, blocks, isoDay, link, list, longDate, paragraph, text, url } from '../markdown';
 import { makePage } from '../page';
 import type { MarkdownPage } from '../types';
 
-type Essay = CollectionEntry<'writing'>;
-
 const LANGUAGE_NAMES: Record<string, string> = { en: 'English', es: 'Spanish (Español)' };
 
-const DESCRIPTION =
-  'Essays on security program design, vulnerability intelligence, incident response, and organizational security practice.';
-
-function essayPath(id: string): string {
-  return `/writing/${id}/`;
+function essayPath(id: string, lang: Lang): string {
+  return localizePath(`/writing/${id}/`, lang);
 }
 
-function essayDescription(e: Essay): string {
+function essayDescription(e: LocalizedEssay): string {
   return e.data.description ?? e.data.summary;
+}
+
+/** Long date for the facts list: English keeps `longDate`, Spanish uses es-ES (UTC). */
+function dayLong(d: Date, lang: Lang): string {
+  return lang === 'en'
+    ? longDate(d)
+    : formatDate(d, lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 }
 
 /**
@@ -55,79 +62,88 @@ function resolveImages(md: string): string {
   });
 }
 
-function listItem(e: Essay): string {
+function listItem(e: LocalizedEssay, lang: Lang): string {
+  const t = useWriting(lang);
   const d = e.data;
+  const themes = d.themes.map((theme) => themeLabel(theme, lang)).join(', ');
   return [
-    `${link(d.title, essayPath(e.id))} — ${isoDay(d.date)}`,
+    `${link(d.title, essayPath(e.id, lang))} — ${isoDay(d.date)}`,
     d.subtitle && `  ${text(d.subtitle)}`,
     `  ${text(d.summary)}`,
-    d.themes.length > 0 && `  Themes: ${text(d.themes.join(', '))}.`,
+    d.themes.length > 0 && `  ${t('mdThemes')}: ${text(themes)}.`,
   ]
     .filter(Boolean)
     .join('\n');
 }
 
-export async function writingPage(): Promise<MarkdownPage> {
-  const essays = await getPublishedEssays();
+export async function writingPage(lang: Lang = 'en'): Promise<MarkdownPage> {
+  const t = useWriting(lang);
+  const essays = await getLocalizedEssays(lang);
 
   const body = blocks(
-    paragraph(
-      'Essays on security program design, vulnerability intelligence, and operational practice.'
-    ),
+    paragraph(t('intro')),
     essays.length > 0
-      ? list(essays.map(listItem))
+      ? list(essays.map((e) => listItem(e, lang)))
       : blocks(
-          paragraph('Coming next. In the meantime, see the talks:'),
-          link('Speaking archive', '/speaking/')
+          paragraph(t('mdComingNext')),
+          link(t('mdSpeakingArchive'), localizePath('/speaking/', lang))
         )
   );
 
   return makePage({
-    path: '/writing/',
-    title: `Writing — ${AUTHOR}`,
-    label: 'Writing',
-    description: DESCRIPTION,
+    path: localizePath('/writing/', lang),
+    title: `${t('listLabel')} — ${AUTHOR}`,
+    label: t('listLabel'),
+    description: t('listDescription'),
+    lang,
     section: 'core',
     body,
   });
 }
 
-export function writingPostPage(e: Essay): MarkdownPage {
+export function writingPostPage(e: LocalizedEssay): MarkdownPage {
+  const lang = e.lang;
+  const t = useWriting(lang);
   const d = e.data;
+  const body = e.overlay?.body ?? e.entry.body;
+  const contentLang = lang === 'en' ? d.language : lang;
+  const languageName =
+    lang === 'en' ? (LANGUAGE_NAMES[contentLang] ?? contentLang) : t('mdLanguageName');
 
   const facts = list(
     [
-      d.subtitle && `Subtitle: ${text(d.subtitle)}`,
-      `Published: ${isoDay(d.date)} (${longDate(d.date)})`,
-      d.updated && `Updated: ${isoDay(d.updated)} (${longDate(d.updated)})`,
-      `Language: ${LANGUAGE_NAMES[d.language] ?? d.language}`,
-      `Author: ${link(AUTHOR, '/about/')}`,
-      d.themes.length > 0 && `Themes: ${text(d.themes.join(', '))}`,
+      d.subtitle && `${t('mdSubtitle')}: ${text(d.subtitle)}`,
+      `${t('mdPublished')}: ${isoDay(d.date)} (${dayLong(d.date, lang)})`,
+      d.updated && `${t('mdUpdated')}: ${isoDay(d.updated)} (${dayLong(d.updated, lang)})`,
+      `${t('mdLanguage')}: ${languageName}`,
+      `${t('mdAuthor')}: ${link(AUTHOR, localizePath('/about/', lang))}`,
+      d.themes.length > 0 &&
+        `${t('mdThemes')}: ${text(d.themes.map((theme) => themeLabel(theme, lang)).join(', '))}`,
     ].filter((x): x is string => Boolean(x))
   );
 
   const cover = d.cover ? `![${text(d.coverAlt ?? '')}](${url(d.cover.src)})` : '';
 
-  const body = blocks(
+  const md = blocks(
     facts,
     cover,
-    resolveImages(authored(e.body)),
-    `${link('← All writing', '/writing/')}`
+    resolveImages(authored(body, e.overlay ? 'es' : 'en')),
+    `${link(t('mdAllWriting'), localizePath('/writing/', lang))}`
   );
 
   return makePage({
-    path: essayPath(e.id),
+    path: essayPath(e.id, lang),
     title: `${d.title} — ${AUTHOR}`,
     label: d.title,
     description: essayDescription(e),
-    lang: d.language,
+    lang: contentLang,
     section: 'writing',
     date: isoDay(d.date),
-    body,
+    body: md,
   });
 }
 
-/** One page per published essay, newest first. */
-export async function writingPostPages(): Promise<MarkdownPage[]> {
-  return (await getPublishedEssays()).map(writingPostPage);
+/** One page per published essay in `lang`, newest first. */
+export async function writingPostPages(lang: Lang = 'en'): Promise<MarkdownPage[]> {
+  return (await getLocalizedEssays(lang)).map(writingPostPage);
 }

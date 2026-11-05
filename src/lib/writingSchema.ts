@@ -2,6 +2,10 @@ import type { CollectionEntry } from 'astro:content';
 import { SITE_URL, AUTHOR } from '../config';
 import { PERSON_ID, ref, type GraphNode } from './structuredData';
 import { talkEventId, talkUrl } from './talkSchema';
+import type { Lang } from '../i18n/config';
+import { useWriting } from '../i18n/ui/writing';
+import { themeLabel } from '../i18n/ui/themes';
+import { localizePath } from '../i18n/utils';
 
 type Essay = CollectionEntry<'writing'>;
 type Talk = CollectionEntry<'talks'>;
@@ -11,21 +15,23 @@ function isoDay(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
-export function essayUrl(id: string): string {
-  return `${SITE_URL}/writing/${id}/`;
+export function essayUrl(id: string, lang: Lang = 'en'): string {
+  return `${SITE_URL}${localizePath(`/writing/${id}/`, lang)}`;
 }
 
-export function essayPostingId(id: string): string {
-  return `${essayUrl(id)}#article`;
+export function essayPostingId(id: string, lang: Lang = 'en'): string {
+  return `${essayUrl(id, lang)}#article`;
 }
 
 /**
  * Ids of the talks an essay links to (`/speaking/<id>/` in its body — the
  * footnotes that point at the talk an argument comes from).
  */
-export function talksLinkedFrom(entry: Essay, talks: Talk[]): Talk[] {
+export function talksLinkedFrom(entry: { body?: string }, talks: Talk[]): Talk[] {
   const linked = new Set(
-    [...(entry.body ?? '').matchAll(/\]\(\/speaking\/([^/)\s#?]+)\/?[^)]*\)/g)].map((m) => m[1])
+    [...(entry.body ?? '').matchAll(/\]\((?:\/es)?\/speaking\/([^/)\s#?]+)\/?[^)]*\)/g)].map(
+      (m) => m[1]
+    )
   );
   return talks.filter((t) => linked.has(t.id));
 }
@@ -39,13 +45,39 @@ export function talksLinkedFrom(entry: Essay, talks: Talk[]): Talk[] {
  * and a talk page's primary entity is an Event). As with talks, nothing is
  * emitted that the reader cannot see on the page.
  */
-export function essayNode(entry: Essay, linkedTalks: Talk[] = []): GraphNode {
-  const { title, subtitle, date, updated, summary, description, language, themes, ogImage } =
-    entry.data;
-  const url = essayUrl(entry.id);
+function otherLanguageArticle(id: string, lang: Lang, inLanguage: string): GraphNode {
   return {
     '@type': 'BlogPosting',
-    '@id': essayPostingId(entry.id),
+    '@id': essayPostingId(id, lang),
+    url: essayUrl(id, lang),
+    inLanguage,
+  };
+}
+
+export interface EssayNodeOptions {
+  /** Route/content language of the page. English by default. */
+  lang?: Lang;
+  /** Merged data (English + Spanish overlay). Defaults to the entry's own. */
+  data?: Essay['data'];
+  linkedTalks?: Talk[];
+  /**
+   * The other-language version exists. On the English essay it emits
+   * `workTranslation`; on the Spanish one, `translationOfWork` back to the
+   * original. Only pass true when both pages are built.
+   */
+  hasTranslation?: boolean;
+}
+
+export function essayNode(entry: Essay, options: EssayNodeOptions = {}): GraphNode {
+  const { lang = 'en', linkedTalks = [], hasTranslation = false } = options;
+  const { title, subtitle, date, updated, summary, description, themes, ogImage } =
+    options.data ?? entry.data;
+  const language = lang === 'en' ? entry.data.language : lang;
+  const url = essayUrl(entry.id, lang);
+  const themeNames = themes.map((theme) => themeLabel(theme, lang));
+  return {
+    '@type': 'BlogPosting',
+    '@id': essayPostingId(entry.id, lang),
     headline: title,
     ...(subtitle ? { alternativeHeadline: subtitle } : {}),
     description: description ?? summary,
@@ -57,39 +89,53 @@ export function essayNode(entry: Essay, linkedTalks: Talk[] = []): GraphNode {
     ...(ogImage ? { image: `${SITE_URL}${ogImage}` } : {}),
     author: ref(PERSON_ID),
     publisher: ref(PERSON_ID),
+    // The other-language article is declared inline (id + url + language), not
+    // a bare reference: its own page is not in this page's graph.
+    ...(hasTranslation
+      ? lang === 'es'
+        ? { translationOfWork: otherLanguageArticle(entry.id, 'en', entry.data.language) }
+        : { workTranslation: otherLanguageArticle(entry.id, 'es', 'es') }
+      : {}),
     ...(themes.length
       ? {
-          about: themes.map((name) => ({ '@type': 'Thing', name })),
-          keywords: themes.join(', '),
+          about: themeNames.map((name) => ({ '@type': 'Thing', name })),
+          keywords: themeNames.join(', '),
         }
       : {}),
     ...(linkedTalks.length
       ? {
           mentions: linkedTalks.map((t) => ({
             '@type': 'Event',
-            '@id': talkEventId(t.id),
+            '@id': talkEventId(t.id, lang),
             name: t.data.title,
-            url: talkUrl(t.id),
+            url: talkUrl(t.id, lang),
           })),
         }
       : {}),
   };
 }
 
-export const WRITING_LIST_ID = `${SITE_URL}/writing/#essays`;
+export function writingListId(lang: Lang = 'en'): string {
+  return `${SITE_URL}${localizePath('/writing/', lang)}#essays`;
+}
+
+export const WRITING_LIST_ID = writingListId('en');
 
 /** `ItemList` for /writing, newest first (the order the page shows them in). */
-export function writingListNode(entries: Essay[]): GraphNode {
+export function writingListNode(
+  entries: { id: string; data: Pick<Essay['data'], 'title'> }[],
+  lang: Lang = 'en'
+): GraphNode {
   return {
     '@type': 'ItemList',
-    '@id': WRITING_LIST_ID,
-    name: `Writing — ${AUTHOR}`,
+    '@id': writingListId(lang),
+    name: `${useWriting(lang)('listLabel')} — ${AUTHOR}`,
     numberOfItems: entries.length,
     itemListOrder: 'https://schema.org/ItemListOrderDescending',
     itemListElement: entries.map((e, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      url: essayUrl(e.id),
+      url: essayUrl(e.id, lang),
       name: e.data.title,
     })),
   };
