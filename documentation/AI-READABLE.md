@@ -5,6 +5,9 @@ summarised — by people, by search engines, and by AI assistants. Alongside the
 publishes a set of files meant for machines. None of them is visible to a human visitor,
 which is exactly why `npm run check:ai` exists: a broken template here ships silently.
 
+The project skill in `.claude/skills/ai-readable-layer/` is the checklist for keeping this
+layer in step when a page, talk, essay, collection, route or config data changes.
+
 ## The pieces
 
 | Piece            | URL                         | What it is                                                                                     |
