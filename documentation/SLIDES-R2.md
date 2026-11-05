@@ -14,6 +14,11 @@ build. Decks live in R2 instead and are referenced by absolute URL from the talk
 is the **first 10 hex characters of the SHA-256 of the final file**, computed after
 metadata is written.
 
+The day-to-day path is the `npm run talk -- deck …` verbs (`prepare`, `upload`, `link`,
+`verify`), driven by the `talk` skill; this document is the why, and the raw `wrangler`
+commands for the few things no verb does. Card conventions (the two slides links, how
+the detail page renders them) are in [SPEAKING.md](./SPEAKING.md).
+
 ## Why the hash is in the filename
 
 Two reasons, and both matter:
@@ -33,100 +38,73 @@ cache header makes unrecoverable for anyone who already fetched it.
 Wrangler is **not** a dependency of this project and must not become one: the site
 deploys through the Cloudflare Pages ↔ GitHub integration, so `wrangler` in
 `devDependencies` would add packages to every CI install for a tool CI never runs.
-Use it on demand instead.
+`deck upload` runs it on demand with `npx wrangler@latest`. The one thing to do by hand
+is to log in, once per machine:
 
 ```bash
 npx wrangler@latest login   # browser OAuth; credentials land in ~/.config/.wrangler/
 npx wrangler whoami         # confirm the account before uploading
 ```
 
-The login persists, so this is a one-time step per machine.
-
-## Preparing the PDF
-
-Work outside the repo. Order matters: compress first (Ghostscript strips metadata),
-then write metadata, then hash.
+## The path
 
 ```bash
-SLUG=kozhikode-2026-ai-finds-vulnerabilities
-SRC="/path/to/exported-deck.pdf"
-mkdir -p /tmp/slides-build
-
-# 1. Try compressing. KEEP THE ORIGINAL if the result is bigger or barely smaller —
-#    Google Slides and Keynote exports are usually already optimised, and Ghostscript
-#    re-encodes them upward.
-gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dPDFSETTINGS=/ebook \
-   -dNOPAUSE -dQUIET -dBATCH -sOutputFile="/tmp/slides-build/$SLUG.pdf" "$SRC"
-ls -l "$SRC" "/tmp/slides-build/$SLUG.pdf"   # compare before deciding
-
-# 2. Metadata. Author/Creator carry the name; the Title carries talk — short event.
-exiftool -Title="<talk title> — <short event>" \
-         -Subject="<frontmatter event>" \
-         -Author="Nestor Angulo de Ugarte" \
-         -Creator="Nestor Angulo de Ugarte" \
-         -overwrite_original "/tmp/slides-build/$SLUG.pdf"
-
-# 3. Hash and rename.
-HASH=$(shasum -a 256 "/tmp/slides-build/$SLUG.pdf" | cut -c1-10)
-mv "/tmp/slides-build/$SLUG.pdf" "/tmp/slides-build/$SLUG-$HASH.pdf"
-echo "slides/$SLUG-$HASH.pdf"
+npm run talk -- deck prepare <slug> <pdf> --event-short "<short event>"
+npm run talk -- deck upload <the hash-named file>          # prints the plan
+npm run talk -- deck upload <the hash-named file> --yes    # production write
+npm run talk -- deck link <slug> <public URL>
+npm run talk -- deck verify <slug>
 ```
 
-No `exiftool`? Python `pikepdf` does the same job — set `/Title`, `/Subject`,
-`/Author`, `/Creator` in `docinfo` **and** `dc:title`, `dc:creator`,
-`dc:description`, `xmp:CreatorTool` in the XMP, then `pdf.save(..., linearize=True)`.
+What each does, and why it is built that way:
 
-## Uploading
+- **prepare** works outside the repo (it refuses an `--out-dir` inside it). Order
+  matters: compress first, because Ghostscript strips metadata; then write metadata;
+  then hash, so the name describes the bytes that will be served. Compression is kept
+  only if the result is at least 25% smaller: Google Slides and Keynote exports are
+  usually already optimised and Ghostscript re-encodes them upward. Metadata comes from
+  `exiftool`, else `python3` with `pikepdf` (docinfo and XMP, linearized). The Title is
+  `<talk title> — <short event>`, the Subject is the card's `event`, and Author and
+  Creator carry the name, not the Title.
+- **upload** without `--yes` only prints the plan, because it is a production write.
+  With `--yes` it first looks at the public URL: keys are content-addressed, so an
+  object that is already there is left alone, never overwritten. It checks that the file
+  name matches the file's real hash, runs the `put` with `--remote`, and then refuses to
+  call it done unless wrangler printed `Resource location: remote` and a `HEAD` of the
+  public URL shows 200, `application/pdf`, `immutable` and the local file's size.
+- **link** points `slidesUrl` at the R2 URL. A previous external `slidesUrl` moves to
+  `slidesUrlExt` first so its provenance survives; nothing is overwritten.
+- **verify** is a `HEAD` of every `slidesUrl` on the assets host; it exits non-zero if
+  any is wrong. Run it on the PR branch before merging: a `404` means the object is not
+  in the bucket, whatever wrangler said.
 
 > **`--remote` is not optional.** Wrangler 4 inverted the default for the R2 commands:
 > without it, the object is written to a local simulator under `.wrangler/state/` in
 > the current directory and never reaches Cloudflare. It still prints
-> `Upload complete.`, so the success message proves nothing. **Read the
-> `Resource location:` line** — it must say `remote`. If a stray `.wrangler/` appears
-> next to the deck, that upload went nowhere; delete it and re-run.
+> `Upload complete.`, so the success message proves nothing. The `Resource location:`
+> line must say `remote`, and the public URL must answer. If a stray `.wrangler/`
+> appears next to the deck, that upload went nowhere; delete it and re-run. Every R2
+> command in this document carries `--remote` for that reason.
 
-```bash
-npx wrangler r2 object put "nestorangulo-assets/slides/$SLUG-$HASH.pdf" \
-  --file="/tmp/slides-build/$SLUG-$HASH.pdf" \
-  --content-type=application/pdf \
-  --cache-control="public, max-age=31536000, immutable" \
-  --remote
-```
-
-Then verify before merging the talk card — this is the check that actually proves the
-upload landed:
-
-```bash
-curl -I "https://assets.nestorangulo.pro/slides/$SLUG-$HASH.pdf"
-# expect: HTTP/2 200, content-type: application/pdf, cache-control: ...immutable
-```
-
-A `404` here means the object is not in the bucket, whatever wrangler said.
-
-## Wiring it into the talk card
-
-In `src/content/talks/<slug>.md`:
-
-- `slidesUrl` — always the R2 copy. This is the canonical link and the one the
-  "View slides ↗" button uses.
-- `slidesUrlExt` — the official event / Slideshare / Drive copy, **only if it is
-  public**. It renders as a provenance note under the button, never as a second
-  button. Never point it at a private edit URL.
+Without Cloudflare auth on the machine (a sandboxed shell, a fresh box), the upload is
+the owner's step: leave the hash-named file ready and hand over the command that
+`deck upload` prints.
 
 The R2 object lives on a different origin, so it is deliberately absent from the
 site's sitemap. It is crawlable through its link; that is enough.
 
 ## Replacing or removing a deck
 
-Same rule: every one of these needs `--remote`, or it operates on the local simulator.
+No verb covers these, so use wrangler directly. Both need `--remote`.
 
 ```bash
 # fetch an object back
-npx wrangler r2 object get nestorangulo-assets/slides/<key>.pdf --file=/tmp/check.pdf --remote
+npx wrangler@latest r2 object get nestorangulo-assets/slides/<key>.pdf --file=/tmp/check.pdf --remote
 
 # delete an object superseded by a new hash
-npx wrangler r2 object delete nestorangulo-assets/slides/<old-key>.pdf --remote
+npx wrangler@latest r2 object delete nestorangulo-assets/slides/<old-key>.pdf --remote
 ```
 
-Update `slidesUrl` in the same PR that changes the object, so a deployed page never
-points at a key that no longer exists.
+A corrected deck is a new `deck prepare` and a new key, never an overwrite. Update
+`slidesUrl` in the same PR that changes the object (`deck link`), so a deployed page never
+points at a key that no longer exists; the old object can then be deleted at leisure.

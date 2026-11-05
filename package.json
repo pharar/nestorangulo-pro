@@ -45,6 +45,7 @@
     "gate": "node scripts/gate.mjs",
     "og": "node scripts/build-og.mjs",
     "post": "node scripts/post.mjs",
+    "talk": "node scripts/talk.mjs",
     "housekeeping": "node scripts/housekeeping.mjs report",
     "housekeeping:baseline": "node scripts/housekeeping.mjs baseline",
     "housekeeping:verify": "node scripts/housekeeping.mjs verify",

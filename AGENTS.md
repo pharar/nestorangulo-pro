@@ -45,7 +45,24 @@ for the other platform.
 Never invent or approximate a talk's title, date, event or abstract. Never rewrite the
 owner's prose unasked. If something cannot be verified, set `draft: true` and leave the
 field empty rather than filling it with a guess. `src/content/` is authored material:
-change it only when asked to.
+change it only when asked to. A fixed fact, relevant only when copy is generated: ISO
+27001 and SOC 2 were passed in May 2026 (not 2025).
+
+## Environments
+
+A sandboxed or bridged shell (a Linux VM over a Mac checkout, a cloud container) differs
+from the owner's machine. Check, don't assume:
+
+- It may have no Cloudflare auth and no SSH key. At the start of a task that needs them,
+  probe `npx wrangler@latest whoami` and `git ls-remote origin`, and surface the blocker
+  then, not at the end. R2 upload and `git push` are then the owner's step.
+- It may be unable to build (a `node_modules` installed for another platform). Say so
+  plainly and name the build as the owner's step; never claim a build passed. Never
+  `npm install` over a foreign `node_modules`.
+- Never write a global git identity. Pass it per command with
+  `git -c user.name=… -c user.email=…`, taken from the author in `package.json`.
+- The owner may push and merge between turns: re-read the git state (branch, `git fetch`,
+  `git status`) at the start of every follow-up; a branch you made may already be merged.
 
 ## The convention
 
@@ -64,12 +81,13 @@ frontmatter field by field without reformatting it), with `node:test` tests besi
 
 ## Action index
 
-| Action                       | Skill                       | Command                                                                | Doc                                                                  |
-| ---------------------------- | --------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Update dependencies, runtime | `housekeeping`              | `npm run housekeeping`, `housekeeping:baseline`, `housekeeping:verify` | [HOUSEKEEPING.md](./documentation/HOUSEKEEPING.md)                   |
-| Write and publish an essay   | `post`                      | `npm run post -- list\|new\|og\|check\|publish\|touch`                 | [WRITING.md](./documentation/WRITING.md)                             |
-| Keep the AI-readable layer   | `ai-readable-layer`         | `npm run check:ai`                                                     | [AI-READABLE.md](./documentation/AI-READABLE.md)                     |
-| Run every local check        | (none; part of every skill) | `npm run gate`                                                         | this file                                                            |
-| Check content rules          | (none yet)                  | `npm run check:content`                                                | header of `scripts/check-content.mjs`; [README](./README.md#content) |
+| Action                       | Skill                       | Command                                                                | Doc                                                                                      |
+| ---------------------------- | --------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Update dependencies, runtime | `housekeeping`              | `npm run housekeeping`, `housekeeping:baseline`, `housekeeping:verify` | [HOUSEKEEPING.md](./documentation/HOUSEKEEPING.md)                                       |
+| Write and publish an essay   | `post`                      | `npm run post -- list\|new\|og\|check\|publish\|touch`                 | [WRITING.md](./documentation/WRITING.md)                                                 |
+| Add, feature, host a talk    | `talk`                      | `npm run talk -- <verb>`                                               | [SPEAKING.md](./documentation/SPEAKING.md), [SLIDES-R2.md](./documentation/SLIDES-R2.md) |
+| Keep the AI-readable layer   | `ai-readable-layer`         | `npm run check:ai`                                                     | [AI-READABLE.md](./documentation/AI-READABLE.md)                                         |
+| Run every local check        | (none; part of every skill) | `npm run gate`                                                         | this file                                                                                |
+| Check content rules          | (none yet)                  | `npm run check:content`                                                | header of `scripts/check-content.mjs`; [README](./README.md#content)                     |
 
 Add a row when a new repeatable action gains its skill, script and doc.
