@@ -69,7 +69,7 @@ The useful question about an SBOM is not "do we have one". It's: when the next L
 
 ## The response is now the product
 
-Customers used to buy software and assume it was secure, or ask for a pentest report once a year. Now the questionnaire arrives before the contract, and the question underneath it is not "have you found all your bugs". Nobody has. It is: when something is found, what happens, and how fast. And the questionnaire isn't curiosity either. It is liability moving down the chain, which deserves a piece of its own.
+Customers used to buy software and assume it was secure, or ask for a pentest report once a year. Now the questionnaire arrives before the contract, and the question underneath it is not "have you found all your bugs". Nobody has. It is: when something is found, what happens, and how fast. And the questionnaire isn't curiosity either. It is liability moving down the chain, which deserves a piece of its own.[^4]
 
 That makes vulnerability response a feature of the product. It is visible, it is comparable across vendors, and from this autumn it runs on a regulatory clock. The teams that treat it as a side job of the security person will lose deals to the teams that treat it as part of what they sell.
 
@@ -84,3 +84,5 @@ The robot is the same size on both sides. What they should be looking at is the 
 [^2]: The full account of that tool, including what it never managed to do: [We Built an AI That Finds Vulnerabilities in Plugins. So Can Everyone Else.](/speaking/kozhikode-2026-ai-finds-vulnerabilities/), WP Future Conclave, September 2026. This essay is its written version.
 
 [^3]: The lifecycle from bug to patch, with the CRA in the background: [De la Plantà a la Cremà](/speaking/valencia-meetup-2025-ciclo-vida-vulnerabilidades/), WordPress Meetup Valencia, April 2025 (in Spanish).
+
+[^4]: The questionnaire itself, block by block, and how to answer it honestly without a security department: [Tu (posible) cliente te ha mandado un cuestionario de seguridad: guía de supervivencia](/speaking/valencia-2026-cuestionario-seguridad/), WordCamp Valencia 2026 (in Spanish).
