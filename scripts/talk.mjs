@@ -80,10 +80,10 @@ export const hashPrefix = (buf) => sha256(buf).slice(0, 10);
 
 /** The R2 URL a card may carry: exactly slides/<slug>-<10 hex>.pdf on the assets host. */
 export function isDeckUrlFor(slug, url) {
-  const m = String(url).match(
-    new RegExp(`^${ASSETS_BASE.replace(/\./g, '\\.')}/slides/(.+)-[0-9a-f]{10}\\.pdf$`)
-  );
-  return Boolean(m) && m[1] === slug;
+  // Compared as strings: no pattern is built from the host or the slug.
+  const prefix = `${ASSETS_BASE}/slides/${slug}-`;
+  const s = String(url);
+  return s.startsWith(prefix) && /^[0-9a-f]{10}\.pdf$/.test(s.slice(prefix.length));
 }
 
 export const isAssetsUrl = (url) => {

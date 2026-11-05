@@ -469,11 +469,8 @@ test('deck prepare keeps the original when ghostscript saves under 25%, and hash
   assert.equal(name, `k-2026-x-${sha10(final)}.pdf`, 'hash is of the final bytes, after metadata');
   assert.notEqual(sha10(final), sha10(original));
   assert.equal(readdirSync(out).length, 1, 'temporary files are cleaned up');
-  assert.match(r.out, new RegExp(`slides/${name.replace(/\./g, '\\.')}`));
-  assert.match(
-    r.out,
-    new RegExp(`https://assets\\.nestorangulo\\.pro/slides/${name.replace(/\./g, '\\.')}`)
-  );
+  assert.ok(r.out.includes(`slides/${name}`), r.out);
+  assert.ok(r.out.includes(`https://assets.nestorangulo.pro/slides/${name}`), r.out);
 });
 
 test('deck prepare keeps the compressed copy when it is at least 25% smaller', async () => {
