@@ -27,3 +27,32 @@
 
 /apple-touch-icon.png
   Cache-Control: public, max-age=86400, must-revalidate
+
+# ── AI-readable layer ──────────────────────────────────────────────────────
+# Not hashed and regenerated on every build, so the same day-then-revalidate
+# policy as the images. Pages would guess a Content-Type from the extension;
+# pinning it (with the charset) stops a browser or agent from mis-decoding
+# the em dashes and accented names as Latin-1.
+
+# llms.txt is meant to be discovered, so it is NOT noindexed.
+/llms.txt
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/llms-full.txt
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=86400, must-revalidate
+
+# The Markdown twins of each page (/about.md, /speaking/<id>.md, …). The splat
+# matches greedily across `/`, so this one rule covers nested twins too.
+# `noindex` keeps them out of search results so they never compete with the
+# canonical HTML page — but they stay crawlable (robots.txt allows them),
+# which is all an AI agent needs. No `Link: rel="canonical"` header: the HTML
+# page already advertises the twin via <link rel="alternate">, and noindex
+# already settles which URL ranks. `:splat` could build one, but /index.md
+# would map to /index/, and matching rules stack rather than override, so
+# there is no clean exception for the home page.
+/*.md
+  Content-Type: text/markdown; charset=utf-8
+  X-Robots-Tag: noindex
+  Cache-Control: public, max-age=86400, must-revalidate

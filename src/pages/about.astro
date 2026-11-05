@@ -11,26 +11,17 @@ import { getPublishedTalks, talkCountRounded } from '../lib/talks';
 
 const TALK_COUNT = (await getPublishedTalks()).length;
 const TALK_COUNT_ROUNDED = talkCountRounded(TALK_COUNT);
-
-const profilePageSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'ProfilePage',
-  url: `${SITE_URL}/about/`,
-  mainEntity: { '@id': `${SITE_URL}/#person` },
-};
 ---
 
 <BaseLayout
   title="About — Nestor Angulo de Ugarte"
   description={`CISSP and security leader, a decade in the field. Head of Security at Patchstack. Builds security programs from zero. ${TALK_COUNT_ROUNDED} international talks. Valencia.`}
   person={true}
+  structuredData={{
+    type: 'ProfilePage',
+    breadcrumbs: [{ name: 'About', url: `${SITE_URL}/about/` }],
+  }}
 >
-  <script
-    slot="head"
-    is:inline
-    type="application/ld+json"
-    set:html={JSON.stringify(profilePageSchema)}
-  ></script>
   <!-- ── Hero ──────────────────────────────────────────────── -->
   <section class="about-hero" aria-labelledby="about-h1">
     <div class="container">

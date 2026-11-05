@@ -7,7 +7,7 @@ export const personSchema = {
   name: AUTHOR,
   givenName: 'Nestor',
   familyName: 'Angulo de Ugarte',
-  url: SITE_URL,
+  url: `${SITE_URL}/`,
   image: `${SITE_URL}/images/photo-nestor.jpg`,
   jobTitle: JOB_TITLE,
   description: DEFAULT_DESCRIPTION,
@@ -32,10 +32,13 @@ export const personSchema = {
     name: 'CISSP',
     issuedBy: { '@type': 'Organization', name: 'ISC2' },
   },
+  // `roleName` belongs to a Role, not to the Organization: schema.org's role
+  // pattern wraps the membership in an OrganizationRole whose own `memberOf`
+  // is the organization.
   memberOf: {
-    '@type': 'Organization',
-    name: 'ISC2 Spain Chapter',
+    '@type': 'OrganizationRole',
     roleName: 'Head of Technology',
+    memberOf: { '@type': 'Organization', name: 'ISC2 Spain Chapter' },
   },
   sameAs: SAME_AS,
 };
