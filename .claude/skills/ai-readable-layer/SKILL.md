@@ -36,7 +36,7 @@ change that forgets this layer ships silently broken or silently stale. Read
 ## 3. Verify
 
 ```bash
-npm run build && npm run check:ai && npm run check:urls && npm run check:csp
+npm run build && npm run check:ai && npm run check:urls && npm run check:csp && npm run check:i18n
 npx astro check && npx prettier --check .
 ```
 

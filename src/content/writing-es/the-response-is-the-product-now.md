@@ -70,8 +70,8 @@ Nadie te preguntará si tu código es perfecto. Te preguntarán qué haces cuand
 
 El robot es del mismo tamaño en los dos bandos. Lo que deberían mirar es al piloto: quien se hace cargo de la respuesta, y de las decisiones, cuando ese reloj empieza a correr.
 
-[^1]: El mismo argumento, antes de la ola actual de modelos: [AI in the Hacking world war](/es/speaking/wceu-2020-ai-hacking-world-war/), WordCamp Europe 2020.
+[^1]: El mismo argumento, antes de la ola actual de modelos: [AI in the Hacking world war](/speaking/wceu-2020-ai-hacking-world-war/), WordCamp Europe 2020.
 
-[^2]: El relato completo de esa herramienta, incluido lo que nunca llegó a conseguir: [We Built an AI That Finds Vulnerabilities in Plugins. So Can Everyone Else.](/es/speaking/kozhikode-2026-ai-finds-vulnerabilities/), WP Future Conclave, septiembre de 2026. Este artículo es su versión escrita.
+[^2]: El relato completo de esa herramienta, incluido lo que nunca llegó a conseguir: [We Built an AI That Finds Vulnerabilities in Plugins. So Can Everyone Else.](/speaking/kozhikode-2026-ai-finds-vulnerabilities/), WP Future Conclave, septiembre de 2026. Este artículo es su versión escrita.
 
-[^3]: El ciclo de vida desde el bug hasta el parche, con el CRA de fondo: [De la Plantà a la Cremà](/es/speaking/valencia-meetup-2025-ciclo-vida-vulnerabilidades/), WordPress Meetup Valencia, abril de 2025.
+[^3]: El ciclo de vida desde el bug hasta el parche, con el CRA de fondo: [De la Plantà a la Cremà](/speaking/valencia-meetup-2025-ciclo-vida-vulnerabilidades/), WordPress Meetup Valencia, abril de 2025.

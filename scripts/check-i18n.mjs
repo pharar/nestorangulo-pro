@@ -10,10 +10,13 @@
  *     and vice versa);
  *  2. every English page has a Spanish counterpart and vice versa, except the
  *     essays that are not translated (they carry no hreflang) and the 404s;
- *  3. a Spanish page never links internally to an English route (the language
- *     switch and `hreflang` links are the only exceptions);
+ *  3. a Spanish page links to an English route only when that route has no
+ *     Spanish counterpart (otherwise the build missed a rewrite), and every
+ *     internal link it has points at a built page (the language switch and
+ *     `hreflang` links are exempt);
  *  4. no leftover English UI strings show in the visible text of Spanish pages;
- *  5. the sitemap lists both languages with `xhtml:link` alternates and no 404.
+ *  5. the sitemap lists no 404, gives `en`/`es` alternates to exactly the pages
+ *     that exist in both languages, and lists every built page.
  *
  * Rule 4 is a heuristic: it looks for a short list of UI words. Prose that is
  * legitimately English (a talk given in English) is skipped via `lang="en"`
@@ -90,6 +93,7 @@ const badTargets = [];
 const nonReciprocal = [];
 const missingCounterpart = [];
 const englishLinks = [];
+const brokenLinks = [];
 const englishText = [];
 let spanishPages = 0;
 let withAlternates = 0;
@@ -142,10 +146,14 @@ for (const [route, file] of pages) {
     const href = attrs.match(/\bhref="([^"]*)"/)?.[1];
     if (!href || !href.startsWith('/') || href.startsWith('//')) continue;
     if (/\bclass="[^"]*\blang-switch\b/.test(attrs)) continue;
-    if (href.startsWith('/es/') || href === '/es') continue;
     if (/^\/(_astro|og|images|favicon|apple-touch)/.test(href)) continue;
     if (/\.(md|pdf|txt|xml|png|jpe?g|webp|svg|ico|woff2?|css|js)(#.*)?$/i.test(href)) continue;
-    englishLinks.push(`${where}: ${href}`);
+    const target = href.replace(/[?#].*$/, '');
+    if (!exists(target)) {
+      brokenLinks.push(`${where}: ${href} (not built)`);
+    } else if (!isEs(target) && exists(toEs(target))) {
+      englishLinks.push(`${where}: ${href} (has a Spanish page: ${toEs(target)})`);
+    }
   }
 
   // 4. English UI strings in visible text. Text inside `lang="en"` blocks is
@@ -183,17 +191,24 @@ for (const entry of entries) {
       (m) => [m[1], pathOf(m[2])]
     )
   );
-  if (alts.size !== 2) sitemapProblems.push(`${loc}: ${alts.size} xhtml:link alternate(s), want 2`);
   const en = isEs(loc) ? toEn(loc) : loc;
-  if (alts.get('en') !== en || alts.get('es-ES') !== toEs(en)) {
-    sitemapProblems.push(`${loc}: alternates ${JSON.stringify([...alts])}`);
+  if (exists(en) && exists(toEs(en))) {
+    if (alts.size !== 2)
+      sitemapProblems.push(`${loc}: ${alts.size} xhtml:link alternate(s), want 2`);
+    else if (alts.get('en') !== en || alts.get('es') !== toEs(en)) {
+      sitemapProblems.push(`${loc}: alternates ${JSON.stringify([...alts])}`);
+    }
+  } else if (alts.size > 0) {
+    sitemapProblems.push(`${loc}: has no counterpart but declares alternates`);
   }
   for (const p of alts.values())
     if (!exists(p)) sitemapProblems.push(`${loc}: alternate ${p} not built`);
 }
 if (esEntries === 0) sitemapProblems.push('no /es/ URL in the sitemap');
-if (esEntries * 2 !== entries.length) {
-  sitemapProblems.push(`${esEntries} Spanish of ${entries.length} URLs: expected half`);
+const listed = new Set(entries.map((e) => pathOf(e.match(/<loc>([^<]+)<\/loc>/)[1])));
+for (const route of pages.keys()) {
+  if (/\/404\/$/.test(route)) continue;
+  if (!listed.has(route)) sitemapProblems.push(`${route}: built but not in the sitemap`);
 }
 
 console.log(
@@ -205,9 +220,10 @@ check('every page with hreflang has both languages, reciprocal', [
   ...missingCounterpart,
   ...nonReciprocal,
 ]);
-check('Spanish pages link only to Spanish routes', englishLinks);
+check('Spanish pages link to Spanish routes where one exists (no missed rewrite)', englishLinks);
+check('internal links on Spanish pages point at built pages', brokenLinks);
 check('no English UI strings in the visible text of Spanish pages', englishText);
-check('sitemap lists both languages with alternates and no 404', sitemapProblems);
+check('sitemap: alternates only where both languages exist, no 404', sitemapProblems);
 
 if (failures.length > 0) {
   console.error(`\n${failures.length} check(s) failed:\n`);

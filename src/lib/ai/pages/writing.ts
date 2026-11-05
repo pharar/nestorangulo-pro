@@ -127,7 +127,7 @@ export function writingPostPage(e: LocalizedEssay): MarkdownPage {
   const md = blocks(
     facts,
     cover,
-    resolveImages(authored(body)),
+    resolveImages(authored(body, e.overlay ? 'es' : 'en')),
     `${link(t('mdAllWriting'), localizePath('/writing/', lang))}`
   );
 

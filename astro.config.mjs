@@ -5,6 +5,8 @@ import { cp, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { satteri } from '@astrojs/markdown-satteri';
 import { hastFootnotesEs } from './src/lib/hastFootnotesEs.mjs';
+import { hastLinksEs } from './src/lib/hastLinksEs.mjs';
+import { hasSpanishRoute } from './src/lib/i18nLinks.mjs';
 
 /**
  * Cloudflare Pages serves `404.html` from the root for every unmatched path,
@@ -41,16 +43,26 @@ export default defineConfig({
     locales: ['en', 'es'],
     routing: { prefixDefaultLocale: false },
   },
-  // Spanish footnote labels (Spanish content only); see the plugin for details.
-  markdown: { processor: satteri({ hastPlugins: [hastFootnotesEs] }) },
+  // Spanish content only: footnote labels and /es/ links (see the plugins).
+  markdown: { processor: satteri({ hastPlugins: [hastFootnotesEs, hastLinksEs] }) },
   integrations: [
     spanish404(),
     sitemap({
       // Error pages are not URLs of their own (see `spanish404` above).
       filter: (page) => !/\/404\/?$/.test(page),
-      i18n: {
-        defaultLocale: 'en',
-        locales: { en: 'en', es: 'es-ES' },
+      // Alternates only for pages that exist in both languages (known from the
+      // content, see src/lib/i18nLinks.mjs), with the same codes as the HTML.
+      serialize: (item) => {
+        const path = new URL(item.url).pathname;
+        const en = path === '/es/' || path.startsWith('/es/') ? path.slice(3) || '/' : path;
+        if (hasSpanishRoute(en)) {
+          const abs = (/** @type {string} */ p) => new URL(p, 'https://nestorangulo.pro').href;
+          item.links = [
+            { url: abs(en), lang: 'en' },
+            { url: abs(en === '/' ? '/es/' : `/es${en}`), lang: 'es' },
+          ];
+        }
+        return item;
       },
     }),
   ],

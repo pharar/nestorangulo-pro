@@ -159,7 +159,7 @@ export function talkPage(item: LocalizedTalk): MarkdownPage {
   const md = blocks(
     facts,
     d.sourceNote && paragraph(`${t('mdNote')}: ${d.sourceNote}`),
-    authored(body),
+    authored(body, item.overlay ? 'es' : 'en'),
     `${link(t('mdAllTalks'), localizePath('/speaking/', lang))}`
   );
 
