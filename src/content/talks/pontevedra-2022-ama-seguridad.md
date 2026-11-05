@@ -9,7 +9,7 @@ themes:
   - Security Awareness
   - Web Security
   - WordPress Security
-summary: 'Sesión Ask-Me-Anything sobre ciberseguridad: conceptos, cómo ser analista, y preguntas abiertas del público.'
+summary: 'Ask-Me-Anything session on cybersecurity: concepts, how to become an analyst, and open questions from the audience.'
 videoUrl: https://wordpress.tv/2022/09/26/ama-seguridad-en-wordpress-y-eso-que-significa-realmente/
 slidesUrl: https://assets.nestorangulo.pro/slides/pontevedra-2022-ama-seguridad-36d76286a5.pdf
 slidesUrlExt: https://pontevedra.wordcamp.org/2022/files/2022/09/NestorAngulo.pdf

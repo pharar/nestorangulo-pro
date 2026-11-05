@@ -9,7 +9,7 @@ themes:
   - Incident Response
   - GRC
   - Web Security
-summary: 'Dos historias reales de sitios hackeados (un blog personal y un e-commerce de PYME) y el coste real para sus dueños.'
+summary: 'Two real stories of hacked sites (a personal blog and an SME e-commerce) and the real cost for their owners.'
 videoUrl: https://wordpress.tv/2024/02/22/el-costo-de-un-hackeo/
 slidesUrl: https://assets.nestorangulo.pro/slides/alcala-2023-costo-hackeo-f7d0d07e68.pdf
 ---

@@ -9,7 +9,7 @@ themes:
   - Malware
   - Incident Response
   - WordPress Security
-summary: 'Un caso real de ransomware en WordPress resuelto en clave detectivesca, con pistas, análisis y contramedidas.'
+summary: 'A real WordPress ransomware case solved like a detective story, with clues, analysis and countermeasures.'
 videoUrl: https://wordpress.tv/2022/05/24/nestor-angulo-ugarte-n1909-astuto-caso-ransomware-wordpress/
 slidesUrl: https://assets.nestorangulo.pro/slides/irun-2022-ransomware-n1909-c9dfe50648.pdf
 slidesUrlExt: https://drive.google.com/file/d/1Bk2fzNf8GU7NI-zmuQ5AEQs6tt2a6Jdf/view?usp=sharing

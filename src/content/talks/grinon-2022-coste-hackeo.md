@@ -9,7 +9,7 @@ themes:
   - Incident Response
   - GRC
   - Web Security
-summary: 'El coste subestimado de un hackeo, con dos historias reales: un blog personal y una web de PYME.'
+summary: 'The underestimated cost of a hack, with two real stories: a personal blog and an SME website.'
 videoUrl: https://wordpress.tv/2022/11/22/el-coste-de-un-hackeo/
 slidesUrl: https://assets.nestorangulo.pro/slides/grinon-2022-coste-hackeo-78724ddde0.pdf
 slidesUrlExt: https://grinon.wordcamp.org/2022/files/2022/11/Nestor-angulo-hackeo.pdf

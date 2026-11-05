@@ -9,7 +9,7 @@ themes:
   - Incident Response
   - Web Security
   - WordPress Security
-summary: 'Cómo detectar anomalías en tu sitio con ejemplos reales, qué hacer si ocurre y cómo evitar que vuelva a pasar.'
+summary: 'How to detect anomalies on your site with real examples, what to do if it happens, and how to keep it from happening again.'
 slidesUrl: https://assets.nestorangulo.pro/slides/barcelona-2018-como-se-si-me-han-hackeado-bd5305e889.pdf
 videoUrl: https://wordpress.tv/2018/10/22/nestor-angulo-de-ugarte-como-se-si-me-han-hackeado-ejemplos-y-contramedidas/
 ---

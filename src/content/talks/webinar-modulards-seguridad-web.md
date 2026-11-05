@@ -9,7 +9,7 @@ themes:
   - WordPress Security
   - Web Security
   - Security Awareness
-summary: 'Webinar Modular DS × Patchstack sobre el add-on Patch & Protect: cómo funciona, qué es el virtual patching y por qué bloquea vulnerabilidades antes de que afecten a tus webs, el papel del Cyber Resilience Act (CRA) y cómo convertir la seguridad en valor añadido para clientes de mantenimiento web.'
+summary: 'Modular DS × Patchstack webinar on the Patch & Protect add-on: how it works, what virtual patching is and why it blocks vulnerabilities before they affect your sites, the role of the Cyber Resilience Act (CRA), and how to turn security into added value for web maintenance clients.'
 videoUrl: 'https://www.youtube.com/watch?v=PROp69GLBAI'
 ---
 
