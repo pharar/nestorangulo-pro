@@ -52,9 +52,15 @@ const GOOD_ESSAY = {
   ogImage: '/og/good-essay.png',
 };
 
-/** Builds a content tree; `talks` and `essays` map filename => frontmatter fields (or raw text). */
+const GOOD_OVERLAY = { summary: "'Un resumen corto.'" };
+
+/**
+ * Builds a content tree; `talks`, `talksEs` and `essays` map filename => frontmatter
+ * fields (or raw text). Unless `talksEs` is given, every talk gets a valid overlay.
+ */
 function tree({
   talks = { 'good-talk.md': GOOD_TALK },
+  talksEs,
   essays = { 'good-essay.md': GOOD_ESSAY },
   og,
 } = {}) {
@@ -65,6 +71,9 @@ function tree({
   };
   for (const [name, f] of Object.entries(talks))
     put(`src/content/talks/${name}`, typeof f === 'string' ? f : card(f));
+  const overlays = talksEs ?? Object.fromEntries(Object.keys(talks).map((n) => [n, GOOD_OVERLAY]));
+  for (const [name, f] of Object.entries(overlays))
+    put(`src/content/talks-es/${name}`, typeof f === 'string' ? f : card(f, 'Cuerpo.'));
   for (const [name, f] of Object.entries(essays))
     put(`src/content/writing/${name}`, typeof f === 'string' ? f : card(f));
   put('src/images/writing/pic.jpg', 'x');
@@ -142,6 +151,39 @@ test('published talk without summary fails; a draft may omit it', () => {
   );
   const draft = { ...bare, draft: 'true' };
   assert.equal(run(tree({ talks: { 'good-talk.md': draft } })).status, 0);
+});
+
+test('published talk without a talks-es overlay fails; a draft may lack one', () => {
+  const label = 'published talks have a talks-es/ overlay';
+  assertFails(tree({ talksEs: {} }), label, 'talks/good-talk.md: no talks-es/good-talk.md');
+  const draft = { ...GOOD_TALK, draft: 'true' };
+  assert.equal(run(tree({ talks: { 'good-talk.md': draft }, talksEs: {} })).status, 0);
+});
+
+test('a talks-es overlay needs a summary', () => {
+  assertFails(
+    tree({ talksEs: { 'good-talk.md': { title: "'Una charla'" } } }),
+    'published talks have a talks-es/ overlay',
+    'talks-es/good-talk.md: empty summary'
+  );
+});
+
+test('a talks-es overlay needs a body when the English card has one', () => {
+  const emptyBody = `---\nsummary: 'Un resumen.'\n---\n`;
+  assertFails(
+    tree({ talksEs: { 'good-talk.md': emptyBody } }),
+    'published talks have a talks-es/ overlay',
+    'talks-es/good-talk.md: empty body, but talks/good-talk.md has one'
+  );
+  // Both empty is fine: some cards carry only a summary.
+  const bodyless = `---\n${Object.entries(GOOD_TALK)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join('\n')}\n---\n`;
+  const root = tree({
+    talks: { 'good-talk.md': bodyless },
+    talksEs: { 'good-talk.md': emptyBody },
+  });
+  assert.equal(run(root).status, 0);
 });
 
 test('published essay without summary fails; a draft may leave it empty', () => {

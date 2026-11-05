@@ -27,8 +27,10 @@ nothing depends on remembering: links, sitemap and hreflang follow the content, 
 
 1. English entry `src/content/talks/<id>.md` (see the existing ones for the frontmatter).
 2. Overlay `src/content/talks-es/<id>.md` with the same filename (frontmatter `title`,
-   `summary`, `description` optional). Every talk needs one; the Spanish page exists
-   only through it.
+   `summary`, `description` optional). Every published talk needs one with a `summary`,
+   and a body when the English card has one; `npm run check:content` fails otherwise.
+   Without it `/es/` still shows the talk, in English, but links and the sitemap treat it
+   as untranslated and `check:i18n` fails.
    - Delivered in **Spanish**: the overlay holds only the Spanish original.
    - Delivered in **English**: the Spanish translation, then an accessibility note, then
      `**Original (English)**` and the English original. Copy the shape of an existing
@@ -63,9 +65,11 @@ page, add it to `ENGLISH_UI` in `scripts/check-i18n.mjs`.
 ## Verify
 
 ```bash
-npm run build && npm run check:ai && npm run check:urls && npm run check:csp && npm run check:i18n
-npx astro check && npx prettier --check .
+npm run gate
 ```
+
+It runs format, content contract, script tests, types, the build and every contract on
+`dist/`, `check:i18n` included.
 
 `check:i18n` fails on: a Spanish page linking to an English route that has a Spanish
 counterpart (a missed rewrite), links to pages that were not built, wrong or missing

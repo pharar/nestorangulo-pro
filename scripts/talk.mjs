@@ -410,6 +410,9 @@ function cmdNew(ctx, { pos, flags }) {
   ctx.deps.out(
     "Left as draft: themes, summary and body are the owner's to supply once the facts are verified."
   );
+  ctx.deps.out(
+    `Before un-drafting, add its Spanish page: src/content/talks-es/${slug}.md (the i18n skill; check:content requires it).`
+  );
 }
 
 function cmdVideo(ctx, { pos }) {
