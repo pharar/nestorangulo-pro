@@ -17,6 +17,17 @@ npm install
 npm run dev        # http://localhost:4321
 ```
 
+`npm install` also runs the `prepare` script, which points `core.hooksPath` at `.githooks/`.
+Its `pre-commit` hook formats staged files with Prettier, so the CI Format check never
+fails on whitespace. Skip it for one commit with `git commit --no-verify`.
+
+Before opening a PR, reproduce what CI will check:
+
+```bash
+npm run format:check && npm run check
+npm run build && npm run check:ai && npm run check:urls && npm run check:csp
+```
+
 ## Available scripts
 
 | Script                 | Description                                                        |
@@ -41,8 +52,10 @@ them.
 
 ```
 .
-├── .claude/skills/            — Claude Code skills for repeatable procedures
-├── .github/workflows/ci.yml   — Type-check, build, Lighthouse audit
+├── .claude/skills/            — Claude Code skills: housekeeping, ai-readable-layer
+├── .githooks/pre-commit       — Prettier on staged files (installed by `prepare`)
+├── .github/workflows/ci.yml   — Format, type check, build + check:ai, URL contract,
+│                                link check, Lighthouse audit
 ├── assets/                    — Design sources (OG template SVG, Montserrat fonts)
 ├── documentation/
 │   ├── AI-READABLE.md         — llms.txt, Markdown twins, robots.txt, check:ai
@@ -53,8 +66,9 @@ them.
 │                                (build contracts), housekeeping.mjs (update report
 │                                and gate)
 ├── src/
-│   ├── components/            — SEO, Header, Footer, Credentials, Press,
-│   │                            Publications, Service
+│   ├── components/            — SEO (meta, JSON-LD graph, Markdown alternate),
+│   │                            Header, Footer, ThemeToggle, Isotipo, Credentials,
+│   │                            Press, Publications, Service
 │   ├── content/talks/         — Talk entries (Markdown, one file per talk)
 │   ├── content/writing/       — Essays (Markdown, one file per essay)
 │   ├── content.config.ts      — `talks` and `writing` collection schemas (Zod)
@@ -62,15 +76,20 @@ them.
 │   ├── data/                  — credentials.ts, publications.ts, service.ts
 │   ├── images/                — Images processed by Astro's asset pipeline
 │   ├── layouts/               — BaseLayout
-│   ├── lib/                   — person.ts, talks.ts (structured data + helpers)
+│   ├── lib/                   — person.ts, structuredData.ts, talkSchema.ts,
+│   │                            writingSchema.ts (JSON-LD nodes); talks.ts,
+│   │                            writing.ts (collection helpers); meta.ts
+│   ├── lib/ai/                — Markdown builders and registry behind the .md
+│   │                            twins, llms.txt and llms-full.txt
 │   ├── pages/                 — index, about, speaking, speaking/[...id],
-│   │                            writing, writing/[...id], contact, 404
+│   │                            writing, writing/[...id], contact, 404;
+│   │                            *.md.ts twins; llms.txt.ts, llms-full.txt.ts
 │   └── styles/                — tokens.css (design system), global.css
 ├── public/                    — Copied verbatim into dist/
-│   ├── _headers               — Security headers (Cloudflare Pages)
+│   ├── _headers               — Security headers, caching, text/markdown for twins
 │   ├── _redirects             — /talks → /speaking 301s (Cloudflare Pages)
 │   ├── .well-known/security.txt
-│   ├── robots.txt             — Points at the generated sitemap
+│   ├── robots.txt             — Sitemap, AI crawler groups, Content-Signal
 │   ├── og/                    — Per-essay social cards (generated, committed)
 │   └── favicon / OG images
 ├── astro.config.mjs           — site, static output, sitemap, CSP
@@ -92,6 +111,12 @@ to hold one back. `/writing` lists them; `/writing/[...id]` renders each one. Fi
 `src/images/writing/` and are referenced relatively from the Markdown so Astro processes them.
 A per-essay social card lives at `public/og/<slug>.png` (1200×630, committed like the other
 generated assets) and is declared in the essay's `ogImage` frontmatter.
+
+Every published talk and essay automatically gets a Markdown twin (`/speaking/<id>.md`,
+`/writing/<slug>.md`), an entry in `/llms.txt` and `/llms-full.txt`, and its JSON-LD node
+(`Event` / `BlogPosting`). Copy that lives only in `.astro` templates (home, about, contact,
+speaking intro) is duplicated in `src/lib/ai/pages/*` and must be updated by hand. In Claude
+Code, the `ai-readable-layer` skill lists what to touch for each kind of change.
 
 ## Security & SEO
 
@@ -132,20 +157,27 @@ audit entirely (see below) and published unreviewed changes directly to producti
 
 Every PR against `main`, and every push to `main`, runs `.github/workflows/ci.yml`:
 
-1. **Type check** — `astro check` with TypeScript strict
-2. **Build** — `astro build`, uploading `dist/` as an artifact
+1. **Format check** — `npm run format:check`. Independent of the other jobs, so a
+   formatting slip never hides a real failure behind a skipped build.
+2. **Type check** — `astro check` with TypeScript strict
+3. **Build** — `astro build`, then `npm run check:ai` (llms.txt, Markdown twins, JSON-LD
+   graph, robots.txt; see [AI-READABLE.md](./documentation/AI-READABLE.md)), uploading
+   `dist/` as an artifact
 
 Then, in parallel off that artifact:
 
-3. **URL contract** — `npm run check:urls`. Asserts canonicals, sitemap and internal
+4. **URL contract** — `npm run check:urls`. Asserts canonicals, sitemap and internal
    links all agree on the trailing-slash form. Added because that invariant broke
    silently: the build succeeded and Lighthouse passed while 37 of 41 canonicals
    pointed at a redirect.
-4. **Link check** — [lychee](https://lychee.cli.rs) over the built HTML, the markdown,
+5. **Link check** — [lychee](https://lychee.cli.rs) over the built HTML, the markdown,
    and `security.txt`. Added because the `security.txt` Policy URL was dead for months.
    Config in `lychee.toml`; the site's own domain is excluded there, deliberately.
-5. **Lighthouse audit** — asserts a11y ≥ 0.95, SEO ≥ 0.95, perf ≥ 0.9, and warns under
+6. **Lighthouse audit** — asserts a11y ≥ 0.95, SEO ≥ 0.95, perf ≥ 0.9, and warns under
    best-practices 0.9
+
+`npm run check:csp` is **not** a CI step yet: it runs locally and as part of
+`npm run housekeeping:verify`.
 
 CodeQL also runs on every PR. It is GitHub's _default setup_, configured in the repo
 settings rather than in `.github/workflows/`, which is why no file here describes it.
@@ -172,8 +204,9 @@ Settings → Rules → Rulesets → New ruleset, targeting `main`:
   GitHub will not let you approve your own PR, so requiring 1 on a single-maintainer
   repo locks you out of your own `main`.
 - **Require status checks to pass before merging**, selecting:
+  - `Format check`
   - `Type check`
-  - `Build`
+  - `Build` (includes `check:ai`)
   - `URL contract`
   - `Link check`
   - `Lighthouse audit`
@@ -211,7 +244,30 @@ verification, and rollback.
 - **Chunk 1** ✅ Scaffolding, design system, landing, contact, CI
 - **Chunk 2** ✅ `/about` full biography
 - **Chunk 3** ✅ `/speaking` with Astro Content Collections
-- **Chunk 4** — `/writing` with MDX blog posts (page is currently a "Coming next" placeholder)
+- **Chunk 4** ✅ `/writing` with an essays Content Collection, per-essay OG cards, and
+  essays linked to their related talks
+- **Chunk 5** ✅ AI-readable layer: `/llms.txt`, `/llms-full.txt`, Markdown twins, JSON-LD
+  `@graph`, AI-crawler `robots.txt` with Content-Signal, `check:ai` in CI
+- **Chunk 6** 🚧 i18n: Spanish (`/es/…`) versions of pages, talks and essays. The AI layer
+  must follow: Spanish Markdown twins, localised breadcrumbs, and `inLanguage`
+- **Chunk 7** 🛠️ Skills / MCP: Claude Code skills for repeatable site procedures (two
+  exist today: `housekeeping` and `ai-readable-layer`) and an MCP surface for the site's
+  content
+
+Alongside the chunks, ✅ **Housekeeping** (#49) scripted dependency and runtime updates.
+
+### Candidates to assess next
+
+- **RSS/Atom feed for `/writing`**: the standard subscription channel for essays, also
+  read by aggregators and AI tools. Would be added to `llms.txt` and `<head>`.
+- **`check:csp` in CI**: the contract exists but only runs locally. Adding it is a single
+  step in the Build job.
+- **Per-talk OG cards**: essays have their own social image, talks still share
+  `og-default.png`.
+- **Speaker / press kit page**: bios in several lengths, photos and topics in one place
+  for organisers, with matching JSON-LD and a Markdown twin.
+- **Privacy-friendly analytics** (e.g. Cloudflare Web Analytics): to measure what is read
+  and which AI assistants send traffic. Requires a CSP change.
 
 ## License
 
