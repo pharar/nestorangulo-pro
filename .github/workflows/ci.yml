@@ -32,6 +32,26 @@ jobs:
       - run: npm ci
       - run: npm run format:check
 
+  # Independent for the same reason as `format`: the content contract reads the
+  # Markdown sources directly and needs no build. It exists because the Zod
+  # schema cannot see what the site assumes about a card (a published talk has a
+  # summary, the featured shelf holds six, a slides URL names its own file, an
+  # essay's social card is 1200x630) and each of those breaks quietly. The script
+  # tests ride along because the checks and the frontmatter helper are code too.
+  content:
+    name: Content
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run check:content
+      - run: npm run test:scripts
+
   typecheck:
     name: Type check
     runs-on: ubuntu-latest
