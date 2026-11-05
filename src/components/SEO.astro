@@ -2,6 +2,8 @@
 import { pageGraph, type PageStructuredData } from '../lib/structuredData';
 import { SITE_URL, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '../config';
 import { ogLocale, metaDescription } from '../lib/meta';
+import { absoluteUrl, markdownPathFor } from '../lib/ai/paths';
+import { getMarkdownPages } from '../lib/ai/registry';
 
 interface Props {
   title?: string;
@@ -36,6 +38,14 @@ const {
 const metaDesc = metaDescription(description);
 const ogDesc = metaDescription(ogDescription);
 
+// Markdown twin (see src/lib/ai/paths.ts). Only advertised when the page has a
+// canonical (not the 404) and the registry actually builds that `.md` file.
+const mdPath = canonical === null ? null : markdownPathFor(Astro.url.pathname);
+const markdownAlternate =
+  mdPath && (await getMarkdownPages()).some((p) => p.mdPath === mdPath)
+    ? absoluteUrl(mdPath)
+    : null;
+
 const graph = pageGraph({
   ...structuredData,
   url: canonical,
@@ -49,6 +59,7 @@ const graph = pageGraph({
 <title>{title}</title>
 <meta name="description" content={metaDesc} />
 {canonical && <link rel="canonical" href={canonical} />}
+{markdownAlternate && <link rel="alternate" type="text/markdown" href={markdownAlternate} />}
 <meta name="robots" content="index, follow" />
 <meta name="color-scheme" content="light dark" />
 <meta name="theme-color" content="#faf9f7" media="(prefers-color-scheme: light)" />

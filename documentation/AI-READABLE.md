@@ -32,6 +32,41 @@ Each HTML page advertises its twin with
 `<link rel="alternate" type="text/markdown" href="…">`, so an agent that lands on the HTML
 can switch to the cheaper representation.
 
+## `llms.txt` and `llms-full.txt`
+
+Both are built from the Markdown registry, `getMarkdownPages()` in
+`src/lib/ai/registry.ts` (core pages, then talks newest first), so neither can list a page
+that has no twin. Endpoints: `src/pages/llms.txt.ts` and `src/pages/llms-full.txt.ts`;
+both answer `text/markdown; charset=utf-8`.
+
+`llms.txt` follows [llmstxt.org](https://llmstxt.org/):
+
+1. `# Nestor Angulo de Ugarte`, then a `> ` summary built from `DEFAULT_DESCRIPTION` in
+   `src/config.ts`;
+2. one plain paragraph of facts taken from the Person schema (`src/lib/person.ts`: job
+   title, credential, ISC2 chapter role, alma mater, `knowsAbout`), the talk count, and
+   how to use the links (cite the HTML, read the `.md`);
+3. `## Core pages`, `## Speaking` (every published talk, newest first, with ISO date and
+   language) and — once essays exist in the registry — `## Writing`; each line is
+   `- [label](absolute .md URL): description`;
+4. `## Optional`: `llms-full.txt`, the sitemap and the HTML home page.
+
+`llms-full.txt` is a short preamble followed by every twin verbatim, each preceded by a
+`---` rule and an `<!-- Page n of N: <md url> -->` comment, so pages stay separable even
+when a talk body contains its own `---`.
+
+New collections appear in both files by being appended to `getMarkdownPages()`; the
+`## Writing` section in `llms.txt` is already wired to the `writing` section.
+
+### The `rel="alternate"` link
+
+`src/components/SEO.astro` emits
+`<link rel="alternate" type="text/markdown" href="https://nestorangulo.pro/<path>.md">`
+next to the canonical, using `markdownPathFor(Astro.url.pathname)`. It is skipped when
+`canonical` is `null` (the 404) and when the registry does not build that `.md` file, so
+it can never point at a missing twin. There is no `<link>` to `/llms.txt`: llmstxt.org
+defines only the well-known path, and no `rel` value for it is a recognised convention.
+
 ## `robots.txt` and content signals
 
 `User-agent: *` is allowed everywhere, and the main AI search, assistant and training
