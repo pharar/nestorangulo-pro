@@ -41,13 +41,20 @@ These are configured once in the Cloudflare Pages project and rarely change:
 | Build command          | `npm run build` |
 | Build output directory | `dist`          |
 | Root directory         | _(blank)_       |
-| `NODE_VERSION`         | `24`            |
+| `NODE_VERSION`         | `26`            |
 
-Node 24 LTS is pinned in `.nvmrc` (which Pages does respect), but the explicit
+Node 26 LTS is pinned in `.nvmrc` (which Pages does respect), but the explicit
 `NODE_VERSION` environment variable — set for **both** Production and Preview — is the
 reliable belt-and-braces version, since Pages otherwise defaults to an older Node.
 
-`package.json` declares `engines.node >= 24.0.0` and `packageManager: npm@11.12.1`.
+**The variable wins over `.nvmrc`.** Moving the pin in the repo therefore does not move
+production: CI follows `.nvmrc` straight away, while Pages keeps building on whatever the
+dashboard says until the variable is changed there too. Change both in the same sitting —
+see [HOUSEKEEPING.md](./HOUSEKEEPING.md#pieces-that-live-outside-the-repo).
+
+`package.json` declares `engines.node >= 24.0.0` — the oldest line the build has been
+verified on, deliberately a floor rather than a copy of the pin — and
+`packageManager: npm@12.2.2`.
 
 ### Environment variables
 
@@ -165,7 +172,7 @@ The canonical remote is `https://github.com/pharar/nestorangulo-pro.git` on bran
 
 ### 3. Set `NODE_VERSION`
 
-Project → **Settings** → **Environment variables** → add `NODE_VERSION = 24` to both
+Project → **Settings** → **Environment variables** → add `NODE_VERSION = 26` to both
 Production and Preview.
 
 ### 4. Attach the [custom domain](#custom-domain).
@@ -229,7 +236,7 @@ headless Chromium — so a first run may need `npx playwright install chromium`.
 ## Local verification before pushing
 
 ```bash
-nvm use            # Node 24
+nvm use            # Node 26
 npm ci
 npm run check      # astro check — same as CI
 npm run build      # static build to ./dist
