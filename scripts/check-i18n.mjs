@@ -164,7 +164,8 @@ for (const [route, file] of pages) {
   const visible = body
     .replace(/<[^>]+>/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/&amp;/g, '&').replace(/&#39;/g, "'").trim())
+    // Decode &amp; last so '&amp;#39;' stays literal (no double unescaping).
+    .map((l) => l.replace(/&#39;/g, "'").replace(/&amp;/g, '&').trim())
     .filter(Boolean);
   for (const line of visible) {
     for (const word of ENGLISH_UI) {
