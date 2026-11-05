@@ -36,6 +36,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "check:urls": "node scripts/check-urls.mjs",
+    "check:ai": "node scripts/check-ai-layer.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "og": "node scripts/build-og.mjs"
