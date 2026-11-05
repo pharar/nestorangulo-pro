@@ -50,4 +50,32 @@ const talks = defineCollection({
     }),
 });
 
-export const collections = { talks };
+/**
+ * Essays. Deliberately a smaller schema than `talks`: an essay has no event,
+ * venue or format — just the piece, when it was published, and what it is
+ * about. `summary` is the listing blurb; `description` (optional) overrides it
+ * for the meta tag when the blurb is too long or too conversational.
+ */
+const writing = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/writing' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      /** One line shown under the title on the page and in the listing. */
+      subtitle: z.string().optional(),
+      date: z.coerce.date(),
+      /** Last substantive edit, when it differs from `date`. */
+      updated: z.coerce.date().optional(),
+      summary: z.string(),
+      description: z.string().optional(),
+      language: z.enum(['en', 'es']).default('en'),
+      themes: z.array(z.string()).default([]),
+      draft: z.boolean().default(false),
+      cover: image().optional(),
+      coverAlt: z.string().optional(),
+      /** Path under public/ for the social card; falls back to the site default. */
+      ogImage: z.string().optional(),
+    }),
+});
+
+export const collections = { talks, writing };

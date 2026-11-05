@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="1200" height="420" role="img" aria-labelledby="t d">
+  <title id="t">The Cyber Resilience Act reporting clock</title>
+  <desc id="d">Timeline for an actively exploited vulnerability under CRA Article 14: early warning within 24 hours and notification within 72 hours of becoming aware, then a final report within 14 days of a fix or workaround being available. Obligations in force since 11 September 2026; the rest of the regulation, including the SBOM, applies from 11 December 2027.</desc>
+  <defs>
+    <style>
+      .ln { fill: none; stroke: #8a8580; stroke-width: 2.5; stroke-linecap: round; }
+      .ln-dash { fill: none; stroke: #8a8580; stroke-width: 2; stroke-linecap: round; stroke-dasharray: 3 8; }
+      .tick { fill: none; stroke: #8a8580; stroke-width: 2.5; stroke-linecap: round; }
+      .dot { fill: #8a8580; }
+      .gold { fill: #c08c50; }
+      .gold-ln { fill: none; stroke: #c08c50; stroke-width: 3; stroke-linecap: round; }
+      .big { font-family: 'Fraunces Variable', Georgia, serif; font-style: italic; font-size: 44px; fill: #c08c50; }
+      .lbl { font-family: 'IBM Plex Mono', 'Fira Code', monospace; font-size: 15px; letter-spacing: .05em; fill: #8a8580; }
+      .lbl-sm { font-family: 'IBM Plex Mono', 'Fira Code', monospace; font-size: 13px; letter-spacing: .04em; fill: #8a8580; opacity: .85; }
+      .cap { font-family: 'IBM Plex Mono', 'Fira Code', monospace; font-size: 14px; letter-spacing: .06em; fill: #8a8580; }
+    </style>
+  </defs>
+
+  <!-- ── first clock: from awareness ───────────────────────── -->
+  <text class="lbl" x="100" y="86">CLOCK 1 · FROM BECOMING AWARE</text>
+  <line class="ln" x1="100" y1="200" x2="560" y2="200"/>
+  <!-- T0 -->
+  <circle class="dot" cx="100" cy="200" r="7"/>
+  <text class="lbl-sm" x="100" y="246" text-anchor="middle">aware</text>
+  <text class="lbl-sm" x="100" y="266" text-anchor="middle">T0</text>
+  <!-- 24h -->
+  <line class="tick" x1="300" y1="186" x2="300" y2="214"/>
+  <text class="big" x="300" y="160" text-anchor="middle">24h</text>
+  <text class="lbl-sm" x="300" y="246" text-anchor="middle">early warning</text>
+  <!-- 72h -->
+  <line class="tick" x1="560" y1="186" x2="560" y2="214"/>
+  <text class="big" x="560" y="160" text-anchor="middle">72h</text>
+  <text class="lbl-sm" x="560" y="246" text-anchor="middle">notification</text>
+
+  <!-- gap: the clock resets when a fix exists -->
+  <line class="ln-dash" x1="572" y1="200" x2="768" y2="200"/>
+  <text class="lbl-sm" x="670" y="278" text-anchor="middle">…however long it takes</text>
+  <text class="lbl-sm" x="670" y="296" text-anchor="middle">to have a fix or workaround</text>
+
+  <!-- ── second clock: from the fix ─────────────────────────── -->
+  <text class="lbl" x="780" y="86">CLOCK 2 · FROM THE FIX</text>
+  <line class="gold-ln" x1="780" y1="200" x2="1100" y2="200"/>
+  <circle class="gold" cx="780" cy="200" r="7"/>
+  <text class="lbl-sm" x="780" y="246" text-anchor="middle">fix exists</text>
+  <line class="tick" x1="1100" y1="186" x2="1100" y2="214" stroke="#c08c50"/>
+  <text class="big" x="1100" y="160" text-anchor="middle">14 days</text>
+  <text class="lbl-sm" x="1100" y="246" text-anchor="middle">final report</text>
+
+  <!-- footer -->
+  <line class="ln-dash" x1="100" y1="318" x2="1100" y2="318"/>
+  <text class="cap" x="100" y="356">IN FORCE SINCE 11 SEP 2026 · ART. 14, ACTIVELY EXPLOITED VULNERABILITY</text>
+  <text class="cap" x="100" y="384">FROM 11 DEC 2027 · THE REST, INCLUDING THE SBOM</text>
+</svg>
