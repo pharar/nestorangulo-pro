@@ -26,7 +26,8 @@ for the other platform.
 - Do not push, open a PR, merge, upload to R2, or change anything outside the repo
   (Cloudflare dashboard, DNS, buckets) without explicit confirmation from the owner.
 - Run `npm run gate` before handing anything over. It runs every local check: format,
-  content contract, script tests, types, build, URL, CSP and AI-readable-layer contracts.
+  content contract, script tests, types, build, URL, CSP, AI-readable-layer and bilingual
+  (en/es) contracts.
 
 ## Invariants
 
@@ -81,13 +82,14 @@ frontmatter field by field without reformatting it), with `node:test` tests besi
 
 ## Action index
 
-| Action                       | Skill                       | Command                                                                | Doc                                                                                      |
-| ---------------------------- | --------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Update dependencies, runtime | `housekeeping`              | `npm run housekeeping`, `housekeeping:baseline`, `housekeeping:verify` | [HOUSEKEEPING.md](./documentation/HOUSEKEEPING.md)                                       |
-| Write and publish an essay   | `post`                      | `npm run post -- list\|new\|og\|check\|publish\|touch`                 | [WRITING.md](./documentation/WRITING.md)                                                 |
-| Add, feature, host a talk    | `talk`                      | `npm run talk -- <verb>`                                               | [SPEAKING.md](./documentation/SPEAKING.md), [SLIDES-R2.md](./documentation/SLIDES-R2.md) |
-| Keep the AI-readable layer   | `ai-readable-layer`         | `npm run check:ai`                                                     | [AI-READABLE.md](./documentation/AI-READABLE.md)                                         |
-| Run every local check        | (none; part of every skill) | `npm run gate`                                                         | this file                                                                                |
-| Check content rules          | (none yet)                  | `npm run check:content`                                                | header of `scripts/check-content.mjs`; [README](./README.md#content)                     |
+| Action                           | Skill                       | Command                                                                | Doc                                                                                      |
+| -------------------------------- | --------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Update dependencies, runtime     | `housekeeping`              | `npm run housekeeping`, `housekeeping:baseline`, `housekeeping:verify` | [HOUSEKEEPING.md](./documentation/HOUSEKEEPING.md)                                       |
+| Write and publish an essay       | `post`                      | `npm run post -- list\|new\|og\|check\|publish\|touch`                 | [WRITING.md](./documentation/WRITING.md)                                                 |
+| Add, feature, host a talk        | `talk`                      | `npm run talk -- <verb>`                                               | [SPEAKING.md](./documentation/SPEAKING.md), [SLIDES-R2.md](./documentation/SLIDES-R2.md) |
+| Keep the AI-readable layer       | `ai-readable-layer`         | `npm run check:ai`                                                     | [AI-READABLE.md](./documentation/AI-READABLE.md)                                         |
+| Keep English and Spanish in step | `i18n`                      | `npm run check:i18n`                                                   | [I18N.md](./documentation/I18N.md)                                                       |
+| Run every local check            | (none; part of every skill) | `npm run gate`                                                         | this file                                                                                |
+| Check content rules              | (none yet)                  | `npm run check:content`                                                | header of `scripts/check-content.mjs`; [README](./README.md#content)                     |
 
 Add a row when a new repeatable action gains its skill, script and doc.

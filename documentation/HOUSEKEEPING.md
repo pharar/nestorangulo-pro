@@ -40,14 +40,14 @@ whether it still builds _the same site_.
 
 ### The commands
 
-| Command                                   | What it does                                                                                                                                                                             |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run housekeeping`                    | Read-only report: runtime pins, outdated dependencies, held majors, overrides, advisories, Dependabot alerts, CI action versions, open Dependabot PRs                                    |
-| `npm run housekeeping:baseline`           | Builds and snapshots `dist/` for later comparison                                                                                                                                        |
-| `npm run housekeeping:verify`             | The shared gate (`npm run gate`: format, content contract, script tests, types, build, URL, CSP and AI-readable-layer contracts), `npm audit`; then diffs the build against the baseline |
-| `npm run housekeeping:verify -- --assets` | The same, and regenerates the favicons and OG card to confirm the committed files still come out byte-identical                                                                          |
-| `npm run housekeeping:probe-ts`           | Installs the newest TypeScript, runs `astro check`, restores everything. Takes a version or dist-tag: `… -- beta`                                                                        |
-| `npm run check:csp`                       | The CSP contract on its own: every inline script and style in `dist/` is allowed by the policy the page declares. Needs a build first.                                                   |
+| Command                                   | What it does                                                                                                                                                                                        |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run housekeeping`                    | Read-only report: runtime pins, outdated dependencies, held majors, overrides, advisories, Dependabot alerts, CI action versions, open Dependabot PRs                                               |
+| `npm run housekeeping:baseline`           | Builds and snapshots `dist/` for later comparison                                                                                                                                                   |
+| `npm run housekeeping:verify`             | The shared gate (`npm run gate`: format, content contract, script tests, types, build, URL, CSP, AI-readable-layer and bilingual contracts), `npm audit`; then diffs the build against the baseline |
+| `npm run housekeeping:verify -- --assets` | The same, and regenerates the favicons and OG card to confirm the committed files still come out byte-identical                                                                                     |
+| `npm run housekeeping:probe-ts`           | Installs the newest TypeScript, runs `astro check`, restores everything. Takes a version or dist-tag: `… -- beta`                                                                                   |
+| `npm run check:csp`                       | The CSP contract on its own: every inline script and style in `dist/` is allowed by the policy the page declares. Needs a build first.                                                              |
 
 The report needs the network: the npm registry, nodejs.org, and the GitHub API. The
 repository is public, so most of it works without a token, but anonymous GitHub access is

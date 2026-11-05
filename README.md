@@ -183,8 +183,9 @@ Every PR against `main`, and every push to `main`, runs `.github/workflows/ci.ym
    formatting slip never hides a real failure behind a skipped build.
 2. **Type check** — `astro check` with TypeScript strict
 3. **Build** — `astro build`, then `npm run check:ai` (llms.txt, Markdown twins, JSON-LD
-   graph, robots.txt; see [AI-READABLE.md](./documentation/AI-READABLE.md)), uploading
-   `dist/` as an artifact
+   graph, robots.txt; see [AI-READABLE.md](./documentation/AI-READABLE.md)) and
+   `npm run check:i18n` (en/es pairs, hreflang, language switch, localised links, sitemap
+   alternates; see [I18N.md](./documentation/I18N.md)), uploading `dist/` as an artifact
 
 Independently of those, a **Content** job runs `npm run check:content` and
 `npm run test:scripts`: the content contract (what the Zod schema cannot see) and the

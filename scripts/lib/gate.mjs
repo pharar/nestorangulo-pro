@@ -25,6 +25,7 @@ const BASE_STEPS = [
   ['URL contract', 'check:urls', 'Build'],
   ['CSP contract', 'check:csp', 'Build'],
   ['AI-readable layer', 'check:ai', 'Build'],
+  ['Bilingual contract', 'check:i18n', 'Build'],
 ];
 
 /** The ordered steps for the package.json in `cwd`. */
