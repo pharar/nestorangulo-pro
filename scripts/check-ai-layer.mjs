@@ -36,6 +36,9 @@ function walk(dir) {
   return out;
 }
 
+/** Escape every RegExp metacharacter (backslash included) for literal use. */
+const escapeRegExp = (value) => value.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
+
 const failures = [];
 function check(label, ok, detail) {
   if (ok) {
@@ -133,7 +136,7 @@ check('robots.txt exists', robots !== null, `${DIST}/robots.txt is missing`);
 if (robots !== null) {
   check(
     'robots.txt declares the sitemap',
-    new RegExp(`^\\s*sitemap:\\s*${ORIGIN.replace(/[.]/g, '\\.')}/\\S+`, 'im').test(robots),
+    new RegExp(`^\\s*sitemap:\\s*${escapeRegExp(ORIGIN)}/\\S+`, 'im').test(robots),
     `  no \`Sitemap: ${ORIGIN}/...\` line`
   );
   // A stray `Disallow: /` (or an empty-path `Allow:` turned Disallow) in any
@@ -212,7 +215,9 @@ for (const page of pages) {
   // JSON-LD
   const nodes = [];
   const errors = [];
-  for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)) {
+  // Tag matching is case-insensitive and tolerant of `</script >` and
+  // `</script foo>`, the way a browser ends a script element (as check-csp does).
+  for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi)) {
     if ((attrs(m[1]).type ?? '').toLowerCase() !== 'application/ld+json') continue;
     try {
       const data = JSON.parse(m[2]);
