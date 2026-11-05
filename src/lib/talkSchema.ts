@@ -49,17 +49,30 @@ function placeOf(location: string) {
 }
 
 /**
- * Thumbnails, where the host makes them derivable from the URL.
+ * What a video host lets us state about a recording without inventing it.
  *
- * Google wants `thumbnailUrl` on a VideoObject. YouTube and Dailymotion expose
- * a predictable path; wordpress.tv, which hosts most of these talks, does not —
- * those VideoObjects ship without one rather than with a fabricated URL.
+ * Google only treats a VideoObject as valid with a `thumbnailUrl` and a
+ * `contentUrl` or `embedUrl`. YouTube and Dailymotion make both derivable from
+ * the watch URL. wordpress.tv, which hosts most of these talks, does not, so
+ * those recordings get no VideoObject at all: the link stays on the page and in
+ * its Markdown twin. To bring one back, its thumbnail and embed URL would have
+ * to be recorded in the talk's frontmatter.
  */
-export function videoThumbnail(url: string): string | undefined {
+export function videoEmbed(url: string): { embedUrl: string; thumbnailUrl: string } | undefined {
   const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/);
-  if (yt) return `https://i.ytimg.com/vi/${yt[1]}/hqdefault.jpg`;
+  if (yt) {
+    return {
+      embedUrl: `https://www.youtube.com/embed/${yt[1]}`,
+      thumbnailUrl: `https://i.ytimg.com/vi/${yt[1]}/hqdefault.jpg`,
+    };
+  }
   const dm = url.match(/dailymotion\.com\/video\/([a-zA-Z0-9]+)/);
-  if (dm) return `https://www.dailymotion.com/thumbnail/video/${dm[1]}`;
+  if (dm) {
+    return {
+      embedUrl: `https://www.dailymotion.com/embed/video/${dm[1]}`,
+      thumbnailUrl: `https://www.dailymotion.com/thumbnail/video/${dm[1]}`,
+    };
+  }
   return undefined;
 }
 
@@ -123,18 +136,20 @@ export function talkEventNode(entry: Talk): Record<string, unknown> {
     };
   }
 
-  if (d.videoUrl) {
-    const thumbnail = videoThumbnail(d.videoUrl);
+  const video = d.videoUrl ? videoEmbed(d.videoUrl) : undefined;
+  if (d.videoUrl && video) {
     event.recordedIn = {
       '@type': 'VideoObject',
       name: d.title,
-      contentUrl: d.videoUrl,
+      // The watch page. `contentUrl` is reserved for the media file itself.
+      url: d.videoUrl,
+      embedUrl: video.embedUrl,
+      thumbnailUrl: video.thumbnailUrl,
       // The talk date, not the upload date — the page states no upload date, so
       // claiming a precise one would be inventing data.
       uploadDate: day,
       inLanguage: d.language,
       ...(description ? { description } : {}),
-      ...(thumbnail ? { thumbnailUrl: thumbnail } : {}),
     };
   }
 
