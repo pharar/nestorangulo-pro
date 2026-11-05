@@ -1,7 +1,7 @@
 /**
  * `core`     — top-level pages (home, about, speaking index, writing index, contact)
  * `speaking` — one entry per talk
- * `writing`  — one entry per essay (reserved for the writing collection)
+ * `writing`  — one entry per essay
  */
 export type MarkdownSection = 'core' | 'speaking' | 'writing';
 

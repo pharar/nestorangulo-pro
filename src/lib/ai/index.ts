@@ -7,4 +7,4 @@ export { aboutPage } from './pages/about';
 export { contactPage } from './pages/contact';
 export { homePage } from './pages/home';
 export { getTalksNewestFirst, speakingPage, talkPage, talkPages } from './pages/talks';
-export { writingPage } from './pages/writing';
+export { writingPage, writingPostPage, writingPostPages } from './pages/writing';

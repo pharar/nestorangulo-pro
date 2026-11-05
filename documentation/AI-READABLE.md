@@ -26,6 +26,7 @@ The twin lives at the page path with the trailing slash replaced by `.md`:
 | `/about/`                | `/about.md`                  |
 | `/speaking/`             | `/speaking.md`               |
 | `/speaking/<id>/`        | `/speaking/<id>.md`          |
+| `/writing/<id>/`         | `/writing/<id>.md`           |
 | `/contact/`, `/writing/` | `/contact.md`, `/writing.md` |
 
 Each HTML page advertises its twin with
@@ -35,7 +36,7 @@ can switch to the cheaper representation.
 ## `llms.txt` and `llms-full.txt`
 
 Both are built from the Markdown registry, `getMarkdownPages()` in
-`src/lib/ai/registry.ts` (core pages, then talks newest first), so neither can list a page
+`src/lib/ai/registry.ts` (core pages, then talks newest first, then essays newest first), so neither can list a page
 that has no twin. Endpoints: `src/pages/llms.txt.ts` and `src/pages/llms-full.txt.ts`;
 both answer `text/markdown; charset=utf-8`.
 
@@ -47,7 +48,7 @@ both answer `text/markdown; charset=utf-8`.
    title, credential, ISC2 chapter role, alma mater, `knowsAbout`), the talk count, and
    how to use the links (cite the HTML, read the `.md`);
 3. `## Core pages`, `## Speaking` (every published talk, newest first, with ISO date and
-   language) and — once essays exist in the registry — `## Writing`; each line is
+   language) and `## Writing` (every published essay, newest first); each line is
    `- [label](absolute .md URL): description`;
 4. `## Optional`: `llms-full.txt`, the sitemap and the HTML home page.
 
@@ -55,8 +56,13 @@ both answer `text/markdown; charset=utf-8`.
 `---` rule and an `<!-- Page n of N: <md url> -->` comment, so pages stay separable even
 when a talk body contains its own `---`.
 
-New collections appear in both files by being appended to `getMarkdownPages()`; the
-`## Writing` section in `llms.txt` is already wired to the `writing` section.
+New collections appear in both files by being appended to `getMarkdownPages()`.
+
+Essay twins (`src/lib/ai/pages/writing.ts`) keep the authored body as-is: root-relative
+links become absolute, and the relative figure paths the HTML build resolves
+(`../../images/writing/…`) are pointed at the asset Astro emitted for the same file.
+Essays and their twins share one source of truth for what is published,
+`getPublishedEssays()` in `src/lib/writing.ts` (no drafts, newest first).
 
 ### The `rel="alternate"` link
 
