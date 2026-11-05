@@ -61,6 +61,17 @@ function check(label, offenders) {
   }
 }
 
+/**
+ * True when `url` is exactly `slides/<stem>-<10 hex>.pdf` on the assets host.
+ * Compared as strings: the stem comes from a file name, and building a pattern
+ * out of it would let a name with regex syntax in it change what is matched.
+ */
+function isDeckUrlFor(stem, url) {
+  const prefix = `https://${SLIDES_HOST}/slides/${stem}-`;
+  const s = String(url);
+  return s.startsWith(prefix) && /^[0-9a-f]{10}\.pdf$/.test(s.slice(prefix.length));
+}
+
 const where = (e) => `${e.collection}/${e.name}`;
 
 console.log(`\nchecked ${talks.length} talk(s), ${writing.length} essay(s) in ${ROOT}\n`);
@@ -124,12 +135,7 @@ check(
   'slidesUrl on the assets host is slides/<file-stem>-<10 hex>.pdf',
   talks
     .filter((e) => e.data.slidesUrl && new URL(String(e.data.slidesUrl)).hostname === SLIDES_HOST)
-    .filter(
-      (e) =>
-        !new RegExp(
-          `^https://${SLIDES_HOST.replace(/\./g, '\\.')}/slides/${e.stem}-[0-9a-f]{10}\\.pdf$`
-        ).test(String(e.data.slidesUrl))
-    )
+    .filter((e) => !isDeckUrlFor(e.stem, e.data.slidesUrl))
     .map((e) => `${where(e)}: ${e.data.slidesUrl}`)
 );
 
