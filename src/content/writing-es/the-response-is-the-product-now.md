@@ -60,7 +60,7 @@ La pregunta útil sobre una SBOM no es "¿tenemos una?". Es: cuando salga el pr�
 
 ## La respuesta es ahora el producto
 
-Antes los clientes compraban software dando por hecho que era seguro, o pedían un informe de pentest una vez al año. Ahora el cuestionario llega antes que el contrato, y la pregunta de fondo no es "¿has encontrado todos tus bugs?". Nadie lo ha hecho. Es: cuando se encuentra algo, ¿qué pasa y con qué rapidez? Y el cuestionario tampoco es mera curiosidad. Es la responsabilidad bajando por la cadena, algo que merece un artículo aparte.
+Antes los clientes compraban software dando por hecho que era seguro, o pedían un informe de pentest una vez al año. Ahora el cuestionario llega antes que el contrato, y la pregunta de fondo no es "¿has encontrado todos tus bugs?". Nadie lo ha hecho. Es: cuando se encuentra algo, ¿qué pasa y con qué rapidez? Y el cuestionario tampoco es mera curiosidad. Es la responsabilidad bajando por la cadena, algo que merece un artículo aparte.[^4]
 
 Eso convierte la respuesta a vulnerabilidades en una característica del producto. Es visible, es comparable entre proveedores y, desde este otoño, corre contra un reloj regulatorio. Los equipos que la traten como un trabajo secundario de la persona de seguridad perderán contratos frente a los que la traten como parte de lo que venden.
 
@@ -75,3 +75,5 @@ El robot es del mismo tamaño en los dos bandos. Lo que deberían mirar es al pi
 [^2]: El relato completo de esa herramienta, incluido lo que nunca llegó a conseguir: [We Built an AI That Finds Vulnerabilities in Plugins. So Can Everyone Else.](/speaking/kozhikode-2026-ai-finds-vulnerabilities/), WP Future Conclave, septiembre de 2026. Este artículo es su versión escrita.
 
 [^3]: El ciclo de vida desde el bug hasta el parche, con el CRA de fondo: [De la Plantà a la Cremà](/speaking/valencia-meetup-2025-ciclo-vida-vulnerabilidades/), WordPress Meetup Valencia, abril de 2025.
+
+[^4]: El cuestionario en sí, bloque a bloque, y cómo contestarlo con honestidad sin departamento de seguridad: [Tu (posible) cliente te ha mandado un cuestionario de seguridad: guía de supervivencia](/speaking/valencia-2026-cuestionario-seguridad/), WordCamp Valencia 2026.
