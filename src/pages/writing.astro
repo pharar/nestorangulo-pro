@@ -1,10 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_URL } from '../config';
 ---
 
 <BaseLayout
   title="Writing — Nestor Angulo de Ugarte"
   description="Essays on security program design, vulnerability intelligence, incident response, and organizational security practice."
+  structuredData={{
+    type: 'CollectionPage',
+    breadcrumbs: [{ name: 'Writing', url: `${SITE_URL}/writing/` }],
+  }}
 >
   <div class="container">
     <div class="page-header">

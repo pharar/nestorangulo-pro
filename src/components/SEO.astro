@@ -1,5 +1,5 @@
 ---
-import { personSchema } from '../lib/person';
+import { pageGraph, type PageStructuredData } from '../lib/structuredData';
 import { SITE_URL, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '../config';
 import { ogLocale, metaDescription } from '../lib/meta';
 
@@ -13,8 +13,10 @@ interface Props {
   ogImage?: string;
   /** BCP-47 language of this page's content. Drives <html lang> and og:locale. */
   lang?: string;
-  /** Pass true on the homepage and /about to emit Person structured data */
+  /** Pass true on the homepage and /about to emit the full Person node */
   person?: boolean;
+  /** This page's contribution to the JSON-LD @graph (page type, crumbs, nodes). */
+  structuredData?: PageStructuredData;
 }
 
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.png`;
@@ -28,10 +30,20 @@ const {
   ogImage = DEFAULT_OG_IMAGE,
   person = false,
   lang = 'en',
+  structuredData = {},
 } = Astro.props;
 
 const metaDesc = metaDescription(description);
 const ogDesc = metaDescription(ogDescription);
+
+const graph = pageGraph({
+  ...structuredData,
+  url: canonical,
+  name: title,
+  description,
+  lang,
+  fullPerson: person,
+});
 ---
 
 <title>{title}</title>
@@ -57,7 +69,9 @@ const ogDesc = metaDescription(ogDescription);
 <meta name="twitter:description" content={ogDesc} />
 <meta name="twitter:image" content={ogImage} />
 
-<!-- Person structured data (homepage and /about) -->
-{person && (
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)}></script>
-)}
+<!-- Structured data: one @graph per page (see src/lib/structuredData.ts) -->
+<script
+  is:inline
+  type="application/ld+json"
+  set:html={JSON.stringify(graph).replace(/</g, '\\u003c')}
+></script>

@@ -3,13 +3,14 @@ import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedTalks } from '../lib/talks';
-import { speakingListSchema } from '../lib/talkSchema';
+import { SPEAKING_LIST_ID, speakingListNode } from '../lib/talkSchema';
+import { SITE_URL } from '../config';
 
 const talks = (await getPublishedTalks()).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
 );
 
-const listSchema = speakingListSchema(talks);
+const listNode = speakingListNode(talks);
 
 const featured = talks.filter((t) => t.data.featured);
 const rest = talks.filter((t) => !t.data.featured);
@@ -40,13 +41,13 @@ const FORMAT_LABELS: Record<string, string> = {
 <BaseLayout
   title="Speaking — Nestor Angulo de Ugarte"
   description={`${talks.length} talks across WordCamps, conferences, podcasts and webinars — web security, vulnerability intelligence, software supply chain, and security culture.`}
+  structuredData={{
+    type: 'CollectionPage',
+    breadcrumbs: [{ name: 'Speaking', url: `${SITE_URL}/speaking/` }],
+    mainEntity: SPEAKING_LIST_ID,
+    nodes: [listNode],
+  }}
 >
-  <script
-    slot="head"
-    is:inline
-    type="application/ld+json"
-    set:html={JSON.stringify(listSchema)}
-  ></script>
   <!-- ── Hero ──────────────────────────────────────────────── -->
   <section class="about-hero" aria-labelledby="speaking-h1">
     <div class="container">
