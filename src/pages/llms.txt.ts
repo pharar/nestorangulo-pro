@@ -12,7 +12,7 @@ import { AUTHOR, DEFAULT_DESCRIPTION, JOB_TITLE } from '../config';
 import { personSchema } from '../lib/person';
 import { blocks, link, list, paragraph, text } from '../lib/ai/markdown';
 import { markdownResponse } from '../lib/ai/page';
-import { getMarkdownPagesBySection } from '../lib/ai/registry';
+import { getMarkdownPagesByLang, getMarkdownPagesBySection } from '../lib/ai/registry';
 import type { MarkdownPage } from '../lib/ai/types';
 
 const languageName = new Intl.DisplayNames(['en'], { type: 'language' });
@@ -30,10 +30,11 @@ function talkEntry(p: MarkdownPage): string {
 }
 
 export const GET: APIRoute = async () => {
-  const [core, talks, essays] = await Promise.all([
+  const [core, talks, essays, spanish] = await Promise.all([
     getMarkdownPagesBySection('core'),
     getMarkdownPagesBySection('speaking'),
     getMarkdownPagesBySection('writing'),
+    getMarkdownPagesByLang('es'),
   ]);
 
   const p = personSchema;
@@ -43,7 +44,8 @@ export const GET: APIRoute = async () => {
       `Areas: ${p.knowsAbout.filter((k) => k !== p.hasCredential.name).join(', ')}. ` +
       `The site archives ${talks.length} talks. Each link below points to a page's Markdown version; ` +
       'the HTML page at the same path (/about/ for /about.md) is canonical and is the URL to cite. ' +
-      'llms-full.txt holds all of them in one file.'
+      'llms-full.txt holds all of them in one file.' +
+      (spanish.length > 0 ? ' Spanish versions are listed under Español.' : '')
   );
 
   const body = blocks(
@@ -55,6 +57,9 @@ export const GET: APIRoute = async () => {
     talks.length > 0 && blocks('## Speaking', list(talks.map(talkEntry))),
     essays.length > 0 &&
       blocks('## Writing', list(essays.map((e) => entry(e, e.date ? [e.date] : [])))),
+    // Spanish twins, one section for all of them. Any page added to the registry
+    // with `lang: 'es'` shows up here automatically.
+    spanish.length > 0 && blocks('## Español', list(spanish.map((s) => entry(s)))),
     '## Optional',
     list([
       `${link('llms-full.txt', '/llms-full.txt')}: ${text('Every page above, concatenated into one Markdown file.')}`,

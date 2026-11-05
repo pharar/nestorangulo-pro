@@ -5,6 +5,8 @@
  *   /about/            -> /about.md
  *   /speaking/         -> /speaking.md
  *   /speaking/<id>/    -> /speaking/<id>.md
+ *   /es/               -> /es/index.md      (a locale root keeps `index`, since
+ *   /es/about/         -> /es/about.md       `/es.md` would read as a page)
  *
  * The site is built with `trailingSlash: 'always'`, so every HTML page lives at
  * `<path>/`; its Markdown version drops the slash and gains `.md`. Other parts
@@ -12,6 +14,7 @@
  * on this exact shape — change it here and only here.
  */
 import { SITE_URL } from '../../config';
+import { isLang } from '../../i18n/config';
 
 /** Origin without a trailing slash, e.g. `https://nestorangulo.pro`. */
 export const ORIGIN: string = SITE_URL.replace(/\/+$/, '');
@@ -30,6 +33,8 @@ export function markdownPathFor(pathname: string): string | null {
   let path = pathname.split(/[?#]/, 1)[0] || '/';
   if (!path.startsWith('/')) path = `/${path}`;
   if (path === '/' || path === '/index.html') return '/index.md';
+  const root = path.match(/^\/([a-z]{2})(?:\/(?:index\.html)?)?$/);
+  if (root && isLang(root[1])) return `/${root[1]}/index.md`;
 
   path = path.replace(/\/index\.html$/, '').replace(/\/+$/, '');
   if (NO_MARKDOWN.has(path)) return null;
@@ -41,6 +46,8 @@ export function markdownPathFor(pathname: string): string | null {
 /** Inverse of `markdownPathFor`: `/about.md` -> `/about/`, `/index.md` -> `/`. */
 export function htmlPathFor(mdPath: string): string {
   if (mdPath === '/index.md') return '/';
+  const root = mdPath.match(/^\/([a-z]{2})\/index\.md$/);
+  if (root && isLang(root[1])) return `/${root[1]}/`;
   return `${mdPath.replace(/\.md$/, '')}/`;
 }
 

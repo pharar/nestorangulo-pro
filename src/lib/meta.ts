@@ -1,15 +1,11 @@
 /** Language and description helpers shared by SEO.astro and BaseLayout.astro. */
 
-/** The languages talks are actually authored in (see `content.config.ts`). */
-export type Lang = 'en' | 'es';
+import { OG_LOCALES, isLang, type Lang } from '../i18n/config';
 
-const OG_LOCALE: Record<Lang, string> = {
-  en: 'en_US',
-  es: 'es_ES',
-};
+export type { Lang };
 
 export function ogLocale(lang: string): string {
-  return OG_LOCALE[lang as Lang] ?? OG_LOCALE.en;
+  return isLang(lang) ? OG_LOCALES[lang] : OG_LOCALES.en;
 }
 
 /**

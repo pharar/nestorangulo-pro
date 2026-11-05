@@ -104,6 +104,7 @@ generated assets) and is declared in the essay's `ogImage` frontmatter.
 - **AI-readable layer** — `/llms.txt`, `/llms-full.txt`, a Markdown twin of every page
   (`/about/` → `/about.md`, linked via `rel="alternate"`) and a JSON-LD `@graph`, checked
   by `npm run check:ai`. See [documentation/AI-READABLE.md](./documentation/AI-READABLE.md).
+- **Languages** — English at the root, Spanish under `/es/`, language link in the header, no auto-redirect. See [documentation/I18N.md](./documentation/I18N.md).
 - **Canonical URLs** — `trailingSlash: 'always'`. `/about/` is the real URL; `/about`
   308-redirects to it. Canonicals come from `Astro.url.href` (never hardcode the prop),
   and internal links carry the slash so they resolve in one hop. See

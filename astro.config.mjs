@@ -10,7 +10,21 @@ export default defineConfig({
   // real URL — declaring it keeps dev, the sitemap and `Astro.url.href`
   // (which `SEO.astro` uses as the canonical) all agreeing on one shape.
   trailingSlash: 'always',
-  integrations: [sitemap()],
+  // Locales: `en` lives at the root (unchanged URLs), `es` under `/es/…`.
+  // Keep in step with src/i18n/config.ts. See documentation/I18N.md.
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'es'],
+    routing: { prefixDefaultLocale: false },
+  },
+  integrations: [
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: { en: 'en', es: 'es-ES' },
+      },
+    }),
+  ],
   security: {
     csp: {
       directives: [

@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import heroImage from '../images/home-hero.jpg';
+import { getPublishedTalks, talkCountRounded } from '../lib/talks';
+import { useHome } from '../i18n/ui/home';
+import { localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
+
+// Home page markup for every language. src/pages/index.astro and
+// src/pages/es/index.astro are thin wrappers that pass `lang`; all copy lives in
+// src/i18n/ui/home.ts (shared with the Markdown twin).
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useHome(lang);
+
+const TALK_COUNT = (await getPublishedTalks()).length;
+const TALK_COUNT_ROUNDED = talkCountRounded(TALK_COUNT);
+---
+
+<BaseLayout lang={lang} title={t('title')} description={t('description')} person={true}>
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-headline">
+    <div class="container">
+      <p class="hero-eyebrow">
+        <span class="hero-eyebrow-name">Nestor Angulo de Ugarte</span>
+        <span class="hero-eyebrow-sep" aria-hidden="true">
+          &middot;
+        </span>
+        <span class="hero-eyebrow-role">{t('role')} &middot; CISSP</span>
+      </p>
+      <h1 class="hero-headline title-decorated" id="hero-headline">
+        {t('headline')}
+        <span class="caret" aria-hidden="true">
+          _
+        </span>
+      </h1>
+      <p class="hero-tagline">
+        {t('tagline1')}&ensp;{t('tagline2')}&ensp;{t('tagline3')}
+      </p>
+    </div>
+    <div class="container container--wide">
+      <figure class="hero-figure">
+        <Image
+          src={heroImage}
+          alt={t('heroAlt')}
+          widths={[800, 1200, 1800, 2400]}
+          sizes="(max-width: 1080px) 100vw, 1080px"
+          loading="eager"
+          fetchpriority="high"
+          class="hero-img"
+        />
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── Manifesto ─────────────────────────────────────────── -->
+  <section class="manifesto" aria-label={t('manifestoLabel')}>
+    <div class="container">
+      <div class="manifesto-body">
+        <p class="lead-dropcap">{t('manifesto1')}</p>
+        <p>{t('manifesto2')}</p>
+        <p>{t('manifesto3')}</p>
+        <p>{t('manifesto4', { rounded: TALK_COUNT_ROUNDED })}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section cards ─────────────────────────────────────── -->
+  <section class="section-cards" aria-label={t('exploreLabel')}>
+    <div class="container">
+      <nav aria-label={t('sectionsLabel')}>
+        <ul class="cards-grid">
+          <li class="card">
+            <a href={localizePath('/writing/', lang)}>
+              <span class="card-label">{t('writingLabel')}</span>
+              <span class="card-desc">{t('writingDesc')}</span>
+              <span class="card-cta">{t('writingCta')}</span>
+            </a>
+          </li>
+          <li class="card">
+            <a href={localizePath('/speaking/', lang)}>
+              <span class="card-label">{t('speakingLabel')}</span>
+              <span class="card-desc">{t('speakingDesc', { count: TALK_COUNT })}</span>
+              <span class="card-cta">{t('speakingCta')}</span>
+            </a>
+          </li>
+          <li class="card">
+            <a href={localizePath('/about/', lang)}>
+              <span class="card-label">{t('aboutLabel')}</span>
+              <span class="card-desc">{t('aboutDesc')}</span>
+              <span class="card-cta">{t('aboutCta')}</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>

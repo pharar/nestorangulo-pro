@@ -1,5 +1,9 @@
 import { SITE_URL, SITE_NAME, AUTHOR, DEFAULT_DESCRIPTION } from '../config';
 import { personSchema } from './person';
+import { DEFAULT_LANG, isLang, type Lang } from '../i18n/config';
+import { localizePath } from '../i18n/utils';
+
+const HOME_NAME: Record<Lang, string> = { en: 'Home', es: 'Inicio' };
 
 /**
  * One schema.org `@graph` per page.
@@ -67,8 +71,15 @@ export function personStubNode(): GraphNode {
   return { '@type': 'Person', '@id': PERSON_ID, name: AUTHOR, url: `${SITE_URL}/` };
 }
 
-export function breadcrumbNode(pageUrl: string, trail: Crumb[]): GraphNode {
-  const items = [{ name: 'Home', url: `${SITE_URL}/` }, ...trail];
+export function breadcrumbNode(
+  pageUrl: string,
+  trail: Crumb[],
+  locale: Lang = DEFAULT_LANG
+): GraphNode {
+  const items = [
+    { name: HOME_NAME[locale], url: `${SITE_URL}${localizePath('/', locale)}` },
+    ...trail,
+  ];
   return {
     '@type': 'BreadcrumbList',
     '@id': `${pageUrl}#breadcrumb`,
@@ -86,7 +97,10 @@ export interface PageGraphInput extends PageStructuredData {
   url: string | null;
   name: string;
   description: string;
+  /** Content language of the page (`inLanguage`). */
   lang: string;
+  /** Route locale: picks the Home crumb. Defaults to `lang`. */
+  locale?: Lang;
   /** Emit the full Person node (home and /about). */
   fullPerson?: boolean;
 }
@@ -94,7 +108,8 @@ export interface PageGraphInput extends PageStructuredData {
 export function pageGraph(input: PageGraphInput) {
   const { url, name, description, lang, fullPerson = false, nodes = [] } = input;
   const type = input.type === undefined ? 'WebPage' : input.type;
-  const isHome = url === `${SITE_URL}/`;
+  const locale = input.locale ?? (isLang(lang) ? lang : DEFAULT_LANG);
+  const isHome = url === `${SITE_URL}${localizePath('/', locale)}`;
 
   const graph: GraphNode[] = [websiteNode(), fullPerson ? personNode() : personStubNode()];
 
@@ -114,7 +129,7 @@ export function pageGraph(input: PageGraphInput) {
 
     if (!isHome) {
       const trail = input.breadcrumbs ?? [{ name, url }];
-      const crumbs = breadcrumbNode(url, trail);
+      const crumbs = breadcrumbNode(url, trail, locale);
       page.breadcrumb = ref(crumbs['@id'] as string);
       graph.push(page, crumbs);
     } else {

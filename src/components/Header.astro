@@ -1,18 +1,30 @@
 ---
 import Isotipo from './Isotipo.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import LanguageSwitch from './LanguageSwitch.astro';
+import { useCommon } from '../i18n/ui/common';
+import { localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
+
+interface Props {
+  lang?: Lang;
+  /** False when this page has no translation (see LanguageSwitch). */
+  hasAlternate?: boolean;
+}
+
+const { lang = 'en', hasAlternate = true } = Astro.props;
+const t = useCommon(lang);
 
 const navItems = [
-  { href: '/writing/', label: 'Writing' },
-  { href: '/speaking/', label: 'Speaking' },
-  { href: '/about/', label: 'About' },
-  { href: '/contact/', label: 'Contact' },
+  { href: localizePath('/writing/', lang), label: t('navWriting') },
+  { href: localizePath('/speaking/', lang), label: t('navSpeaking') },
+  { href: localizePath('/about/', lang), label: t('navAbout') },
+  { href: localizePath('/contact/', lang), label: t('navContact') },
 ];
 
 const { pathname } = Astro.url;
 
 function isActive(href: string): boolean {
-  if (href === '/') return pathname === '/';
   // navItems hrefs end in '/', so a prefix match keeps the parent active on
   // nested pages (/speaking/ on /speaking/some-talk/) and cannot match /speakingX.
   return pathname.startsWith(href);
@@ -21,12 +33,12 @@ function isActive(href: string): boolean {
 
 <!-- Skip-to-content: visually hidden until keyboard-focused -->
 <a href="#main-content" class="skip-link">
-  Skip to content
+  {t('skipToContent')}
 </a>
 
 <header class="site-header">
   <div class="container container--wide">
-    <a href="/" class="site-logo" aria-label="Nestor Angulo de Ugarte — home">
+    <a href={localizePath('/', lang)} class="site-logo" aria-label={t('logoLabel')}>
       {/*
           The logos are inlined rather than <img src>, so the dark strokes can
           follow `currentColor` and flip with the theme. `.site-logo` sets
@@ -86,7 +98,7 @@ function isActive(href: string): boolean {
 
       <Isotipo class="site-logo-isotipo" width={43} height={40} />
     </a>
-    <nav aria-label="Main navigation">
+    <nav aria-label={t('mainNavLabel')}>
       <ul class="site-nav">
         {navItems.map(({ href, label }) => (
           <li>
@@ -96,7 +108,10 @@ function isActive(href: string): boolean {
           </li>
         ))}
         <li class="site-nav-toggle">
-          <ThemeToggle />
+          <ThemeToggle lang={lang} />
+        </li>
+        <li class="site-nav-toggle">
+          <LanguageSwitch lang={lang} hasAlternate={hasAlternate} />
         </li>
       </ul>
     </nav>
