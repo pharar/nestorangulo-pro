@@ -50,6 +50,14 @@ Remote delivery to a physical event: `location` is the venue's city and country,
 Work on a branch off `origin/main` in a worktree, as AGENTS.md says; name it
 `content/<slug>`. A card edit and a `featured` flip belong in the same branch.
 
+A change to a card that is already on `main` (a `featured` flip, a video, a deck) can skip
+the manual setup: add `--pr` to `feature`, `unfeature`, `video`, `deck link` or `deck add`.
+The script makes the worktree off a fresh `origin/main`, applies the change, runs
+`npm ci` and the gate, commits as the owner and opens the PR; it never merges. It pushes,
+so use it only once the owner has agreed to the change, and pass your attribution with
+`--trailer` and `--pr-footer`. Try `--pr --dry-run` first when unsure. A new talk does not
+fit it (its card is not on `main` yet): build that branch by hand.
+
 ## 2. The card
 
 New talk: `npm run talk -- new …` with only verified values. It creates a draft with no
@@ -73,7 +81,11 @@ Spanish overlay. Its shape is the `i18n` skill's (New talk); do not restate it h
 
 ## 3. The deck
 
-Order matters; each step is a verb.
+`deck add <slug> <pdf> --event-short "…"` runs the four steps below in order and stops
+before the upload unless `--yes` is given; it then prints the command that carries on
+from the prepared file (which is not prepared again). Reading what each step reports is
+still your job; the judgement below applies either way. Order matters; each step is also
+a verb of its own.
 
 1. `deck prepare` (compress only if it helps, metadata, hash-name). It needs
    `--event-short`, which is judgement, derived from the card's `event` for the PDF
@@ -161,8 +173,9 @@ honest `coverAlt` describing what is actually in the photo.
 - Commit only the files this task touched (the card, plus any `featured` flip; the schema
   only if a needed field is missing, which is normally not the case), conventional message, e.g.
   `content(speaking): host <slug> deck on R2` (add `, un-draft` or `+ featured` as apt).
-- No push, PR or merge without the owner's confirmation. Cloudflare publishes `main` on
-  merge whether or not CI passed, so the PR is what protects production.
+- No push, PR or merge without the owner's confirmation; `--pr` pushes and opens one, so
+  the same applies to it. Cloudflare publishes `main` on merge whether or not CI passed,
+  so the PR is what protects production.
 
 Finish by telling the owner what changed, the source of each verified field, the state
 of the R2 object, and any step left for them.

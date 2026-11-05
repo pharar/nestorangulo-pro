@@ -15,7 +15,7 @@ is the **first 10 hex characters of the SHA-256 of the final file**, computed af
 metadata is written.
 
 The day-to-day path is the `npm run talk -- deck …` verbs (`prepare`, `upload`, `link`,
-`verify`), driven by the `talk` skill; this document is the why, and the raw `wrangler`
+`verify`, or `add` for all four in order), driven by the `talk` skill; this document is the why, and the raw `wrangler`
 commands for the few things no verb does. Card conventions (the two slides links, how
 the detail page renders them) are in [SPEAKING.md](./SPEAKING.md).
 
@@ -55,6 +55,10 @@ npm run talk -- deck upload <the hash-named file> --yes    # production write
 npm run talk -- deck link <slug> <public URL>
 npm run talk -- deck verify <slug>
 ```
+
+or, in one go: `npm run talk -- deck add <slug> <pdf> --event-short "<short event>"`, which
+stops at the upload plan and prints the `--yes` command to carry on. With `--pr`, the link
+lands as a PR made from a fresh worktree, and only after the object verifies live.
 
 What each does, and why it is built that way:
 

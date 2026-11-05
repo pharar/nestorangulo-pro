@@ -78,7 +78,8 @@ A repeatable action is codified as three things, each owning one thing:
 Nothing is stated in two places; link instead. One skill per domain with verbs, not one
 skill per verb. Scripts are dependency-light ESM `.mjs` with a header comment saying why.
 Shared helpers go in `scripts/lib/` (`gate.mjs`, `frontmatter.mjs` for editing a card's
-frontmatter field by field without reformatting it), with `node:test` tests beside them.
+frontmatter field by field without reformatting it, `ship.mjs` for shipping a content
+change as a PR from a fresh worktree), with `node:test` tests beside them.
 
 ## Action index
 

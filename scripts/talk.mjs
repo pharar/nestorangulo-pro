@@ -15,9 +15,14 @@
  *   deck link <slug> <r2-url> [--ext <url>]
  *                                       point slidesUrl at R2, keeping the old link as slidesUrlExt
  *   deck verify [slug]                  HEAD every slidesUrl on the assets host
+ *   deck add <slug> <pdf> --event-short "…" [--ext <url>] [--yes]
+ *                                       prepare -> upload -> link -> verify in one go; without
+ *                                       --yes it stops before the R2 write and prints how to go on
  *
  * Every verb that writes accepts --dry-run. --root <dir> points it at another
- * tree (the tests use a fixture).
+ * tree (the tests use a fixture). feature, unfeature, video, deck link and deck
+ * add also take --pr: the change is made in a fresh worktree off origin/main and
+ * shipped as a PR after the gate (scripts/lib/ship.mjs). It never merges.
  *
  * Why a script and not prose: the sequence compress -> metadata -> hash -> upload
  * -> verify has silent failure modes (a wrangler 4 upload without --remote prints
@@ -49,6 +54,7 @@ import { tmpdir } from 'node:os';
 import { basename, isAbsolute, join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { readEntry, setField } from './lib/frontmatter.mjs';
+import { ShipError, shipAsPr } from './lib/ship.mjs';
 
 export const SHELF = 6;
 export const BUCKET = 'nestorangulo-assets';
@@ -178,8 +184,11 @@ const VALUE_FLAGS = new Set([
   'event-short',
   'out-dir',
   'ext',
+  'branch',
+  'trailer',
+  'pr-footer',
 ]);
-const BOOL_FLAGS = new Set(['dry-run', 'yes']);
+const BOOL_FLAGS = new Set(['dry-run', 'yes', 'pr']);
 
 export function parseArgs(argv) {
   const pos = [];
@@ -530,7 +539,7 @@ function cmdDeckPrepare(ctx, { pos, flags }) {
     deps.out(
       `dry run: would compress (keep only if >= ${MIN_SHRINK * 100}% smaller), write metadata, hash, and write ${deckKey(`${t.slug}-<hash>.pdf`)}. Nothing written.`
     );
-    return;
+    return null;
   }
 
   mkdirSync(outDir, { recursive: true });
@@ -583,9 +592,12 @@ function cmdDeckPrepare(ctx, { pos, flags }) {
     deps.out(`file      ${dest}`);
     deps.out(`R2 key    ${deckKey(name)}`);
     deps.out(`URL       ${deckUrl(name)}`);
-    deps.out(
-      `next      npm run talk -- deck upload ${shq(dest)}   (plan only; add --yes with the owner's go-ahead)`
-    );
+    if (!ctx.quietNext) {
+      deps.out(
+        `next      npm run talk -- deck upload ${shq(dest)}   (plan only; add --yes with the owner's go-ahead)`
+      );
+    }
+    return dest;
   } finally {
     rmSync(work, { force: true });
     rmSync(gsOut, { force: true });
@@ -661,7 +673,7 @@ async function cmdDeckUpload(ctx, { pos, flags }) {
         ? '\ndry run: nothing executed.'
         : "\nPlan only: nothing executed. Production write; run again with --yes on the owner's explicit go-ahead."
     );
-    return;
+    return 'planned';
   }
 
   const url = deckUrl(name);
@@ -676,7 +688,7 @@ async function cmdDeckUpload(ctx, { pos, flags }) {
         `the existing object is not right: ${problems.join('; ')}. Do not overwrite it; see SLIDES-R2.md`
       );
     deps.out('The existing object matches this file (200, application/pdf, immutable, same size).');
-    return;
+    return 'live';
   }
   if (before.status !== 404) {
     throw new UserError(
@@ -705,7 +717,8 @@ async function cmdDeckUpload(ctx, { pos, flags }) {
   if (problems.length)
     throw new UserError(`uploaded, but verification failed: ${problems.join('; ')}`);
   deps.out(`verified ${url}: 200, application/pdf, immutable, ${bytes.length} B`);
-  deps.out(`next     npm run talk -- deck link ${parsed.slug} ${url}`);
+  if (!ctx.quietNext) deps.out(`next     npm run talk -- deck link ${parsed.slug} ${url}`);
+  return 'live';
 }
 
 function cmdDeckLink(ctx, { pos, flags }) {
@@ -749,9 +762,11 @@ function cmdDeckLink(ctx, { pos, flags }) {
     );
   }
   printEdit(ctx, t.file, setField(t.file, 'slidesUrl', r2, { dryRun: ctx.dry, as: 'url' }));
-  deps.out(
-    `next      npm run talk -- deck verify ${t.slug}   (the object must be live before the PR merges)`
-  );
+  if (!ctx.quietNext) {
+    deps.out(
+      `next      npm run talk -- deck verify ${t.slug}   (the object must be live before the PR merges)`
+    );
+  }
 }
 
 async function cmdDeckVerify(ctx, { pos }) {
@@ -777,6 +792,81 @@ async function cmdDeckVerify(ctx, { pos }) {
   if (bad) throw new UserError(`${bad} deck(s) not served correctly`);
 }
 
+/** `file` when it is already this talk's hash-named deck (name and bytes agree), else null. */
+function preparedDeck(slug, file) {
+  const parsed = parseDeckName(basename(file));
+  if (!parsed || parsed.slug !== slug || !existsSync(file)) return null;
+  return hashPrefix(readFileSync(file)) === parsed.hash ? file : null;
+}
+
+/**
+ * prepare -> upload -> link -> verify, each the verb of the same name. Without
+ * --yes it stops at the upload plan (the R2 write is the owner's go-ahead) and
+ * prints the command that carries on from the prepared file. A hash-named file
+ * of this talk is not prepared again, so re-running with --yes is safe.
+ */
+async function cmdDeckAdd(ctx, { pos, flags }) {
+  const { deps } = ctx;
+  const t = requireTalk(ctx.root, pos[0]);
+  if (!pos[1]) throw new UserError('missing <pdf>');
+  const given = resolve(pos[1]);
+  const step = { ...ctx, quietNext: true };
+
+  deps.out('── prepare');
+  let file = preparedDeck(t.slug, given);
+  if (file) deps.out(`already prepared: ${file}`);
+  else {
+    file = cmdDeckPrepare(step, { pos: [t.slug, given], flags });
+    if (!file) {
+      deps.out('dry run: then upload (a plan without --yes), link and verify. Nothing written.');
+      return;
+    }
+  }
+
+  deps.out('\n── upload');
+  const uploaded = await cmdDeckUpload(step, { pos: [file], flags });
+  if (uploaded !== 'live') {
+    const again = [
+      'npm run talk -- deck add',
+      t.slug,
+      shq(file),
+      '--yes',
+      ...(flags.ext ? ['--ext', shq(flags.ext)] : []),
+      ...(flags.pr ? ['--pr'] : []),
+    ].join(' ');
+    deps.out(
+      `\nStopped before the production write. With the owner's go-ahead, carry on with:\n  ${again}`
+    );
+    return;
+  }
+
+  deps.out('\n── link');
+  cmdDeckLink(step, { pos: [t.slug, deckUrl(basename(file))], flags });
+  deps.out('\n── verify');
+  await cmdDeckVerify(step, { pos: [t.slug] });
+}
+
+/**
+ * Runs `verb(ctx)` as is, or, with --pr, inside shipAsPr: a worktree off
+ * origin/main, the gate, one commit and a PR. A dry run prints the plan and
+ * the change as it would apply to the current tree.
+ */
+async function maybePr(ctx, flags, spec, verb) {
+  if (!flags.pr) return verb(ctx);
+  if (!spec.slug || !KEBAB.test(spec.slug)) throw new UserError('missing or non-kebab <slug>');
+  await shipAsPr({
+    repo: ctx.root,
+    branch: flags.branch ?? `content/${spec.slug}`,
+    title: spec.title,
+    summary: spec.summary,
+    deps: ctx.deps,
+    dry: ctx.dry,
+    trailers: flags.trailer ? [flags.trailer] : [],
+    footer: flags['pr-footer'],
+    change: (root, deps, { dry }) => verb({ ...ctx, root, deps, dry }),
+  });
+}
+
 // ── Dispatch ───────────────────────────────────────────────────────────────
 
 const USAGE = `usage: npm run talk -- <verb>
@@ -790,6 +880,10 @@ const USAGE = `usage: npm run talk -- <verb>
   deck upload <file> [--yes]
   deck link <slug> <r2-url> [--ext <url>] [--dry-run]
   deck verify [slug]
+  deck add <slug> <pdf> --event-short "…" [--ext <url>] [--out-dir <dir>] [--yes] [--dry-run]
+--pr (feature, unfeature, video, deck link, deck add): make the change in a fresh worktree
+     off origin/main and open a PR after the gate; never merges.
+     [--branch <name>] (default content/<slug>) [--trailer "<commit trailer>"] [--pr-footer "<text>"]
 common: --root <dir> (default: current directory)`;
 
 /** Runs one invocation. Returns the exit code; never calls process.exit. */
@@ -810,25 +904,72 @@ export async function main(argv, deps = realDeps) {
       case 'shelf':
         cmdShelf(ctx);
         break;
-      case 'feature':
-        cmdFeature(ctx, call);
+      case 'feature': {
+        const [slug] = rest;
+        const swap = parsed.flags.swap;
+        await maybePr(
+          ctx,
+          parsed.flags,
+          {
+            slug,
+            title: `content(speaking): feature ${slug}${swap ? `, demote ${swap}` : ''}`,
+            summary: `Features \`${slug}\` on the /speaking shelf${swap ? ` and takes \`${swap}\` off it` : ''}.`,
+          },
+          (c) => cmdFeature(c, call)
+        );
         break;
-      case 'unfeature':
-        cmdUnfeature(ctx, call);
+      }
+      case 'unfeature': {
+        const [slug] = rest;
+        await maybePr(
+          ctx,
+          parsed.flags,
+          {
+            slug,
+            title: `content(speaking): unfeature ${slug}`,
+            summary: `Takes \`${slug}\` off the featured shelf on /speaking.`,
+          },
+          (c) => cmdUnfeature(c, call)
+        );
         break;
+      }
       case 'new':
         cmdNew(ctx, call);
         break;
-      case 'video':
-        cmdVideo(ctx, call);
+      case 'video': {
+        const [slug, url] = rest;
+        await maybePr(
+          ctx,
+          parsed.flags,
+          {
+            slug,
+            title: `content(speaking): add the video of ${slug}`,
+            summary: `Adds the recording of \`${slug}\`: ${url}.`,
+          },
+          (c) => cmdVideo(c, call)
+        );
         break;
+      }
       case 'deck': {
         const [sub, ...more] = rest;
         const dcall = { pos: more, flags: parsed.flags };
+        const [slug] = more;
+        const hosted = {
+          slug,
+          title: `content(speaking): host ${slug} deck on R2`,
+          summary: `Points the slides of \`${slug}\` at the self-hosted copy on R2, verified live (200, application/pdf, immutable) before this PR.`,
+        };
         if (sub === 'prepare') cmdDeckPrepare(ctx, dcall);
         else if (sub === 'upload') await cmdDeckUpload(ctx, dcall);
-        else if (sub === 'link') cmdDeckLink(ctx, dcall);
+        else if (sub === 'link')
+          // With --pr the object is verified too: a PR must not carry a slides button that 404s.
+          await maybePr(ctx, parsed.flags, hosted, async (c) => {
+            cmdDeckLink(c, dcall);
+            if (parsed.flags.pr && !c.dry) await cmdDeckVerify(c, { pos: [slug] });
+          });
         else if (sub === 'verify') await cmdDeckVerify(ctx, dcall);
+        else if (sub === 'add')
+          await maybePr(ctx, parsed.flags, hosted, (c) => cmdDeckAdd(c, dcall));
         else throw new UserError(`unknown deck verb "${sub ?? ''}"\n${USAGE}`);
         break;
       }
@@ -837,7 +978,7 @@ export async function main(argv, deps = realDeps) {
     }
     return 0;
   } catch (e) {
-    if (!(e instanceof UserError)) throw e;
+    if (!(e instanceof UserError || e instanceof ShipError)) throw e;
     deps.err(`talk: ${e.message}`);
     return 1;
   }

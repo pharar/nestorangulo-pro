@@ -2,11 +2,13 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
+  cpSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
   readFileSync,
+  rmSync,
   statSync,
   writeFileSync,
 } from 'node:fs';
@@ -708,4 +710,257 @@ test('deck verify checks every assets-host slidesUrl and fails when one is wrong
   assert.match(r.out, /2 deck\(s\) checked, 1 wrong/);
   const one = await talk(root, ['deck', 'verify', 'a'], { head: () => GOOD_HEAD(1) });
   assert.equal(one.code, 0);
+});
+
+// ── deck add ───────────────────────────────────────────────────────────────
+
+test('deck add without --yes prepares, plans the upload and stops before any write to R2', async () => {
+  const { root, src, out } = deckFixture(PDF(1000));
+  const before = read(root, 'k-2026-x');
+  const r = await talk(
+    root,
+    ['deck', 'add', 'k-2026-x', src, '--event-short', 'Conclave 2026', '--out-dir', out],
+    { run: toolchain({ gsBytes: PDF(900) }) }
+  );
+  assert.equal(r.code, 0, r.err);
+  const [name] = readdirSync(out);
+  assert.match(name, /^k-2026-x-[0-9a-f]{10}\.pdf$/);
+  assert.deepEqual(r.calls.head, [], 'no HEAD: a plan only');
+  assert.ok(!r.calls.run.some(([c]) => c === 'npx'), 'wrangler never ran');
+  assert.match(r.out, /Stopped before the production write/);
+  assert.ok(r.out.includes(`deck add k-2026-x ${join(out, name)} --yes`), r.out);
+  assert.equal(read(root, 'k-2026-x'), before, 'the card is untouched');
+});
+
+test('deck add --yes on a prepared file uploads, links and verifies without preparing again', async () => {
+  const root = tree({ 'k-2026-x': {} });
+  const { file, bytes, name } = hashed();
+  let uploaded = false;
+  const r = await talk(root, ['deck', 'add', 'k-2026-x', file, '--yes'], {
+    run: (cmd) => {
+      if (cmd === 'npx') return ((uploaded = true), { status: 0, stdout: REMOTE_OUT, stderr: '' });
+      return { status: 0, stdout: '', stderr: '' };
+    },
+    head: () => (uploaded ? GOOD_HEAD(bytes.length) : { status: 404, headers: {} }),
+  });
+  assert.equal(r.code, 0, r.err);
+  assert.match(r.out, /already prepared/);
+  assert.ok(
+    !r.calls.run.some(([c]) => ['gs', 'exiftool', 'python3'].includes(c)),
+    'not prepared again'
+  );
+  assert.equal(
+    dataOf(root, 'k-2026-x').slidesUrl,
+    `https://assets.nestorangulo.pro/slides/${name}`
+  );
+  assert.match(r.out, /1 deck\(s\) checked, 0 wrong/);
+});
+
+test('deck add --dry-run writes nothing', async () => {
+  const { root, src, out } = deckFixture(PDF(1000));
+  const snap = snapshot(root);
+  const r = await talk(
+    root,
+    ['deck', 'add', 'k-2026-x', src, '--event-short', 'C 2026', '--out-dir', out, '--dry-run'],
+    { run: toolchain({ gsBytes: PDF(900) }) }
+  );
+  assert.equal(r.code, 0, r.err);
+  assert.deepEqual(snapshot(root), snap);
+  assert.ok(!existsSync(out), 'no out dir created');
+});
+
+// ── --pr ───────────────────────────────────────────────────────────────────
+
+/** Paths under `dir`, relative, for a porcelain made by comparing two trees. */
+function files(dir, base = dir) {
+  const outList = [];
+  for (const e of readdirSync(dir)) {
+    const p = join(dir, e);
+    if (statSync(p).isDirectory()) outList.push(...files(p, base));
+    else outList.push(p.slice(base.length + 1));
+  }
+  return outList;
+}
+
+/**
+ * A git/npm/gh stand-in: `worktree add` copies the fixture, `status` diffs the
+ * worktree against it, the gate and the remote branch can be made to fail.
+ */
+function fakeRepo(root, { gate = 0, remoteBranch = false, extraChange } = {}) {
+  const state = { wt: null };
+  const run = (cmd, a) => {
+    const ok = (stdout = '') => ({ status: 0, stdout, stderr: '' });
+    if (cmd === 'git') {
+      const args = a[0] === '-C' ? a.slice(2) : a;
+      const [sub] = args;
+      if (sub === 'rev-parse' && args[1] === '--show-toplevel') return ok(`${root}\n`);
+      if (sub === 'rev-parse') return { status: 1, stdout: '', stderr: '' };
+      if (sub === 'ls-remote') return { status: remoteBranch ? 0 : 2, stdout: '', stderr: '' };
+      if (sub === 'worktree' && args[1] === 'add') {
+        state.wt = args[4];
+        cpSync(root, state.wt, { recursive: true });
+        return ok();
+      }
+      if (sub === 'worktree' && args[1] === 'remove') {
+        rmSync(args.at(-1), { recursive: true, force: true });
+        return ok();
+      }
+      if (sub === 'status') {
+        if (extraChange) writeFileSync(join(state.wt, extraChange), 'x');
+        const lines = files(state.wt)
+          .filter(
+            (f) =>
+              !existsSync(join(root, f)) ||
+              !readFileSync(join(root, f)).equals(readFileSync(join(state.wt, f)))
+          )
+          .map((f) => ` M ${f}`);
+        return ok(lines.join('\n'));
+      }
+      return ok();
+    }
+    if (cmd === 'npm' && a[0] === 'run' && a[1] === 'gate')
+      return { status: gate, stdout: gate ? 'FAIL Build' : 'PASS', stderr: '' };
+    if (cmd === 'gh') return ok('https://github.com/pharar/nestorangulo-pro/pull/99\n');
+    return ok();
+  };
+  return { run, state };
+}
+
+function prTree(talks) {
+  const root = tree(talks);
+  writeFileSync(
+    join(root, 'package.json'),
+    JSON.stringify({ author: { name: 'Owner Name', email: 'owner@example.test' } })
+  );
+  return root;
+}
+
+const gitCalls = (r, sub) =>
+  r.calls.run.filter(([c, ...a]) => c === 'git' && (a[0] === '-C' ? a[2] : a[0]) === sub);
+
+test('feature --pr ships the change from a worktree off origin/main and never merges', async () => {
+  const root = prTree({ a: {}, b: {} });
+  const before = read(root, 'a');
+  const tmp = mkdtempSync(join(tmpdir(), 'ship-'));
+  const repo = fakeRepo(root);
+  const r = await talk(root, ['feature', 'a', '--pr', '--trailer', 'Co-Authored-By: X <x@y>'], {
+    run: repo.run,
+    tmp,
+  });
+  assert.equal(r.code, 0, r.err);
+  assert.equal(read(root, 'a'), before, 'the starting checkout is never edited');
+  const [add] = gitCalls(r, 'worktree');
+  assert.deepEqual(add.slice(3), [
+    'worktree',
+    'add',
+    '-b',
+    'content/a',
+    repo.state.wt,
+    'origin/main',
+  ]);
+  assert.ok(!repo.state.wt.startsWith(root), 'the worktree is outside the repo');
+  const order = r.calls.run.map(
+    ([c, ...a]) => `${c} ${(a[0] === '-C' ? a.slice(2) : a).slice(0, 2).join(' ')}`
+  );
+  const at = (x) => order.findIndex((o) => o.startsWith(x));
+  assert.ok(at('git fetch') < at('git worktree add') && at('git worktree add') < at('npm ci'));
+  assert.ok(
+    at('npm ci') < at('npm run') && at('npm run') < at('git -c') && at('git -c') < at('git push')
+  );
+  assert.ok(at('git push') < at('gh pr'));
+  const commit = r.calls.run.find(([c, ...a]) => c === 'git' && a.includes('commit'));
+  assert.ok(
+    commit.includes('user.name=Owner Name') && commit.includes('user.email=owner@example.test')
+  );
+  assert.ok(commit.includes('content(speaking): feature a'));
+  assert.ok(commit.includes('Co-Authored-By: X <x@y>'));
+  const gh = r.calls.run.find(([c]) => c === 'gh');
+  const body = gh[gh.indexOf('--body') + 1];
+  assert.match(body, /Features `a` on the \/speaking shelf/);
+  assert.match(body, /Featured shelf: 1\/6/);
+  assert.ok(!r.calls.run.some(([c, ...a]) => c === 'gh' && a.includes('merge')), 'never merges');
+  assert.match(r.out, /PR {8}https:\/\/github\.com\/pharar\/nestorangulo-pro\/pull\/99/);
+  assert.ok(!existsSync(repo.state.wt), 'the worktree is removed after the PR');
+});
+
+test('--pr with nothing to change opens no PR and cleans up', async () => {
+  const root = prTree({ a: { featured: 'true' } });
+  const repo = fakeRepo(root);
+  const r = await talk(root, ['feature', 'a', '--pr'], {
+    run: repo.run,
+    tmp: mkdtempSync(join(tmpdir(), 'ship-')),
+  });
+  assert.equal(r.code, 0, r.err);
+  assert.match(r.out, /nothing changed/);
+  assert.ok(!r.calls.run.some(([c]) => c === 'npm' || c === 'gh'));
+  assert.ok(
+    gitCalls(r, 'branch').some((c) => c.includes('-D')),
+    'the branch is deleted'
+  );
+});
+
+test('--pr stops on a failed gate, before any commit, and keeps the worktree', async () => {
+  const root = prTree({ a: {} });
+  const repo = fakeRepo(root, { gate: 1 });
+  const r = await talk(root, ['feature', 'a', '--pr'], {
+    run: repo.run,
+    tmp: mkdtempSync(join(tmpdir(), 'ship-')),
+  });
+  assert.equal(r.code, 1);
+  assert.match(r.err, /the gate failed/);
+  assert.match(r.err, /worktree is kept/);
+  assert.ok(
+    !r.calls.run.some(([c, ...a]) => c === 'git' && (a.includes('commit') || a.includes('push')))
+  );
+  assert.ok(existsSync(repo.state.wt));
+});
+
+test('--pr refuses a change outside src/content, an existing branch, and a bad slug', async () => {
+  const root = prTree({ a: {} });
+  const stray = fakeRepo(root, { extraChange: 'package.json' });
+  const r = await talk(root, ['feature', 'a', '--pr'], {
+    run: stray.run,
+    tmp: mkdtempSync(join(tmpdir(), 'ship-')),
+  });
+  assert.equal(r.code, 1);
+  assert.match(r.err, /outside src\/content\/: package\.json/);
+  assert.ok(!r.calls.run.some(([c]) => c === 'npm'), 'nothing installed or gated');
+
+  const taken = fakeRepo(root, { remoteBranch: true });
+  const t = await talk(root, ['unfeature', 'a', '--pr'], {
+    run: taken.run,
+    tmp: mkdtempSync(join(tmpdir(), 'ship-')),
+  });
+  assert.equal(t.code, 1);
+  assert.match(t.err, /already exists on origin; pass --branch/);
+  assert.deepEqual(gitCalls(t, 'worktree'), [], 'no worktree was made');
+
+  const bad = await talk(root, ['feature', 'Not_Kebab', '--pr'], { run: taken.run });
+  assert.match(bad.err, /non-kebab <slug>/);
+});
+
+test('--pr --dry-run makes no worktree and writes nothing', async () => {
+  const root = prTree({ a: {} });
+  const snap = snapshot(root);
+  const repo = fakeRepo(root);
+  const r = await talk(root, ['feature', 'a', '--pr', '--dry-run'], { run: repo.run });
+  assert.equal(r.code, 0, r.err);
+  assert.deepEqual(snapshot(root), snap);
+  assert.deepEqual(gitCalls(r, 'fetch'), []);
+  assert.deepEqual(gitCalls(r, 'worktree'), []);
+  assert.match(r.out, /Shelf after this change \(not applied\)/);
+});
+
+test('deck link --pr verifies the object first: a deck that is not live opens no PR', async () => {
+  const root = prTree({ a: {} });
+  const repo = fakeRepo(root);
+  const r = await talk(root, ['deck', 'link', 'a', R2('a'), '--pr'], {
+    run: repo.run,
+    tmp: mkdtempSync(join(tmpdir(), 'ship-')),
+    head: () => ({ status: 404, headers: {} }),
+  });
+  assert.equal(r.code, 1);
+  assert.match(r.err, /not served correctly/);
+  assert.ok(!r.calls.run.some(([c]) => c === 'gh'), 'no PR');
+  assert.ok(!existsSync(repo.state.wt), 'the worktree is discarded');
 });
