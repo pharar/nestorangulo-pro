@@ -37,7 +37,9 @@ npm run housekeeping
 
 Read the Dependabot PRs the report lists before changing anything: their checks tell you
 which bumps CI has already seen green, and a failing one is a warning about that bump.
-The report reads them through the public API, so it works without `gh` being logged in.
+The report reads them through the public API, so it works without `gh` being logged in —
+except for Dependabot alerts, which need a token. Log in (`gh auth login`) when you can:
+that line says whether the lockfile in this checkout clears every open alert.
 
 ## 3. Update, in this order
 

@@ -40,20 +40,28 @@ whether it still builds _the same site_.
 
 ### The commands
 
-| Command                                   | What it does                                                                                                                           |
-| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run housekeeping`                    | Read-only report: runtime pins, outdated dependencies, held majors, overrides, advisories, CI action versions, open Dependabot PRs     |
-| `npm run housekeeping:baseline`           | Builds and snapshots `dist/` for later comparison                                                                                      |
-| `npm run housekeeping:verify`             | Format, type check, build, URL contract, CSP contract, `npm audit`; then diffs the build against the baseline                          |
-| `npm run housekeeping:verify -- --assets` | The same, and regenerates the favicons and OG card to confirm the committed files still come out byte-identical                        |
-| `npm run housekeeping:probe-ts`           | Installs the newest TypeScript, runs `astro check`, restores everything. Takes a version or dist-tag: `… -- beta`                      |
-| `npm run check:csp`                       | The CSP contract on its own: every inline script and style in `dist/` is allowed by the policy the page declares. Needs a build first. |
+| Command                                   | What it does                                                                                                                                          |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run housekeeping`                    | Read-only report: runtime pins, outdated dependencies, held majors, overrides, advisories, Dependabot alerts, CI action versions, open Dependabot PRs |
+| `npm run housekeeping:baseline`           | Builds and snapshots `dist/` for later comparison                                                                                                     |
+| `npm run housekeeping:verify`             | Format, type check, build, URL contract, CSP contract, `npm audit`; then diffs the build against the baseline                                         |
+| `npm run housekeeping:verify -- --assets` | The same, and regenerates the favicons and OG card to confirm the committed files still come out byte-identical                                       |
+| `npm run housekeeping:probe-ts`           | Installs the newest TypeScript, runs `astro check`, restores everything. Takes a version or dist-tag: `… -- beta`                                     |
+| `npm run check:csp`                       | The CSP contract on its own: every inline script and style in `dist/` is allowed by the policy the page declares. Needs a build first.                |
 
 The report needs the network: the npm registry, nodejs.org, and the GitHub API. The
-repository is public, so no token is required, but anonymous GitHub access is limited to
-60 requests an hour and one report uses around fifteen. It picks up `GH_TOKEN`,
+repository is public, so most of it works without a token, but anonymous GitHub access is
+limited to 60 requests an hour and one report uses around fifteen. It picks up `GH_TOKEN`,
 `GITHUB_TOKEN`, or a logged-in `gh` on its own if there is one. A section that cannot
 reach its source says so and the rest still run.
+
+The one part that does need a token is **Dependabot alerts**, which are private even on a
+public repository; without one that line is skipped. It is worth having. `npm audit`
+counts vulnerable _packages_ while GitHub counts _advisories_, and GitHub keeps counting
+them against `main` until a fix is merged — the first run saw 9 from one and 40 from the
+other for the same lockfile. Neither number is the useful one on an update branch, so the
+report answers the question that is: does the lockfile in this checkout clear every open
+alert, and if not, which packages are still short.
 
 `--assets` renders the OG card through headless Chromium, so the first run on a machine
 (or after a Playwright bump) needs `npx playwright install chromium`.

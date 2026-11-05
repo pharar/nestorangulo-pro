@@ -3,7 +3,8 @@
  * Housekeeping: find what has fallen behind, and prove an update broke nothing.
  *
  *   report     What is behind — runtime, dependencies, overrides, advisories,
- *              CI actions, open Dependabot PRs. Read-only. The default.
+ *              Dependabot alerts, CI actions, open Dependabot PRs. Read-only.
+ *              The default.
  *   baseline   Build the site as it stands and keep a copy to compare against.
  *              Run it BEFORE changing anything.
  *   verify     The local gate: format, types, build, URL and CSP contracts,
@@ -54,7 +55,10 @@ function run(cmd, args, { inherit = false } = {}) {
     stdio: inherit ? 'inherit' : 'pipe',
     maxBuffer: 64 * 1024 * 1024,
   });
-  return { status: r.status ?? 1, out: `${r.stdout ?? ''}${r.stderr ?? ''}` };
+  // `out` is for showing to a person; anything parsed must read `stdout` alone,
+  // or a warning on stderr turns valid JSON into a parse error.
+  const stdout = r.stdout ?? '';
+  return { status: r.status ?? 1, stdout, out: `${stdout}${r.stderr ?? ''}` };
 }
 
 async function getJson(url, headers = {}) {
@@ -74,7 +78,7 @@ const registry = (name) => getJson(`https://registry.npmjs.org/${name}/latest`);
  */
 function githubHeaders() {
   const token =
-    process.env.GH_TOKEN || process.env.GITHUB_TOKEN || run('gh', ['auth', 'token']).out.trim();
+    process.env.GH_TOKEN || process.env.GITHUB_TOKEN || run('gh', ['auth', 'token']).stdout.trim();
   const headers = { Accept: 'application/vnd.github+json' };
   if (token && !/\s/.test(token)) headers.Authorization = `Bearer ${token}`;
   return headers;
@@ -143,7 +147,7 @@ async function reportRuntime() {
 
 async function reportDependencies() {
   // `npm outdated` exits 1 when anything is outdated; the JSON is still valid.
-  const outdated = JSON.parse(run('npm', ['outdated', '--json']).out || '{}');
+  const outdated = JSON.parse(run('npm', ['outdated', '--json']).stdout || '{}');
   const names = Object.keys(outdated);
   if (names.length === 0) ok('every direct dependency is on its latest release');
 
@@ -208,7 +212,7 @@ async function reportOverrides() {
 }
 
 async function reportSecurity() {
-  const audit = JSON.parse(run('npm', ['audit', '--json']).out || '{}');
+  const audit = JSON.parse(run('npm', ['audit', '--json']).stdout || '{}');
   const counts = audit.metadata?.vulnerabilities;
   if (!counts) throw new Error('npm audit returned no summary');
   if (counts.total === 0) return ok('npm audit: 0 vulnerabilities');
@@ -217,6 +221,68 @@ async function reportSecurity() {
     .map((level) => `${counts[level]} ${level}`)
     .join(', ');
   todo(`npm audit: ${counts.total} vulnerabilities (${breakdown})`);
+}
+
+const repoSlug = () => {
+  const slug = pkg.repository?.url?.match(/github\.com[:/](.+?)(?:\.git)?$/)?.[1];
+  if (!slug) throw new Error('no GitHub repository in package.json');
+  return slug;
+};
+
+/** Negative when `a` is older than `b`. Numeric x.y.z only; pre-release tags are ignored. */
+function compareVersions(a, b) {
+  const parts = (v) => String(v).split(/[.+-]/).slice(0, 3).map(Number);
+  const [x, y] = [parts(a), parts(b)];
+  for (let i = 0; i < 3; i++) if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0);
+  return 0;
+}
+
+/**
+ * GitHub's Dependabot alerts, checked against THIS checkout's lockfile.
+ *
+ * `npm audit` counts vulnerable packages; GitHub counts advisories, and keeps
+ * counting them against the default branch until a fix is merged. So on an
+ * update branch the two disagree — 9 against 40 on the first run — and the
+ * useful question is neither number but "does this lockfile clear them all?".
+ * Alerts are private even on a public repo, so this needs a token.
+ */
+async function reportAlerts() {
+  const headers = githubHeaders();
+  if (!headers.Authorization) {
+    return say('skip', 'Dependabot alerts need a GitHub token — `gh auth login` provides one');
+  }
+  const alerts = await getJson(
+    `https://api.github.com/repos/${repoSlug()}/dependabot/alerts?state=open&per_page=100`,
+    headers
+  );
+  if (alerts.length === 0) return ok('no open Dependabot alerts');
+
+  const lock = JSON.parse(readFileSync('package-lock.json', 'utf8')).packages;
+  const installed = (name) =>
+    Object.entries(lock)
+      .filter(([path]) => path === `node_modules/${name}` || path.endsWith(`/node_modules/${name}`))
+      .map(([, entry]) => entry.version);
+
+  const unresolved = new Map(); // package -> { needs, have, count }
+  for (const alert of alerts) {
+    const name = alert.dependency.package.name;
+    const patched = alert.security_vulnerability.first_patched_version?.identifier;
+    const have = installed(name);
+    // No patched version means there is nothing to update to: always unresolved.
+    if (patched && have.every((v) => compareVersions(v, patched) >= 0)) continue;
+    const entry = unresolved.get(name) ?? { needs: patched, have, count: 0 };
+    if (patched && entry.needs && compareVersions(patched, entry.needs) > 0) entry.needs = patched;
+    entry.count++;
+    unresolved.set(name, entry);
+  }
+
+  const total = `${alerts.length}${alerts.length === 100 ? '+' : ''} open Dependabot alert(s) on the default branch`;
+  if (unresolved.size === 0) return ok(`${total} — all cleared by this checkout's lockfile`);
+  say('', `${total}; this checkout's lockfile still has:`);
+  for (const [name, { needs, have, count }] of unresolved) {
+    const fix = needs ? `needs ≥ ${needs}` : 'no patched release yet';
+    todo(`${name} ${have.join(', ')} — ${fix} (${count} alert(s))`);
+  }
 }
 
 async function reportActions() {
@@ -244,8 +310,7 @@ async function reportActions() {
 }
 
 async function reportDependabot() {
-  const slug = pkg.repository?.url?.match(/github\.com[:/](.+?)(?:\.git)?$/)?.[1];
-  if (!slug) throw new Error('no GitHub repository in package.json');
+  const slug = repoSlug();
   const headers = githubHeaders();
   const pulls = (
     await getJson(`https://api.github.com/repos/${slug}/pulls?state=open&per_page=100`, headers)
@@ -257,10 +322,16 @@ async function reportDependabot() {
       `https://api.github.com/repos/${slug}/commits/${pr.head.sha}/check-runs?per_page=100`,
       headers
     );
+    // A run with no conclusion yet is still going, which is not the same as failing.
+    const running = runs.some((r) => r.conclusion === null);
     const failing = runs
-      .filter((r) => !['success', 'neutral', 'skipped'].includes(r.conclusion))
+      .filter((r) => r.conclusion && !['success', 'neutral', 'skipped'].includes(r.conclusion))
       .map((r) => r.name);
-    const checks = failing.length ? `FAILING: ${failing.join(', ')}` : 'checks green';
+    const checks = failing.length
+      ? `FAILING: ${failing.join(', ')}`
+      : running
+        ? 'checks still running'
+        : 'checks green';
     todo(`#${pr.number} ${pr.title} (opened ${pr.created_at.slice(0, 10)}, ${checks})`);
   }
 }
@@ -271,6 +342,7 @@ async function report() {
   await guarded('Direct dependencies', reportDependencies);
   await guarded('Overrides', reportOverrides);
   await guarded('Security advisories', reportSecurity);
+  await guarded('Dependabot alerts', reportAlerts);
   await guarded('GitHub Actions', reportActions);
   await guarded('Open Dependabot pull requests', reportDependabot);
   console.log(
