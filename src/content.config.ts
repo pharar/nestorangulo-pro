@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { THEMES } from './data/themes';
 
 const talks = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/talks' }),
@@ -22,22 +23,7 @@ const talks = defineCollection({
         'workshop',
       ]),
       language: z.enum(['en', 'es']).default('en'),
-      themes: z.array(
-        z.enum([
-          'Incident Response',
-          'Web Security',
-          'WordPress Security',
-          'Malware',
-          'Vulnerability Intelligence',
-          'Open Source Security',
-          'Software Supply Chain',
-          'Security Leadership',
-          'GRC',
-          'Industrial Cybersecurity',
-          'AI Security',
-          'Security Awareness',
-        ])
-      ),
+      themes: z.array(z.enum(THEMES)),
       featured: z.boolean().default(false),
       draft: z.boolean().default(false),
       cover: image().optional(),
@@ -69,7 +55,7 @@ const writing = defineCollection({
       summary: z.string(),
       description: z.string().optional(),
       language: z.enum(['en', 'es']).default('en'),
-      themes: z.array(z.string()).default([]),
+      themes: z.array(z.enum(THEMES)).default([]),
       draft: z.boolean().default(false),
       cover: image().optional(),
       coverAlt: z.string().optional(),
