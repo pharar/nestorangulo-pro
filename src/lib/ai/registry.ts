@@ -12,7 +12,7 @@ import { speakingPage, talkPages } from './pages/talks';
 import { writingPage } from './pages/writing';
 import type { MarkdownPage, MarkdownSection } from './types';
 
-export async function getMarkdownPages(): Promise<MarkdownPage[]> {
+async function buildMarkdownPages(): Promise<MarkdownPage[]> {
   return [
     await homePage(),
     await aboutPage(),
@@ -21,6 +21,20 @@ export async function getMarkdownPages(): Promise<MarkdownPage[]> {
     contactPage(),
     ...(await talkPages()),
   ];
+}
+
+/**
+ * SEO.astro asks for this on every HTML page (to decide whether to advertise a
+ * twin), so a build would otherwise render every Markdown page once per HTML
+ * page — O(pages²). Content cannot change during `astro build`, so memoize
+ * there; in dev, rebuild on each call so edits to a talk show up on reload.
+ */
+let cached: Promise<MarkdownPage[]> | undefined;
+
+export function getMarkdownPages(): Promise<MarkdownPage[]> {
+  if (!import.meta.env.PROD) return buildMarkdownPages();
+  cached ??= buildMarkdownPages();
+  return cached;
 }
 
 export async function getMarkdownPagesBySection(section: MarkdownSection): Promise<MarkdownPage[]> {

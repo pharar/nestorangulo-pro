@@ -129,13 +129,17 @@ at the twin via `rel="alternate"`, `noindex` already settles which URL ranks, an
 directory passed as the first argument) and runs in CI right after `npm run build`. It
 fails when:
 
-- `robots.txt` lacks the `Sitemap:` line or a reference to `/llms.txt`;
+- `robots.txt` lacks the `Sitemap:` line or a reference to `/llms.txt`, or any group
+  carries a blanket `Disallow: /`;
 - `llms.txt` is missing, or does not open with a `# ` H1 followed by a `> ` summary;
-- any link in `llms.txt` on `nestorangulo.pro` does not resolve to a file in `dist/`;
+- any `nestorangulo.pro` link in `llms.txt`, `llms-full.txt` or a Markdown twin
+  (including its `Canonical:` line) does not resolve to a file in `dist/` in its
+  canonical form — `/about` without the slash counts as broken, since Cloudflare
+  answers it with a redirect;
 - `llms-full.txt` is missing or empty;
 - any built page (except `404`) lacks a parseable JSON-LD `@graph` containing the
-  `WebSite` node, or lacks a `rel="alternate" type="text/markdown"` link whose target
-  exists in `dist/`;
+  `WebSite` node, has an `{"@id": …}` reference that no node in its own graph declares,
+  or lacks a `rel="alternate" type="text/markdown"` link whose target exists in `dist/`;
 - any Markdown file contains `undefined`, `[object Object]` or raw HTML tags such as
   `<div` outside code spans and fenced blocks — the signatures of a template leak.
 

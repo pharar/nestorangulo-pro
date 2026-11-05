@@ -64,7 +64,7 @@ export function personNode(): GraphNode {
  * page's own graph without duplicating the whole profile.
  */
 export function personStubNode(): GraphNode {
-  return { '@type': 'Person', '@id': PERSON_ID, name: AUTHOR, url: SITE_URL };
+  return { '@type': 'Person', '@id': PERSON_ID, name: AUTHOR, url: `${SITE_URL}/` };
 }
 
 export function breadcrumbNode(pageUrl: string, trail: Crumb[]): GraphNode {

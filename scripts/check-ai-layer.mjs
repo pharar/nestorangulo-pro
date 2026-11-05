@@ -77,6 +77,10 @@ const ORIGIN = siteOrigin();
  * Maps a URL (absolute on our origin, root-relative, or relative to `base`)
  * to the file in dist that would serve it, or null when nothing would.
  * Returns undefined for URLs on another origin.
+ *
+ * Strict about the trailing slash: `/about` is not accepted for
+ * `about/index.html`, because Cloudflare answers it with a 308, and a link an
+ * agent is told to cite should be the canonical form.
  */
 function resolveToFile(href, base = '/') {
   let url;
@@ -87,15 +91,27 @@ function resolveToFile(href, base = '/') {
   }
   if (url.origin !== ORIGIN) return undefined;
   const path = decodeURIComponent(url.pathname);
-  const candidates = path.endsWith('/')
-    ? [posix.join(path, 'index.html')]
-    : [path, posix.join(path, 'index.html')];
-  for (const c of candidates) {
-    const p = join(DIST, c);
-    if (existsSync(p) && statSync(p).isFile()) return p;
-  }
-  return null;
+  const p = join(DIST, path.endsWith('/') ? posix.join(path, 'index.html') : path);
+  return existsSync(p) && statSync(p).isFile() ? p : null;
 }
+
+/** Every link target in a Markdown document: inline, autolinks and bare URLs. */
+function markdownLinks(md) {
+  const hrefs = new Set();
+  for (const m of md.matchAll(/\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g)) hrefs.add(m[1]);
+  for (const m of md.matchAll(/<(https?:\/\/[^>\s]+)>/g)) hrefs.add(m[1]);
+  // Bare URLs, minus trailing sentence punctuation (as GFM's autolinker does):
+  // `see https://x/llms.txt; cite …` links to `llms.txt`, not `llms.txt;`.
+  for (const m of md.matchAll(/(?<![(<])\bhttps?:\/\/[^\s)<>\]"']+/g))
+    hrefs.add(m[0].replace(/[.,;:!?*_~]+$/, ''));
+  return hrefs;
+}
+
+/** The links of `md` on our origin (or root-relative) that no built file serves. */
+const brokenLinks = (md) =>
+  [...markdownLinks(prose(md))]
+    .filter((h) => h.startsWith(ORIGIN) || h.startsWith('/'))
+    .filter((h) => resolveToFile(h) === null);
 
 /** Drops fenced and inline code, where `undefined` or `<div` can be legitimate. */
 const prose = (md) => md.replace(/^(```|~~~)[\s\S]*?^\1/gm, '').replace(/`[^`\n]*`/g, '');
@@ -119,6 +135,14 @@ if (robots !== null) {
     'robots.txt declares the sitemap',
     new RegExp(`^\\s*sitemap:\\s*${ORIGIN.replace(/[.]/g, '\\.')}/\\S+`, 'im').test(robots),
     `  no \`Sitemap: ${ORIGIN}/...\` line`
+  );
+  // A stray `Disallow: /` (or an empty-path `Allow:` turned Disallow) in any
+  // group silently hides the whole site from that crawler.
+  const blanket = robots.split(/\r?\n/).filter((l) => /^\s*disallow:\s*\/\*?\s*(#.*)?$/i.test(l));
+  check(
+    'robots.txt has no blanket `Disallow: /`',
+    blanket.length === 0,
+    blanket.map((l) => `  ${l.trim()}`).join('\n')
   );
   check(
     'robots.txt points at /llms.txt',
@@ -144,20 +168,6 @@ if (llms !== null) {
     /^> \S/.test(lines[1] ?? ''),
     `  second non-blank line is: ${JSON.stringify(lines[1] ?? '')}`
   );
-
-  // Every link on our origin must land on a built file.
-  const hrefs = new Set();
-  for (const m of llms.matchAll(/\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g)) hrefs.add(m[1]);
-  for (const m of llms.matchAll(/<(https?:\/\/[^>\s]+)>/g)) hrefs.add(m[1]);
-  for (const m of llms.matchAll(/(?<![(<])\bhttps?:\/\/[^\s)<>\]"']+/g)) hrefs.add(m[0]);
-  const broken = [...hrefs]
-    .filter((h) => h.startsWith(ORIGIN) || h.startsWith('/'))
-    .filter((h) => resolveToFile(h) === null);
-  check(
-    `every ${new URL(ORIGIN).host} link in llms.txt resolves (${hrefs.size} link(s))`,
-    broken.length === 0,
-    broken.map((h) => `  ${h}`).join('\n')
-  );
 }
 
 const full = read('llms-full.txt');
@@ -170,7 +180,30 @@ check(
 // ── Every page: JSON-LD graph + Markdown alternate ─────────────────────────
 const WEBSITE_ID = `${ORIGIN}/#website`;
 const noGraph = [];
+const danglingRefs = [];
 const noTwin = [];
+
+/** Every `{ "@id": … }` reference (an object with no other keys) under `value`. */
+function refsIn(value, out = []) {
+  if (Array.isArray(value)) value.forEach((v) => refsIn(v, out));
+  else if (value && typeof value === 'object') {
+    const keys = Object.keys(value);
+    if (keys.length === 1 && keys[0] === '@id') out.push(value['@id']);
+    else for (const v of Object.values(value)) refsIn(v, out);
+  }
+  return out;
+}
+
+/** Every `@id` a node in the graph declares (including nested ones). */
+function idsIn(value, out = new Set()) {
+  if (Array.isArray(value)) value.forEach((v) => idsIn(v, out));
+  else if (value && typeof value === 'object') {
+    const keys = Object.keys(value);
+    if (typeof value['@id'] === 'string' && keys.length > 1) out.add(value['@id']);
+    for (const v of Object.values(value)) idsIn(v, out);
+  }
+  return out;
+}
 
 for (const page of pages) {
   const html = readFileSync(join(DIST, page), 'utf8');
@@ -200,6 +233,12 @@ for (const page of pages) {
       (nodes.length ? `@graph has no WebSite node with @id ${WEBSITE_ID}` : 'no JSON-LD @graph');
     noGraph.push(`  ${page}: ${why}`);
   }
+  // A reference that no node in the same graph declares is a dangling edge:
+  // the consumer sees `performer: <some IRI>` and nothing about it.
+  const declared = idsIn(nodes);
+  for (const id of new Set(refsIn(nodes))) {
+    if (!declared.has(id)) danglingRefs.push(`  ${page}: ${id}`);
+  }
 
   // <link rel="alternate" type="text/markdown" href="...">
   const alternates = [...html.matchAll(/<link\b[^>]*>/gi)]
@@ -225,6 +264,11 @@ check(
   noGraph.length === 0,
   noGraph.join('\n')
 );
+check(
+  'every JSON-LD `@id` reference resolves within its page graph',
+  danglingRefs.length === 0,
+  danglingRefs.join('\n')
+);
 check('every page links a Markdown twin that exists', noTwin.length === 0, noTwin.join('\n'));
 
 // ── Markdown hygiene ───────────────────────────────────────────────────────
@@ -239,8 +283,28 @@ const LEAKS = [
     'raw HTML tag',
   ],
 ];
+const markdownFiles = [...twins, 'llms.txt', 'llms-full.txt'].filter((f) =>
+  existsSync(join(DIST, f))
+);
+
+// Every link on our origin, in every Markdown file (llms.txt, llms-full.txt and
+// each twin, including its `Canonical:` line), must land on a built file in
+// its canonical form. lychee only crawls the HTML, so nothing else looks here.
+const broken = [];
+let linkCount = 0;
+for (const f of markdownFiles) {
+  const md = readFileSync(join(DIST, f), 'utf8');
+  linkCount += markdownLinks(prose(md)).size;
+  for (const h of brokenLinks(md)) broken.push(`  ${f}: ${h}`);
+}
+check(
+  `every ${new URL(ORIGIN).host} link in the Markdown files resolves (${linkCount} link(s))`,
+  broken.length === 0,
+  broken.join('\n')
+);
+
 const leaks = [];
-for (const f of [...twins, 'llms.txt', 'llms-full.txt'].filter((f) => existsSync(join(DIST, f)))) {
+for (const f of markdownFiles) {
   const lines = prose(readFileSync(join(DIST, f), 'utf8')).split('\n');
   lines.forEach((line, i) => {
     for (const [re, what] of LEAKS) {

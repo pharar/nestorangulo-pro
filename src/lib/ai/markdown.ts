@@ -16,9 +16,19 @@ export function text(value: string): string {
     .replace(/[\\`*_[\]<>|]/g, (c) => `\\${c}`);
 }
 
-/** Escape text that may start a line, so it is never read as a block marker. */
+/**
+ * Escape text that may start a line, so it is never read as a block marker:
+ * an ATX heading (`#`…`######`), a blockquote, a bullet or thematic break
+ * (`-`, `+`, `---`), or an ordered-list marker. CommonMark only treats a
+ * backslash before ASCII punctuation as an escape, so `1.` becomes `1\.`, not
+ * `\1.` (which would print the backslash).
+ */
 export function paragraph(value: string): string {
-  return text(value).replace(/^([#>+-]|\d+[.)])(?=\s|$)/, (m) => `\\${m}`);
+  return text(value).replace(
+    /^(?:(#{1,6}|>|[+-]+)|(\d{1,9})([.)]))(?=\s|$)/,
+    (m, marker: string | undefined, num: string | undefined, punct: string | undefined) =>
+      marker ? `\\${m}` : `${num}\\${punct}`
+  );
 }
 
 /** A URL safe to put inside `(...)`, made absolute when root-relative. */

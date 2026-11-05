@@ -39,7 +39,7 @@ export const GET: APIRoute = async () => {
   const p = personSchema;
   const facts = paragraph(
     `${AUTHOR} is ${JOB_TITLE} and holds the ${p.hasCredential.name} (${p.hasCredential.issuedBy.name}); ` +
-      `${p.memberOf.roleName} at the ${p.memberOf.name}; alumnus of ${p.alumniOf.name}. ` +
+      `${p.memberOf.roleName} at the ${p.memberOf.memberOf.name}; alumnus of ${p.alumniOf.name}. ` +
       `Areas: ${p.knowsAbout.filter((k) => k !== p.hasCredential.name).join(', ')}. ` +
       `The site archives ${talks.length} talks. Each link below points to a page's Markdown version; ` +
       'the HTML page at the same path (/about/ for /about.md) is canonical and is the URL to cite. ' +
