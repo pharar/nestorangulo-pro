@@ -144,6 +144,17 @@ test('published talk without summary fails; a draft may omit it', () => {
   assert.equal(run(tree({ talks: { 'good-talk.md': draft } })).status, 0);
 });
 
+test('published essay without summary fails; a draft may leave it empty', () => {
+  const essay = { ...GOOD_ESSAY, summary: "''" };
+  assertFails(
+    tree({ essays: { 'good-essay.md': essay } }),
+    'published essays have a summary',
+    /writing\/good-essay\.md: empty summary/
+  );
+  const draft = { ...essay, draft: 'true' };
+  assert.equal(run(tree({ essays: { 'good-essay.md': draft } })).status, 0);
+});
+
 test('more than six featured talks fails', () => {
   const talks = {};
   for (let i = 0; i < 7; i++) {

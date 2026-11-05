@@ -67,6 +67,7 @@ frontmatter field by field without reformatting it), with `node:test` tests besi
 | Action                       | Skill                       | Command                                                                | Doc                                                                  |
 | ---------------------------- | --------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | Update dependencies, runtime | `housekeeping`              | `npm run housekeeping`, `housekeeping:baseline`, `housekeeping:verify` | [HOUSEKEEPING.md](./documentation/HOUSEKEEPING.md)                   |
+| Write and publish an essay   | `post`                      | `npm run post -- list\|new\|og\|check\|publish\|touch`                 | [WRITING.md](./documentation/WRITING.md)                             |
 | Keep the AI-readable layer   | `ai-readable-layer`         | `npm run check:ai`                                                     | [AI-READABLE.md](./documentation/AI-READABLE.md)                     |
 | Run every local check        | (none; part of every skill) | `npm run gate`                                                         | this file                                                            |
 | Check content rules          | (none yet)                  | `npm run check:content`                                                | header of `scripts/check-content.mjs`; [README](./README.md#content) |

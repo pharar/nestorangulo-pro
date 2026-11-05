@@ -17,9 +17,10 @@
  * Dependencies: `yaml`, through scripts/lib/frontmatter.mjs. No network.
  */
 
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { basename, dirname, extname, join, resolve } from 'node:path';
+import { existsSync, readdirSync } from 'node:fs';
+import { basename, extname, join, resolve } from 'node:path';
 import { readEntry } from './lib/frontmatter.mjs';
+import { blank, coverMissing, DESCRIPTION_MAX, ogImageProblem } from './lib/content.mjs';
 
 const args = process.argv.slice(2);
 const rootFlag = args.indexOf('--root');
@@ -27,8 +28,6 @@ const ROOT = resolve(rootFlag === -1 ? '.' : (args[rootFlag + 1] ?? '.'));
 
 /** The featured shelf at the top of /speaking holds this many talks. */
 const SHELF = 6;
-/** Longest `summary` that still makes a sensible meta description. */
-const DESCRIPTION_MAX = 160;
 
 const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SLIDES_HOST = 'assets.nestorangulo.pro';
@@ -74,16 +73,6 @@ function isDeckUrlFor(stem, url) {
 }
 
 const where = (e) => `${e.collection}/${e.name}`;
-const blank = (v) => typeof v !== 'string' || v.trim() === '';
-
-/** Width and height from a PNG's IHDR chunk, or null when it is not a PNG. */
-function pngSize(file) {
-  const b = readFileSync(file);
-  const signature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
-  if (b.length < 24 || !b.subarray(0, 8).equals(signature)) return null;
-  if (b.subarray(12, 16).toString('latin1') !== 'IHDR') return null;
-  return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) };
-}
 
 console.log(`\nchecked ${talks.length} talk(s), ${writing.length} essay(s) in ${ROOT}\n`);
 
@@ -105,8 +94,8 @@ check(
 check(
   'cover file exists',
   all
-    .filter((e) => e.data.cover && !existsSync(resolve(dirname(e.file), String(e.data.cover))))
-    .map((e) => `${where(e)}: ${e.data.cover} not found`)
+    .filter((e) => e.data.cover && coverMissing(e.file, e.data.cover))
+    .map((e) => `${where(e)}: ${coverMissing(e.file, e.data.cover)}`)
 );
 
 // ── Essays ─────────────────────────────────────────────────────────────────
@@ -114,19 +103,15 @@ check(
 check(
   'ogImage is /-rooted, exists under public/, and is a 1200x630 PNG',
   writing
-    .filter((e) => e.data.ogImage)
-    .flatMap((e) => {
-      const og = String(e.data.ogImage);
-      if (!og.startsWith('/')) return [`${where(e)}: ogImage "${og}" must start with /`];
-      const file = join(ROOT, 'public', og);
-      if (!existsSync(file)) return [`${where(e)}: public${og} does not exist`];
-      const size = pngSize(file);
-      if (!size) return [`${where(e)}: public${og} is not a PNG`];
-      if (size.width !== 1200 || size.height !== 630) {
-        return [`${where(e)}: public${og} is ${size.width}x${size.height}, expected 1200x630`];
-      }
-      return [];
-    })
+    .filter((e) => e.data.ogImage && ogImageProblem(ROOT, e.data.ogImage))
+    .map((e) => `${where(e)}: ${ogImageProblem(ROOT, e.data.ogImage)}`)
+);
+
+check(
+  'published essays have a summary',
+  writing
+    .filter((e) => !e.data.draft && blank(e.data.summary))
+    .map((e) => `${where(e)}: empty summary`)
 );
 
 // ── Talks ──────────────────────────────────────────────────────────────────

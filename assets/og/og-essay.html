@@ -1,0 +1,125 @@
+<!doctype html>
+<!--
+  Per-essay social card, 1200×630. Filled and rendered by `npm run post -- og`
+  (scripts/post.mjs, scripts/lib/og.mjs); the {{…}} markers are replaced there.
+  It is HTML rather than SVG because the title has to wrap for real: SVG text
+  does not wrap, and the title length varies.
+
+  Colours are the site tokens (src/styles/tokens.css): --clr-bg #faf9f7 for the
+  title, the dark theme's --clr-bg #1a1815 for the panel, --clr-accent #c08c50
+  for the emphasis. The kicker grey is sampled from the approved card.
+  Montserrat is embedded by the renderer ({{FONTS}}).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /*{{FONTS}}*/
+      :root {
+        --panel: #1a1815;
+        --paper: #faf9f7;
+        --accent: #c08c50;
+        --kicker: #beb8b0;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: var(--panel);
+        font-family: 'Montserrat', sans-serif;
+      }
+      .cover {
+        position: absolute;
+        inset: 0;
+        width: 1200px;
+        height: 630px;
+        object-fit: cover;
+        object-position: 5% center;
+      }
+      /* Near-black panel on the left, fading out toward the centre so the text
+         sits on dark and the picture shows on the right. Eased, not linear. */
+      .shade {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to right,
+          rgba(26, 24, 21, 1) 0px,
+          rgba(26, 24, 21, 1) 300px,
+          rgba(26, 24, 21, 0.82) 340px,
+          rgba(26, 24, 21, 0.57) 400px,
+          rgba(26, 24, 21, 0.23) 500px,
+          rgba(26, 24, 21, 0.02) 600px,
+          rgba(26, 24, 21, 0) 640px
+        );
+      }
+      .kicker {
+        position: absolute;
+        left: 72px;
+        top: 102px;
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--kicker);
+      }
+      .title {
+        position: absolute;
+        left: 72px;
+        top: 184px;
+        width: 470px;
+        height: 360px;
+        display: flex;
+        align-items: center;
+      }
+      h1 {
+        margin: 0;
+        font-weight: 300;
+        font-size: 64px;
+        line-height: 1.2;
+        color: var(--paper);
+      }
+      h1 em {
+        font-style: normal;
+        color: var(--accent);
+      }
+      .site {
+        position: absolute;
+        left: 72px;
+        bottom: 36px;
+        font-weight: 300;
+        font-size: 26px;
+        color: var(--paper);
+      }
+      .site span {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    {{COVER}}
+    <div class="shade"></div>
+    <div class="kicker">{{KICKER}}</div>
+    <div class="title"><h1 id="t">{{TITLE}}</h1></div>
+    <div class="site">nestorangulo<span>.pro</span></div>
+    <script>
+      // Long titles shrink to fit rather than overflow: the first size in the
+      // ladder whose wrapped height fits the title box wins. It has to wait for
+      // Montserrat: measured in the fallback face the text is narrower and the
+      // fit is wrong. The renderer waits for data-fit to leave "pending".
+      document.documentElement.dataset.fit = 'pending';
+      document.fonts.load('300 64px Montserrat').then(function () {
+        var h1 = document.getElementById('t');
+        var box = h1.parentElement.clientHeight;
+        var sizes = [64, 58, 52, 46, 42, 38, 34, 30];
+        for (var i = 0; i < sizes.length; i++) {
+          h1.style.fontSize = sizes[i] + 'px';
+          if (h1.scrollHeight <= box) break;
+        }
+        document.documentElement.dataset.fit = 'done';
+      });
+    </script>
+  </body>
+</html>
