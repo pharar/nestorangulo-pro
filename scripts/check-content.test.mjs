@@ -80,8 +80,10 @@ function run(root) {
 function assertFails(root, label, detail) {
   const { status, out } = run(root);
   assert.equal(status, 1, out);
-  assert.match(out, new RegExp(`FAIL  ${label.replace(/[()/<>]/g, '.')}`), out);
-  if (detail) assert.match(out, detail, out);
+  assert.ok(out.includes(`FAIL  ${label}`), out);
+  // A string is looked for as-is; a RegExp is matched. Never build one from the other.
+  if (typeof detail === 'string') assert.ok(out.includes(detail), out);
+  else if (detail) assert.match(out, detail, out);
 }
 
 test('a clean tree passes', () => {
@@ -166,7 +168,7 @@ test('slidesUrl must carry the card stem and 10 hex characters', () => {
     assertFails(
       tree({ talks: { 'good-talk.md': { ...GOOD_TALK, slidesUrl: url } } }),
       'slidesUrl on the assets host',
-      new RegExp(url.replace(/\./g, '\\.'))
+      url
     );
   }
 });
