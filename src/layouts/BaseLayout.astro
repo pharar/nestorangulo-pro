@@ -66,8 +66,10 @@ const lang = contentLang ?? locale;
         security.csp in astro.config.mjs only allows script-src 'self'. */}
     <script src="/theme-init.js" is:inline></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* The .ico must be sizes="32x32", not "any": with "any", Chrome prefers it
+        over the SVG, and only the SVG follows prefers-color-scheme. */}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="alternate" type="application/rss+xml" title="Writing" href="/rss.xml" />
     <meta name="generator" content={Astro.generator} />
