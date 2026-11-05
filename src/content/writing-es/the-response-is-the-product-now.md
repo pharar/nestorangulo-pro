@@ -54,7 +54,7 @@ Fíjate en lo que pide el reglamento. No pide código perfecto.
 
 Pide darte cuenta, y decirlo, contra reloj.
 
-Aquí es donde las SBOM dejan de ser un entregable de cumplimiento.[^3] La mayoría de las que he visto se generan a partir de un manifiesto de paquetes, es decir, listan lo que el desarrollador declaró, no lo que contiene el build. En el CloudFest Hackathon del año pasado construimos una herramienta de SBOM agnóstica del CMS precisamente porque los lectores de manifiestos se dejaban los includes y el código vendorizado y empaquetado, que es donde viven los bugs viejos.
+Aquí es donde las SBOM dejan de ser un entregable de cumplimiento.[^3] La mayoría de las que he visto se generan a partir de un manifiesto de paquetes, es decir, listan lo que el dev declaró, no lo que contiene el build. En el CloudFest Hackathon del año pasado construimos una herramienta de SBOM agnóstica del CMS precisamente porque los lectores de manifiestos se dejaban los includes y el código de terceros que un vendor incluye empaquetado, que es donde viven los bugs viejos.
 
 La pregunta útil sobre una SBOM no es "¿tenemos una?". Es: cuando salga el próximo Log4j, ¿puede alguien decir en menos de una hora cuáles de nuestros productos lo incluyen y qué clientes ejecutan qué versión? Si la respuesta es un PDF en una unidad compartida, tienes un documento, no una capacidad.
 
@@ -74,4 +74,4 @@ El robot es del mismo tamaño en los dos bandos. Lo que deberían mirar es al pi
 
 [^2]: El relato completo de esa herramienta, incluido lo que nunca llegó a conseguir: [We Built an AI That Finds Vulnerabilities in Plugins. So Can Everyone Else.](/es/speaking/kozhikode-2026-ai-finds-vulnerabilities/), WP Future Conclave, septiembre de 2026. Este artículo es su versión escrita.
 
-[^3]: El ciclo de vida desde el bug hasta el parche, con el CRA de fondo: [De la Plantà a la Cremà](/es/speaking/valencia-meetup-2025-ciclo-vida-vulnerabilidades/), WordPress Meetup Valencia, abril de 2025 (en castellano).
+[^3]: El ciclo de vida desde el bug hasta el parche, con el CRA de fondo: [De la Plantà a la Cremà](/es/speaking/valencia-meetup-2025-ciclo-vida-vulnerabilidades/), WordPress Meetup Valencia, abril de 2025.

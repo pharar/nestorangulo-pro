@@ -2,7 +2,7 @@
 summary: 'Cómo usan los atacantes la IA para encontrar sitios WordPress vulnerables y reclutarlos en botnets ciberterroristas.'
 ---
 
-¿Cómo utilizan los malos la IA para encontrar sitios WordPress con vulnerabilidades y reconvertirlos en botnets ciberterroristas dentro de la «Guerra Mundial Hacker» que se libra en el subsuelo? Una mirada a la mente del atacante: qué busca, y por qué y cómo hackea sitios a escala.
+¿Cómo utilizan los malos la IA para encontrar sitios WordPress con vulnerabilidades y reconvertirlos en botnets ciberterroristas dentro de la «Hacking World War» que se libra en el subsuelo? Una mirada a la mente del atacante: qué busca, y por qué y cómo hackea sitios a escala.
 
 > _Traducción al español, ofrecida por accesibilidad. Esta charla se impartió en inglés; el resumen original aparece a continuación. La traducción puede contener errores._
 
