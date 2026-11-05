@@ -451,6 +451,7 @@ function verify(flags) {
     ['Build', 'npm', ['run', 'build']],
     ['URL contract', 'npm', ['run', 'check:urls'], 'Build'],
     ['CSP contract', 'npm', ['run', 'check:csp'], 'Build'],
+    ['AI-readable layer', 'npm', ['run', 'check:ai'], 'Build'],
     ['Audit', 'npm', ['audit']],
   ];
   if (flags.includes('--assets')) {

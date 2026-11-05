@@ -44,7 +44,7 @@ whether it still builds _the same site_.
 | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `npm run housekeeping`                    | Read-only report: runtime pins, outdated dependencies, held majors, overrides, advisories, Dependabot alerts, CI action versions, open Dependabot PRs |
 | `npm run housekeeping:baseline`           | Builds and snapshots `dist/` for later comparison                                                                                                     |
-| `npm run housekeeping:verify`             | Format, type check, build, URL contract, CSP contract, `npm audit`; then diffs the build against the baseline                                         |
+| `npm run housekeeping:verify`             | Format, type check, build, URL contract, CSP contract, AI-readable layer, `npm audit`; then diffs the build against the baseline                      |
 | `npm run housekeeping:verify -- --assets` | The same, and regenerates the favicons and OG card to confirm the committed files still come out byte-identical                                       |
 | `npm run housekeeping:probe-ts`           | Installs the newest TypeScript, runs `astro check`, restores everything. Takes a version or dist-tag: `… -- beta`                                     |
 | `npm run check:csp`                       | The CSP contract on its own: every inline script and style in `dist/` is allowed by the policy the page declares. Needs a build first.                |

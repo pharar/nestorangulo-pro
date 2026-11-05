@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_URL } from '../config';
 
 interface Contact {
   label: string;
@@ -58,6 +59,10 @@ const contacts: Contact[] = [
 <BaseLayout
   title="Contact — Nestor Angulo de Ugarte"
   description="Reach Nestor Angulo de Ugarte on LinkedIn, email, GitHub, Bluesky, X, and ORCID."
+  structuredData={{
+    type: 'ContactPage',
+    breadcrumbs: [{ name: 'Contact', url: `${SITE_URL}/contact/` }],
+  }}
 >
   <div class="container">
     <div class="page-header">

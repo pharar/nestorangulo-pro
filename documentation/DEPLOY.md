@@ -103,6 +103,10 @@ lands in one. The `:splat` rule preserves whatever form arrived, so `/talks/x/` 
 Allows everything and points at `https://nestorangulo.pro/sitemap-index.xml`, which is
 generated at build time by `@astrojs/sitemap`.
 
+It also welcomes AI crawlers by name and declares Cloudflare content signals. The
+Cloudflare dashboard's managed `robots.txt` / AI-bot blocking can override it at the edge
+— see [AI-READABLE.md](AI-READABLE.md) before touching either.
+
 ### `dist/404.html` — the not-found status
 
 Built from `src/pages/404.astro`. Cloudflare Pages gives this file special treatment:

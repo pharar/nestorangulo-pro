@@ -1,5 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
 import { SITE_URL, AUTHOR } from '../config';
+import { PERSON_ID, personStubNode, ref } from './structuredData';
 
 type Talk = CollectionEntry<'talks'>;
 
@@ -15,9 +16,12 @@ type Talk = CollectionEntry<'talks'>;
  * that describes something the reader cannot see is a manual-action risk.
  */
 
-/** A city is a place; the literal string "Online" is not. */
-function isVirtual(location?: string): boolean {
-  return !location || /^online$/i.test(location.trim());
+/**
+ * A city is a place; the literal string "Online" is not. A webinar is online
+ * by definition, whatever the location field says.
+ */
+function isVirtual(location?: string, format?: string): boolean {
+  return format === 'webinar' || !location || /^online$/i.test(location.trim());
 }
 
 /** `2019-11-02T00:00:00Z` -> `2019-11-02`. Dates are authored as plain days. */
@@ -63,23 +67,25 @@ export function talkUrl(id: string): string {
   return `${SITE_URL}/speaking/${id}/`;
 }
 
-export function talkSchema(entry: Talk) {
+export function talkEventId(id: string): string {
+  return `${talkUrl(id)}#event`;
+}
+
+/**
+ * The talk's `Event` node, for the page's `@graph`. The performer is a bare
+ * `@id` reference: the graph it is placed in carries the Person node.
+ */
+export function talkEventNode(entry: Talk): Record<string, unknown> {
   const d = entry.data;
   const url = talkUrl(entry.id);
   const day = isoDay(d.date);
   const description = d.description ?? d.summary;
-  const virtual = isVirtual(d.location);
-
-  const person = {
-    '@type': 'Person',
-    '@id': `${SITE_URL}/#person`,
-    name: AUTHOR,
-    url: SITE_URL,
-  };
+  const virtual = isVirtual(d.location, d.format);
+  const person = ref(PERSON_ID);
 
   const event: Record<string, unknown> = {
     '@type': 'Event',
-    '@id': `${url}#event`,
+    '@id': talkEventId(entry.id),
     name: d.title,
     url,
     startDate: day,
@@ -112,7 +118,7 @@ export function talkSchema(entry: Talk) {
       name: `${d.title} — slides`,
       url: slides,
       inLanguage: d.language,
-      author: { '@id': person['@id'] },
+      author: person,
       ...(d.slidesUrl ? { encodingFormat: 'application/pdf' } : {}),
     };
   }
@@ -132,8 +138,18 @@ export function talkSchema(entry: Talk) {
     };
   }
 
-  return { '@context': 'https://schema.org', '@graph': [event] };
+  return event;
 }
+
+/** Standalone wrapper, kept for callers outside the page `@graph`. */
+export function talkSchema(entry: Talk) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [{ ...talkEventNode(entry), performer: personStubNode() }],
+  };
+}
+
+export const SPEAKING_LIST_ID = `${SITE_URL}/speaking/#talks`;
 
 /**
  * `ItemList` for /speaking — the index was as silent as the detail pages.
@@ -144,10 +160,13 @@ export function talkSchema(entry: Talk) {
  * one that can be stated truthfully in a single `itemListOrder`.
  */
 export function speakingListSchema(talks: Talk[]) {
+  return { '@context': 'https://schema.org', ...speakingListNode(talks) };
+}
+
+export function speakingListNode(talks: Talk[]): Record<string, unknown> {
   return {
-    '@context': 'https://schema.org',
     '@type': 'ItemList',
-    '@id': `${SITE_URL}/speaking/#talks`,
+    '@id': SPEAKING_LIST_ID,
     name: `Speaking — ${AUTHOR}`,
     numberOfItems: talks.length,
     itemListOrder: 'https://schema.org/ItemListOrderDescending',
