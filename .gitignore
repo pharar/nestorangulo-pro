@@ -49,4 +49,7 @@ secrets.*
 # Local Configs
 *.local.json
 .wrangler/
-.claude
+
+# Claude Code: local state stays out, project skills are part of the repo.
+.claude/*
+!.claude/skills/

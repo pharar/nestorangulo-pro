@@ -16,14 +16,24 @@ updates:
           - '@astrojs/*'
       dev-dependencies:
         dependency-type: development
+      # Security updates ignore the groups above unless a group opts in, so each
+      # advisory in a transitive package used to open its own PR — six of them in
+      # four weeks. One PR for all of them instead.
+      security:
+        applies-to: security-updates
+        patterns:
+          - '*'
     ignore:
-      # TypeScript majors are held back by @astrojs/check, whose peer range is
-      # `^5.0.0 || ^6.0.0` as of 0.9.10 — the latest published version, so there
-      # is nothing to upgrade it to. TS 7 makes `astro check` exit 1 with no
-      # diagnostics, which took down the whole Type check job in #25. The
+      # TypeScript majors are held back by the type checker, not by this site's
+      # code. @astrojs/check's peer range is still `^5.0.0 || ^6.0.0` as of
+      # 0.9.12, and on TypeScript 7.0 `astro check` now refuses to run at all —
+      # an earlier attempt took down the whole Type check job in #25. The
       # `@astrojs/check` override in package.json pins it to the root TypeScript,
       # so resolution cannot route around it either.
-      # Drop this entry once @astrojs/check declares support for TypeScript 7.
+      # Upstream's way out is not a wider peer range but TypeScript 7.1 content
+      # mappers, which need 7.1 to be stable. `npm run housekeeping` reports when
+      # that changes; documentation/HOUSEKEEPING.md has the migration. Drop this
+      # entry as part of it.
       - dependency-name: typescript
         update-types:
           - version-update:semver-major

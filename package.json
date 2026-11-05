@@ -36,9 +36,14 @@
     "preview": "astro preview",
     "check": "astro check",
     "check:urls": "node scripts/check-urls.mjs",
+    "check:csp": "node scripts/check-csp.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "og": "node scripts/build-og.mjs"
+    "og": "node scripts/build-og.mjs",
+    "housekeeping": "node scripts/housekeeping.mjs report",
+    "housekeeping:baseline": "node scripts/housekeeping.mjs baseline",
+    "housekeeping:verify": "node scripts/housekeeping.mjs verify",
+    "housekeeping:probe-ts": "node scripts/housekeeping.mjs probe-ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
