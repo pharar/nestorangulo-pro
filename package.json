@@ -38,8 +38,11 @@
     "check:urls": "node scripts/check-urls.mjs",
     "check:ai": "node scripts/check-ai-layer.mjs",
     "check:csp": "node scripts/check-csp.mjs",
+    "check:content": "node scripts/check-content.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "test:scripts": "node --test scripts/",
+    "gate": "node scripts/gate.mjs",
     "og": "node scripts/build-og.mjs",
     "housekeeping": "node scripts/housekeeping.mjs report",
     "housekeeping:baseline": "node scripts/housekeeping.mjs baseline",
@@ -60,7 +63,8 @@
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.2",
     "sharp": "^0.35.5",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "yaml": "^2.9.1"
   },
   "overrides": {
     "@astrojs/check": {

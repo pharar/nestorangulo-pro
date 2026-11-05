@@ -7,8 +7,8 @@
  *              The default.
  *   baseline   Build the site as it stands and keep a copy to compare against.
  *              Run it BEFORE changing anything.
- *   verify     The local gate: format, types, build, URL and CSP contracts,
- *              audit — then a diff of the built site against the baseline.
+ *   verify     The shared local gate (scripts/lib/gate.mjs), plus `npm audit` —
+ *              then a diff of the built site against the baseline.
  *              `--assets` also regenerates the committed favicons and OG card
  *              and fails if their bytes changed.
  *   probe-ts   Install a newer TypeScript, run `astro check`, put everything
@@ -34,6 +34,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
+import { runGate } from './lib/gate.mjs';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 
@@ -445,36 +446,33 @@ function compareWithBaseline() {
 }
 
 function verify(flags) {
-  const steps = [
-    ['Format', 'npm', ['run', 'format:check']],
-    ['Type check', 'npm', ['run', 'check']],
-    ['Build', 'npm', ['run', 'build']],
-    ['URL contract', 'npm', ['run', 'check:urls'], 'Build'],
-    ['CSP contract', 'npm', ['run', 'check:csp'], 'Build'],
-    ['AI-readable layer', 'npm', ['run', 'check:ai'], 'Build'],
-    ['Audit', 'npm', ['audit']],
-  ];
-  if (flags.includes('--assets')) {
-    steps.push(['Favicons', 'node', ['scripts/build-favicon.mjs']]);
-    steps.push(['OG card', 'npm', ['run', 'og']]);
-  }
-
   console.log(`Housekeeping verify — node ${process.version}\n`);
   const assetsBefore = run('git', ['status', '--porcelain', '--', 'public']).out;
-  const failed = new Set();
-  for (const [label, cmd, args, needs] of steps) {
-    if (needs && failed.has(needs)) {
-      say('skip', `${label} — needs a successful ${needs}`);
-      failed.add(label);
-      continue;
-    }
-    const { status, out } = run(cmd, args);
-    if (status === 0) {
-      ok(label);
-    } else {
-      failed.add(label);
-      say('FAIL', label);
-      console.log(out.trimEnd().split('\n').slice(-30).join('\n').replace(/^/gm, '          '));
+  // The shared gate (scripts/lib/gate.mjs); what follows is housekeeping's own.
+  const { failed } = runGate();
+
+  const { status, out } = run('npm', ['audit']);
+  if (status === 0) {
+    ok('Audit');
+  } else {
+    failed.add('Audit');
+    say('FAIL', 'Audit');
+    console.log(out.trimEnd().split('\n').slice(-30).join('\n').replace(/^/gm, '          '));
+  }
+
+  if (flags.includes('--assets')) {
+    for (const [label, cmd, args] of [
+      ['Favicons', 'node', ['scripts/build-favicon.mjs']],
+      ['OG card', 'npm', ['run', 'og']],
+    ]) {
+      const r = run(cmd, args);
+      if (r.status === 0) {
+        ok(label);
+      } else {
+        failed.add(label);
+        say('FAIL', label);
+        console.log(r.out.trimEnd().split('\n').slice(-30).join('\n').replace(/^/gm, '          '));
+      }
     }
   }
 
