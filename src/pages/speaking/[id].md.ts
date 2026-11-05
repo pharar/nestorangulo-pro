@@ -1,13 +1,12 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
-import type { CollectionEntry } from 'astro:content';
-import { getPublishedTalks } from '../../lib/talks';
+import { getLocalizedTalks, type LocalizedTalk } from '../../lib/i18nContent';
 import { markdownResponse } from '../../lib/ai/page';
 import { talkPage } from '../../lib/ai/pages/talks';
 
 export const getStaticPaths = (async () => {
-  const talks = await getPublishedTalks();
-  return talks.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+  const talks = await getLocalizedTalks('en');
+  return talks.map((talk) => ({ params: { id: talk.id }, props: { talk } }));
 }) satisfies GetStaticPaths;
 
-export const GET: APIRoute<{ entry: CollectionEntry<'talks'> }> = ({ props }) =>
-  markdownResponse(talkPage(props.entry));
+export const GET: APIRoute<{ talk: LocalizedTalk }> = ({ props }) =>
+  markdownResponse(talkPage(props.talk));

@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { renderLocalized, type LocalizedTalk } from '../lib/i18nContent';
+import { talkEventId, talkEventNode, talkUrl } from '../lib/talkSchema';
+import { SITE_URL } from '../config';
+import { formatLabel, placeLabel, useSpeaking } from '../i18n/ui/speaking';
+import { themeLabel } from '../i18n/ui/themes';
+import { formatDate, localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
+
+// Talk page for every language. src/pages/speaking/[...id].astro and
+// src/pages/es/speaking/[...id].astro pass `lang` and the localized talk.
+//
+// `<html lang>`: on the English route it is the talk's delivery language (a
+// Spanish-language talk is `es`); on /es/ the page body is Spanish (the overlay,
+// for English-delivered talks a translation + the original), so it is `es`.
+interface Props {
+  lang: Lang;
+  talk: LocalizedTalk;
+}
+
+const { lang, talk } = Astro.props;
+const t = useSpeaking(lang);
+const { Content } = await renderLocalized(talk);
+
+const {
+  title,
+  event,
+  location,
+  date,
+  format,
+  themes,
+  language,
+  summary,
+  description,
+  slidesUrl,
+  slidesUrlExt,
+  videoUrl,
+  eventUrl,
+  sourceNote,
+} = talk.data;
+
+const pageDescription = description ?? summary;
+
+const structuredData = {
+  breadcrumbs: [
+    { name: t('navLabel'), url: `${SITE_URL}${localizePath('/speaking/', lang)}` },
+    { name: title, url: talkUrl(talk.id, lang) },
+  ],
+  mainEntity: talkEventId(talk.id, lang),
+  nodes: [talkEventNode(talk.entry, lang, talk.data)],
+};
+---
+
+<BaseLayout
+  title={`${title} — Nestor Angulo de Ugarte`}
+  description={pageDescription}
+  lang={lang === 'en' ? language : undefined}
+  structuredData={structuredData}
+>
+  <div class="container">
+    <a href={localizePath('/speaking/', lang)} class="talk-back">
+      {t('back')}
+    </a>
+
+    <!-- ── Talk header ───────────────────────────────────────── -->
+    <header class="talk-detail-header">
+      <h1 class="talk-detail-title">{title}</h1>
+
+      <div class="talk-detail-meta">
+        <span class="talk-format">{formatLabel(format, lang)}</span>
+        <span>{event}</span>
+        {location && <span>{placeLabel(location, lang)}</span>}
+        <time datetime={date.toISOString()}>
+          {formatDate(date, lang, { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+      </div>
+
+      <ul class="talk-themes" aria-label={t('themesLabel')}>
+        {themes.map((theme) => (
+          <li class="theme-tag">{themeLabel(theme, lang)}</li>
+        ))}
+      </ul>
+
+      {(videoUrl || slidesUrl || slidesUrlExt || eventUrl) && (
+        <div class="talk-detail-actions">
+          {videoUrl && (
+            <a class="talk-btn" href={videoUrl} target="_blank" rel="noopener noreferrer">
+              {t('watchVideo')}
+            </a>
+          )}
+          {(slidesUrl || slidesUrlExt) && (
+            <a
+              class="talk-btn"
+              href={slidesUrl ?? slidesUrlExt}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('viewSlides')}
+            </a>
+          )}
+          {eventUrl && (
+            <a class="talk-btn" href={eventUrl} target="_blank" rel="noopener noreferrer">
+              {t('viewEvent')}
+            </a>
+          )}
+        </div>
+      )}
+
+      {slidesUrl && slidesUrlExt && (
+        <p class="talk-provenance-note">
+          {t('slidesAlsoPre')}{' '}
+          <a href={slidesUrlExt} target="_blank" rel="noopener noreferrer">
+            {t('slidesAlsoLink')}
+          </a>
+          .
+        </p>
+      )}
+
+      {sourceNote && <p class="talk-detail-note">{sourceNote}</p>}
+    </header>
+
+    <!-- ── Talk body ────────────────────────────────────────── -->
+    <div class="talk-detail-body">
+      <Content />
+    </div>
+  </div>
+</BaseLayout>

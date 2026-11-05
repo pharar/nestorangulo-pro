@@ -1,0 +1,88 @@
+---
+import { Image } from 'astro:assets';
+import type { LocalizedTalk } from '../../lib/i18nContent';
+import { formatLabel, placeLabel, useSpeaking } from '../../i18n/ui/speaking';
+import { themeLabel } from '../../i18n/ui/themes';
+import { localizePath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/config';
+
+// One row of the speaking listing (featured with/without cover, and archive).
+interface Props {
+  talk: LocalizedTalk;
+  lang: Lang;
+  featured?: boolean;
+}
+
+const { talk, lang, featured = false } = Astro.props;
+const t = useSpeaking(lang);
+const d = talk.data;
+const href = localizePath(`/speaking/${talk.id}/`, lang);
+const day = d.date.toISOString().slice(0, 10);
+const hasLinks = d.videoUrl || d.slidesUrl || d.slidesUrlExt || d.eventUrl;
+const cover = featured ? d.cover : undefined;
+const Wrap = cover ? 'div' : Fragment;
+const wrapProps = cover ? { class: 'talk-card-content' } : {};
+---
+
+<li
+  class={cover ? 'talk-item talk-item--has-cover' : 'talk-item'}
+  data-themes={d.themes.join('|')}
+  data-featured={featured ? 'true' : undefined}
+  data-year={String(d.date.getFullYear())}
+>
+  {cover && (
+    <figure class="talk-card-cover">
+      <Image
+        src={cover}
+        alt={d.coverAlt ?? `${d.title} — ${d.event}`}
+        width={700}
+        loading="lazy"
+        class="talk-card-img"
+      />
+    </figure>
+  )}
+  <Wrap {...wrapProps}>
+    <div class="talk-top">
+      <a href={href} class="talk-title-link">
+        {d.title}
+      </a>
+      <time class="talk-date" datetime={d.date.toISOString()}>
+        {day}
+      </time>
+    </div>
+    <p class="talk-meta">
+      {d.event}
+      {d.location ? ` · ${placeLabel(d.location, lang)}` : ''}
+    </p>
+    <p class="talk-format">{formatLabel(d.format, lang)}</p>
+    <ul class="talk-themes" aria-label={t('themesLabel')}>
+      {d.themes.map((theme) => (
+        <li class="theme-tag">{themeLabel(theme, lang)}</li>
+      ))}
+    </ul>
+    {hasLinks && (
+      <div class="talk-links">
+        {d.videoUrl && (
+          <a class="talk-link" href={d.videoUrl} target="_blank" rel="noopener noreferrer">
+            {t('linkVideo')}
+          </a>
+        )}
+        {d.slidesUrl && (
+          <a class="talk-link" href={d.slidesUrl} target="_blank" rel="noopener noreferrer">
+            {t('linkSlides')}
+          </a>
+        )}
+        {!d.slidesUrl && d.slidesUrlExt && (
+          <a class="talk-link" href={d.slidesUrlExt} target="_blank" rel="noopener noreferrer">
+            {t('linkSlides')}
+          </a>
+        )}
+        {d.eventUrl && (
+          <a class="talk-link" href={d.eventUrl} target="_blank" rel="noopener noreferrer">
+            {t('linkEvent')}
+          </a>
+        )}
+      </div>
+    )}
+  </Wrap>
+</li>

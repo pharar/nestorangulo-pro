@@ -72,8 +72,10 @@ Essays and their twins share one source of truth for what is published,
 Spanish twins live at `/es/index.md`, `/es/about.md`, … (see `markdownPathFor`). They are in
 the registry (`lang`-specific builders, e.g. `homePage('es')`) and therefore in
 `llms-full.txt`. `llms.txt` keeps its English sections unchanged and adds one `## Español`
-section listing every twin under `/es/` (`getMarkdownPagesByLang('es')`); a new Spanish page
-appears there by being added to the registry. See [I18N.md](./I18N.md).
+section listing every twin under `/es/` (`getMarkdownPagesByLang('es')`): home, about,
+speaking, writing, contact, every talk (newest first), then the translated essays. A new
+Spanish page appears there by being added to `buildMarkdownPages()`. `/es/404/` has no twin
+(`NO_MARKDOWN`), and `check:ai` skips it like the root 404. See [I18N.md](./I18N.md).
 
 ### The `rel="alternate"` link
 

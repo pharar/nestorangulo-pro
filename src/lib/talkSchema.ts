@@ -1,6 +1,8 @@
 import type { CollectionEntry } from 'astro:content';
 import { SITE_URL, AUTHOR } from '../config';
 import { PERSON_ID, personStubNode, ref } from './structuredData';
+import type { Lang } from '../i18n/config';
+import { localizePath } from '../i18n/utils';
 
 type Talk = CollectionEntry<'talks'>;
 
@@ -63,21 +65,26 @@ export function videoThumbnail(url: string): string | undefined {
   return undefined;
 }
 
-export function talkUrl(id: string): string {
-  return `${SITE_URL}/speaking/${id}/`;
+export function talkUrl(id: string, lang: Lang = 'en'): string {
+  return `${SITE_URL}${localizePath(`/speaking/${id}/`, lang)}`;
 }
 
-export function talkEventId(id: string): string {
-  return `${talkUrl(id)}#event`;
+export function talkEventId(id: string, lang: Lang = 'en'): string {
+  return `${talkUrl(id, lang)}#event`;
 }
 
 /**
  * The talk's `Event` node, for the page's `@graph`. The performer is a bare
  * `@id` reference: the graph it is placed in carries the Person node.
  */
-export function talkEventNode(entry: Talk): Record<string, unknown> {
-  const d = entry.data;
-  const url = talkUrl(entry.id);
+export function talkEventNode(
+  entry: Talk,
+  lang: Lang = 'en',
+  /** Localized data (Spanish overlay applied); event facts are the same either way. */
+  data: Talk['data'] = entry.data
+): Record<string, unknown> {
+  const d = data;
+  const url = talkUrl(entry.id, lang);
   const day = isoDay(d.date);
   const description = d.description ?? d.summary;
   const virtual = isVirtual(d.location, d.format);
@@ -85,7 +92,7 @@ export function talkEventNode(entry: Talk): Record<string, unknown> {
 
   const event: Record<string, unknown> = {
     '@type': 'Event',
-    '@id': talkEventId(entry.id),
+    '@id': talkEventId(entry.id, lang),
     name: d.title,
     url,
     startDate: day,
@@ -151,6 +158,10 @@ export function talkSchema(entry: Talk) {
 
 export const SPEAKING_LIST_ID = `${SITE_URL}/speaking/#talks`;
 
+export function speakingListId(lang: Lang = 'en'): string {
+  return `${SITE_URL}${localizePath('/speaking/', lang)}#talks`;
+}
+
 /**
  * `ItemList` for /speaking — the index was as silent as the detail pages.
  *
@@ -163,17 +174,22 @@ export function speakingListSchema(talks: Talk[]) {
   return { '@context': 'https://schema.org', ...speakingListNode(talks) };
 }
 
-export function speakingListNode(talks: Talk[]): Record<string, unknown> {
+export function speakingListNode(
+  talks: Talk[],
+  lang: Lang = 'en',
+  /** Section title, e.g. `Speaking`; defaults to the English one. */
+  sectionName = 'Speaking'
+): Record<string, unknown> {
   return {
     '@type': 'ItemList',
-    '@id': SPEAKING_LIST_ID,
-    name: `Speaking — ${AUTHOR}`,
+    '@id': speakingListId(lang),
+    name: `${sectionName} — ${AUTHOR}`,
     numberOfItems: talks.length,
     itemListOrder: 'https://schema.org/ItemListOrderDescending',
     itemListElement: talks.map((t, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      url: talkUrl(t.id),
+      url: talkUrl(t.id, lang),
       name: t.data.title,
     })),
   };

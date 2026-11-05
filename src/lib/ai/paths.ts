@@ -14,13 +14,16 @@
  * on this exact shape — change it here and only here.
  */
 import { SITE_URL } from '../../config';
-import { isLang } from '../../i18n/config';
+import { DEFAULT_LANG, LANGS, isLang } from '../../i18n/config';
 
 /** Origin without a trailing slash, e.g. `https://nestorangulo.pro`. */
 export const ORIGIN: string = SITE_URL.replace(/\/+$/, '');
 
 /** Pages that intentionally have no Markdown version. */
-const NO_MARKDOWN = new Set(['/404']);
+const NO_MARKDOWN = new Set([
+  '/404',
+  ...LANGS.filter((l) => l !== DEFAULT_LANG).map((l) => `/${l}/404`),
+]);
 
 /**
  * HTML pathname -> Markdown pathname, or `null` when the page has no Markdown

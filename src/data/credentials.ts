@@ -1,13 +1,15 @@
+import type { Localized } from '../i18n/localized';
+
 export interface Credential {
-  title: string;
+  title: Localized;
   issuer: string;
   validUntil?: string;
   yearCompleted?: number;
   since?: string;
   eqfLevel?: number;
   verifyUrl?: string;
-  note?: string;
-  type?: string;
+  note?: Localized;
+  type?: Localized;
 }
 
 export const credentials: Credential[] = [
@@ -20,10 +22,13 @@ export const credentials: Credential[] = [
       'https://www.credly.com/badges/e7de5c98-5d06-416b-bc3d-cd11b64d6416/linked_in_profile',
   },
   {
-    title: 'Computer Science Engineer',
+    title: { en: 'Computer Science Engineer', es: 'Ingeniero Informático' },
     issuer: 'Universidad de Las Palmas de Gran Canaria',
     yearCompleted: 2013,
     eqfLevel: 7,
-    note: 'Formal training in AI — neural networks, genetic algorithms, automata.',
+    note: {
+      en: 'Formal training in AI — neural networks, genetic algorithms, automata.',
+      es: 'Formación académica en IA — redes neuronales, algoritmos genéticos, autómatas.',
+    },
   },
 ];

@@ -1,0 +1,13 @@
+---
+import WritingPost from '../../../views/WritingPost.astro';
+import { getLocalizedEssays } from '../../../lib/i18nContent';
+
+export async function getStaticPaths() {
+  const essays = await getLocalizedEssays('es');
+  return essays.map((item) => ({ params: { id: item.id }, props: { item } }));
+}
+
+const { item } = Astro.props;
+---
+
+<WritingPost lang="es" item={item} />

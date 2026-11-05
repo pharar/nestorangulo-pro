@@ -1,5 +1,6 @@
 ---
 summary: 'Descubrir vulnerabilidades con ayuda de máquinas ya es barato para todo el mundo, atacantes incluidos. El cuello de botella ya no es el descubrimiento, sino la respuesta.'
+sourceNote: 'Impartida en remoto para la sala de Kozhikode.'
 ---
 
 Un informe de campo sobre la construcción de un sistema que caza variantes de vulnerabilidades en plugins de WordPress: qué era en realidad (una capa de recuperación sobre un corpus de vulnerabilidades y pruebas de concepto reales, prompting estructurado, revisión adversarial y una persona al final), qué funcionó y qué no logró hacer nunca. La conclusión honesta es la incómoda: nada de esa pila es exclusivo, así que cualquiera puede construirla, también los atacantes.

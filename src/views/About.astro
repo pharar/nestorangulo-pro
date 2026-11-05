@@ -1,0 +1,136 @@
+---
+import { Image } from 'astro:assets';
+import photo from '../images/photo-nestor.jpg';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Credentials from '../components/Credentials.astro';
+import Service from '../components/Service.astro';
+import Publications from '../components/Publications.astro';
+import Press from '../components/Press.astro';
+import { SITE_URL } from '../config';
+import { getPublishedTalks, talkCountRounded } from '../lib/talks';
+import { useAbout } from '../i18n/ui/about';
+import { localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
+
+// About page markup for every language. src/pages/about.astro and
+// src/pages/es/about.astro are thin wrappers that pass `lang`; all copy lives in
+// src/i18n/ui/about.ts (shared with the Markdown twin).
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useAbout(lang);
+
+const TALK_COUNT = (await getPublishedTalks()).length;
+const TALK_COUNT_ROUNDED = talkCountRounded(TALK_COUNT);
+---
+
+<BaseLayout
+  lang={lang}
+  title={t('title')}
+  description={t('description', { rounded: TALK_COUNT_ROUNDED })}
+  person={true}
+  structuredData={{
+    type: 'ProfilePage',
+    breadcrumbs: [{ name: t('breadcrumb'), url: `${SITE_URL}${localizePath('/about/', lang)}` }],
+  }}
+>
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="about-hero" aria-labelledby="about-h1">
+    <div class="container">
+      <div class="about-hero-inner">
+        <Image
+          class="about-photo"
+          src={photo}
+          alt={t('photoAlt')}
+          width={200}
+          height={200}
+          format="webp"
+          loading="eager"
+        />
+        <div class="about-hero-text">
+          <h1 class="about-h1" id="about-h1">
+            {t('h1')}
+            <span class="caret" aria-hidden="true">
+              _
+            </span>
+          </h1>
+          <p class="about-tagline">{t('tagline')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Biography ─────────────────────────────────────────── -->
+  <section class="about-section" aria-label={t('bioLabel')}>
+    <div class="container">
+      <div class="about-bio">
+        <p class="lead-dropcap">{t('bio1')}</p>
+        <p>{t('bio2')}</p>
+        <p>{t('bio3')}</p>
+        <p>{t('bio4', { rounded: TALK_COUNT_ROUNDED })}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Credentials ───────────────────────────────────────── -->
+  <section class="about-section" aria-labelledby="credentials-heading">
+    <div class="container">
+      <h2 class="about-section-heading" id="credentials-heading">
+        {t('credentialsHeading')}
+      </h2>
+      <Credentials lang={lang} />
+    </div>
+  </section>
+
+  <!-- ── Speaking ──────────────────────────────────────────── -->
+  <section class="about-section" aria-labelledby="speaking-heading">
+    <div class="container">
+      <h2 class="about-section-heading" id="speaking-heading">
+        {t('speakingHeading')}
+      </h2>
+      <div class="about-speaking">
+        <p>{t('speakingText', { count: TALK_COUNT })}</p>
+        <a
+          class="about-external-link"
+          href="https://wordpress.tv/?s=nestor+angulo"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('speakingLink')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Service ───────────────────────────────────────────── -->
+  <section class="about-section" aria-labelledby="service-heading">
+    <div class="container">
+      <h2 class="about-section-heading" id="service-heading">
+        {t('serviceHeading')}
+      </h2>
+      <Service lang={lang} />
+    </div>
+  </section>
+
+  <!-- ── Publications ──────────────────────────────────────── -->
+  <section class="about-section" aria-labelledby="publications-heading">
+    <div class="container">
+      <h2 class="about-section-heading" id="publications-heading">
+        {t('publicationsHeading')}
+      </h2>
+      <Publications lang={lang} />
+    </div>
+  </section>
+
+  <!-- ── Press ─────────────────────────────────────────────── -->
+  <section class="about-section" aria-labelledby="press-heading">
+    <div class="container">
+      <h2 class="about-section-heading" id="press-heading">
+        {t('pressHeading')}
+      </h2>
+      <Press lang={lang} />
+    </div>
+  </section>
+</BaseLayout>

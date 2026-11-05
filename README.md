@@ -28,6 +28,7 @@ npm run dev        # http://localhost:4321
 | `npm run check:urls`   | URL contract of the built site (canonicals, sitemap, links)        |
 | `npm run check:csp`    | CSP contract of the built site (inline scripts/styles vs policy)   |
 | `npm run check:ai`     | AI-readable layer of the built site (llms.txt, twins, JSON-LD)     |
+| `npm run check:i18n`   | Bilingual contract of the built site (en/es pairs, switch, links)  |
 | `npm run format`       | Format all files with Prettier                                     |
 | `npm run format:check` | Check formatting                                                   |
 | `npm run og`           | Regenerate `public/og-default.png` from `assets/og/og-default.svg` |
@@ -212,7 +213,8 @@ verification, and rollback.
 - **Chunk 1** ✅ Scaffolding, design system, landing, contact, CI
 - **Chunk 2** ✅ `/about` full biography
 - **Chunk 3** ✅ `/speaking` with Astro Content Collections
-- **Chunk 4** — `/writing` with MDX blog posts (page is currently a "Coming next" placeholder)
+- **Chunk 4** ✅ `/writing` with Markdown essays
+- **i18n** ✅ Spanish version under `/es/` (every page, talks, the translated essay) — see [documentation/I18N.md](./documentation/I18N.md)
 
 ## License
 

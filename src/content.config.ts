@@ -88,6 +88,7 @@ const talksEs = defineCollection({
     title: z.string().optional(),
     summary: z.string().optional(),
     description: z.string().optional(),
+    sourceNote: z.string().optional(),
   }),
 });
 

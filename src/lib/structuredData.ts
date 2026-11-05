@@ -2,6 +2,7 @@ import { SITE_URL, SITE_NAME, AUTHOR, DEFAULT_DESCRIPTION } from '../config';
 import { personSchema } from './person';
 import { DEFAULT_LANG, isLang, type Lang } from '../i18n/config';
 import { localizePath } from '../i18n/utils';
+import { useHome } from '../i18n/ui/home';
 
 const HOME_NAME: Record<Lang, string> = { en: 'Home', es: 'Inicio' };
 
@@ -56,10 +57,14 @@ export function websiteNode(): GraphNode {
   };
 }
 
-/** The full Person entity: home and /about only. */
-export function personNode(): GraphNode {
+/**
+ * The full Person entity: home and /about only. Same facts and `@id` in every
+ * language; only the free-text `description` follows the route locale (the
+ * job title, credential and organisation names are proper names and stay).
+ */
+export function personNode(locale: Lang = DEFAULT_LANG): GraphNode {
   const { '@context': _context, ...node } = personSchema;
-  return node;
+  return { ...node, description: useHome(locale)('description') };
 }
 
 /**
@@ -111,7 +116,7 @@ export function pageGraph(input: PageGraphInput) {
   const locale = input.locale ?? (isLang(lang) ? lang : DEFAULT_LANG);
   const isHome = url === `${SITE_URL}${localizePath('/', locale)}`;
 
-  const graph: GraphNode[] = [websiteNode(), fullPerson ? personNode() : personStubNode()];
+  const graph: GraphNode[] = [websiteNode(), fullPerson ? personNode(locale) : personStubNode()];
 
   if (url && type) {
     const page: GraphNode = {

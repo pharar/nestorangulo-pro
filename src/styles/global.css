@@ -1638,6 +1638,10 @@ a:hover {
   padding: 0;
 }
 
+:root[lang='es'] .essay-body .footnotes h2::before {
+  content: 'Notas';
+}
+
 .essay-body .footnotes li {
   font-size: var(--text-sm);
   line-height: var(--leading-base);

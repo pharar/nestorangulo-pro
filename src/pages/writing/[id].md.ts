@@ -1,13 +1,12 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
-import type { CollectionEntry } from 'astro:content';
-import { getPublishedEssays } from '../../lib/writing';
+import { getLocalizedEssays, type LocalizedEssay } from '../../lib/i18nContent';
 import { markdownResponse } from '../../lib/ai/page';
 import { writingPostPage } from '../../lib/ai/pages/writing';
 
 export const getStaticPaths = (async () => {
-  const essays = await getPublishedEssays();
-  return essays.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+  const essays = await getLocalizedEssays('en');
+  return essays.map((item) => ({ params: { id: item.id }, props: { item } }));
 }) satisfies GetStaticPaths;
 
-export const GET: APIRoute<{ entry: CollectionEntry<'writing'> }> = ({ props }) =>
-  markdownResponse(writingPostPage(props.entry));
+export const GET: APIRoute<{ item: LocalizedEssay }> = ({ props }) =>
+  markdownResponse(writingPostPage(props.item));

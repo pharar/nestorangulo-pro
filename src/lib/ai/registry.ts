@@ -27,6 +27,12 @@ async function buildMarkdownPages(): Promise<MarkdownPage[]> {
     ...(await writingPostPages()),
     // Spanish twins. Localise a page: append its `…('es')` builder here.
     await homePage('es'),
+    await aboutPage('es'),
+    await speakingPage('es'),
+    await writingPage('es'),
+    contactPage('es'),
+    ...(await talkPages('es')),
+    ...(await writingPostPages('es')),
   ];
 }
 

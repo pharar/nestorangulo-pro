@@ -1,5 +1,6 @@
 ---
 summary: 'Cómo saber si te han hackeado, qué hacer y cómo evitarlo: una galería de los horrores con casos reales y una checklist de recuperación.'
+sourceNote: 'También existe una versión doblada al japonés: https://wordpress.tv/2019/12/27/ja-nestor-angulo-de-dgarte-ive-been-hacked-so-now-what/'
 ---
 
 Las tres preguntas que más me hacen cuando se enteran de que trabajo en ciberseguridad: cómo sé si me han hackeado, qué hago cuando ocurre y cómo puedo evitarlo. A través de una pequeña «galería de los horrores» de casos reales recopilados durante mis años en Sucuri, te ayudaré a entrenar el ojo para saber dónde mirar y detectar anomalías cuanto antes; después, una checklist recomendada de contramedidas para contraatacar y evitar la reinfección.
