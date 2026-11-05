@@ -6,8 +6,8 @@ Built with [Astro 7](https://astro.build), deployed on [Cloudflare Pages](https:
 
 ## Requirements
 
-- Node 24 LTS ("Krypton") — `nvm use` will read `.nvmrc`
-- npm ≥ 10 (the repo pins `npm@11.12.1` via `packageManager`)
+- Node 26 LTS ("Lithium") — `nvm use` will read `.nvmrc`
+- npm ≥ 10 (the repo pins `npm@12.2.2` via `packageManager`)
 
 ## Local development
 
