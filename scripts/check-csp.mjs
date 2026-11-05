@@ -72,11 +72,14 @@ for (const file of htmlFiles) {
   const scriptSrc = sources(csp, 'script-src');
   const styleSrc = sources(csp, 'style-src');
 
-  for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
+  // Tag matching is case-insensitive and tolerant of `</script >`, the way a
+  // browser is. This is a checker, so a variant it fails to recognise is a
+  // violation it reports as fine.
+  for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi)) {
     const [, attrs, body] = m;
-    if (/\ssrc=/.test(attrs)) continue; // external: covered by 'self'
+    if (/\ssrc\s*=/i.test(attrs)) continue; // external: covered by 'self'
     // Data blocks are never executed, so script-src does not apply to them.
-    if (/type="application\/(ld\+)?json"/.test(attrs)) continue;
+    if (/\stype\s*=\s*["']?application\/(ld\+)?json\b/i.test(attrs)) continue;
     inlineScripts++;
     if (!scriptSrc.has(`'${sha256(body)}'`)) {
       unhashedScripts.push(`  ${name}: ${body.trim().slice(0, 70)}…`);
@@ -84,7 +87,7 @@ for (const file of htmlFiles) {
   }
 
   if (!styleSrc.has("'unsafe-inline'")) {
-    for (const m of html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/g)) {
+    for (const m of html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style\b[^>]*>/gi)) {
       if (!styleSrc.has(`'${sha256(m[1])}'`)) {
         unhashedStyles.push(`  ${name}: ${m[1].trim().slice(0, 70)}…`);
       }
@@ -92,7 +95,7 @@ for (const file of htmlFiles) {
     // A style attribute cannot be allowed by hash without 'unsafe-hashes', so
     // under this policy any of them is dropped by the browser. This is what
     // Astro's "Shiki uses inline styles" build warning turns into.
-    const attr = html.match(/<[a-z][^>]*\sstyle="[^"]*"/i);
+    const attr = html.match(/<[a-z][^>]*\sstyle\s*=/i);
     if (attr) styleAttributes.push(`  ${name}: ${attr[0].slice(0, 90)}…`);
   }
 }
