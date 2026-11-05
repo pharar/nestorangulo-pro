@@ -52,8 +52,9 @@ text-only is the house style. Covers live under `src/`, never `public/`, because
 `language` is `en` or `es` and defaults to `en`; it drives the `lang` attribute on the
 page and the language mix of the shelf. The body of a Spanish talk carries an English
 translation of the abstract, the standard accessibility disclaimer, then the original,
-so the page is useful to both audiences and honest about what was delivered. A Spanish
-overlay for the whole site is in progress on another branch and will supersede this.
+so the page is useful to both audiences and honest about what was delivered. The Spanish
+page under `/es/` comes from the talk's `src/content/talks-es/` overlay, which every
+published talk needs; see [I18N.md](./I18N.md).
 
 ## Where the count comes from
 
