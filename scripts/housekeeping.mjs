@@ -7,8 +7,9 @@
  *              The default.
  *   baseline   Build the site as it stands and keep a copy to compare against.
  *              Run it BEFORE changing anything.
- *   verify     The local gate: format, types, build, URL and CSP contracts,
- *              audit — then a diff of the built site against the baseline.
+ *   verify     The local gate: format, types, build, the URL, CSP and
+ *              AI-readable-layer contracts, audit — then a diff of the built
+ *              site against the baseline.
  *              `--assets` also regenerates the committed favicons and OG card
  *              and fails if their bytes changed.
  *   probe-ts   Install a newer TypeScript, run `astro check`, put everything

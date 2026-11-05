@@ -225,6 +225,7 @@ Leave "Do not allow bypassing" off if you want an escape hatch for urgent fixes.
 npm run housekeeping:baseline            # snapshot the built site before changing anything
 npm run housekeeping                     # what is behind: runtime, deps, overrides, advisories, actions
 npm run housekeeping:verify -- --assets  # the full local gate, plus a diff against the snapshot
+npm run housekeeping:probe-ts            # does `astro check` run on the newest TypeScript yet?
 ```
 
 The procedure, the rule for what "latest" means for each piece, what is deliberately held
