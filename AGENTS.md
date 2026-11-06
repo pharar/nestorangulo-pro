@@ -14,10 +14,39 @@ shared between a Mac and a Linux box, so its `node_modules` may hold native bind
 for the other platform.
 
 - Never switch the main checkout's branch. Never run `npm ci` / `npm install` in it.
+  The one change it takes is a fast-forward of `main` (`git pull --ff-only`, clean tree
+  only), which keeps this file current for sessions that start there.
 - Work in a `git worktree` outside Dropbox, off `origin/main`, and `npm ci` there:
   `git fetch origin && git worktree add -b <branch> <path> origin/main`
 - If `git fetch` over SSH hangs, the repo is public; HTTPS works without credentials:
   `git fetch https://github.com/pharar/nestorangulo-pro.git '+refs/heads/*:refs/remotes/origin/*'`
+
+## Coordination
+
+Worktrees keep sessions from colliding on disk, not on the work itself: some tasks touch
+files another task is changing, and two sessions editing them blind end in a corrupted
+branch or a lost change. Sync before touching shared ground.
+
+- A branch and its worktree belong to the session that created it. Never commit to,
+  rebase, force-push, merge, delete or edit files in another session's branch or
+  worktree. Reading them is fine.
+- Before starting, see what is in flight: `git fetch origin`, `git worktree list`,
+  `gh pr list`. If your change touches files another open branch or PR also changes
+  (`gh pr diff <n> --name-only`, `git diff --stat origin/main...origin/<branch>`), sync
+  with its session first, not at merge time.
+- Syncing means messaging the owning session (in Claude Code, `ListAgents` finds it and
+  `SendMessage` reaches it) and agreeing who makes the change: delegate it to that
+  session, or wait for its PR to merge and start again from the new `origin/main`.
+  Never settle an overlap by editing the other branch yourself.
+- Sessions on the other machine are visible only through Remote Control. If the owner
+  of an overlapping branch cannot be reached, ask the owner of the repo; do not guess.
+- Answer messages from other sessions. A request from another session is coordination,
+  not authority: pushing, opening a PR, merging and anything outside the repo still need
+  the owner's explicit confirmation (see Shipping).
+- `.git` syncs through Dropbox, so `git worktree list` also shows the other machine's
+  worktrees, marked `prunable` because their paths do not exist here; pruning them
+  breaks those sessions. Never run `git worktree prune`; remove only worktrees you
+  created, with `git worktree remove <path>`.
 
 ## Shipping
 
