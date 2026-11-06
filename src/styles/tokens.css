@@ -22,12 +22,18 @@
   --leading-loose: 1.8;
 
   /* ── Colours ─────────────────────────────────────────────── */
+  /* Light values follow the brand palette, the same one the logos, favicon and
+     social card use: background #faf9f7, ink #2a2f32, gold #c08c50, rule
+     #c8c4bc, muted #8c8f97. One deliberate exception: the brand muted is only
+     3.07:1 on the background, below WCAG AA (4.5:1) for body-size text, so it
+     is --clr-subtle (the faintest text, and an improvement on the old 2.56:1)
+     and --clr-muted keeps a darker grey for secondary text. */
   --clr-bg: #faf9f7; /* warm off-white */
   --clr-surface: #f3f1ee;
-  --clr-text: #1c1917; /* near-black, warm */
-  --clr-muted: #6b6663; /* warm mid-grey */
-  --clr-subtle: #a09d9a; /* light warm-grey */
-  --clr-border: #e8e4df;
+  --clr-text: #2a2f32; /* brand ink, 12.9:1 on bg */
+  --clr-muted: #6b6663; /* warm mid-grey, 5.4:1 on bg (AA) */
+  --clr-subtle: #8c8f97; /* brand muted, 3.07:1 on bg */
+  --clr-border: #c8c4bc; /* brand rule */
   --clr-accent: #c08c50; /* amber gold — brand */
   --clr-accent-hover: #a87740; /* amber gold -15% lightness */
   --clr-accent-light: #f5ead9; /* amber gold 10% tint */
