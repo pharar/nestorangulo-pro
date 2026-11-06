@@ -45,9 +45,11 @@ export function dropcapProblem(html) {
   if (leads.length > 1) return `${leads.length} lead paragraphs; a page opens once`;
 
   const [[, attrs, inner]] = leads;
-  const text = inner.replace(/<[^>]*>/g, '').trimStart();
-  if (/^\d/.test(text) && !classList(attrs).includes('lead-dropcap--figure')) {
-    return `opens with a number ("${text.slice(0, 20)}…") but is not the figure form: see src/lib/lead.mjs`;
+  // Is the first character of text a digit? Step over any tags in front of it (a
+  // link, emphasis) rather than stripping them: this only reads, it never cleans.
+  const opensWithNumber = /^(?:\s|<[^>]*>)*\d/.test(inner);
+  if (opensWithNumber && !classList(attrs).includes('lead-dropcap--figure')) {
+    return 'opens with a number but is not the figure form (.lead-dropcap--figure): see src/lib/lead.mjs';
   }
   return null;
 }
