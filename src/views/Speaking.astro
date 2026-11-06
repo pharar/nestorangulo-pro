@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Lead from '../components/Lead.astro';
 import TalkItem from './parts/TalkItem.astro';
 import { getLocalizedTalks, type LocalizedTalk } from '../lib/i18nContent';
 import { SPEAKING_LIST_ID, speakingListId, speakingListNode } from '../lib/talkSchema';
@@ -82,7 +83,7 @@ const filterLabels = {
         </span>
       </h1>
       <p class="about-tagline">{t('tagline')}</p>
-      <p class="talks-intro">{t('intro', { count: talks.length })}</p>
+      <Lead class="talks-intro" text={t('intro', { count: talks.length })} />
       <!-- JS injects the filter bar + count here; no-JS: empty, no space taken -->
       <div id="talks-filter-bar" data-labels={JSON.stringify(filterLabels)}></div>
     </div>

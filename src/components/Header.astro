@@ -98,7 +98,7 @@ function isActive(href: string): boolean {
 
       <Isotipo class="site-logo-isotipo" width={43} height={40} />
     </a>
-    <nav aria-label={t('mainNavLabel')}>
+    <nav class="site-nav-wrap" aria-label={t('mainNavLabel')}>
       <ul class="site-nav">
         {navItems.map(({ href, label }) => (
           <li>
@@ -107,13 +107,16 @@ function isActive(href: string): boolean {
             </a>
           </li>
         ))}
-        <li class="site-nav-toggle">
-          <ThemeToggle lang={lang} />
-        </li>
-        <li class="site-nav-toggle">
-          <LanguageSwitch lang={lang} hasAlternate={hasAlternate} />
-        </li>
       </ul>
     </nav>
+    {/*
+        The toggles sit outside the list so that on a phone they can share the
+        logo's row while the four links take a row of their own (global.css,
+        "Header"). On wider screens they follow the links as before.
+      */}
+    <div class="site-tools">
+      <ThemeToggle lang={lang} />
+      <LanguageSwitch lang={lang} hasAlternate={hasAlternate} />
+    </div>
   </div>
 </header>

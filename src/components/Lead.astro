@@ -1,0 +1,24 @@
+---
+// The opening paragraph of a page, with its gold drop cap: the first letter, or
+// the whole number when the text opens with a figure. The rule and the reasons
+// are in src/lib/lead.mjs; Markdown gets the same through its `hastLead` plugin.
+import { leadFigure } from '../lib/lead.mjs';
+
+interface Props {
+  text: string;
+  /** Extra classes for the paragraph (e.g. `talks-intro`). */
+  class?: string;
+}
+
+const { text, class: extra } = Astro.props;
+const figure = leadFigure(text);
+---
+
+{figure ? (
+  <p class:list={['lead-dropcap', 'lead-dropcap--figure', extra]}>
+    <span class="lead-dropcap-figure">{figure[0]}</span>
+    {figure[1]}
+  </p>
+) : (
+  <p class:list={['lead-dropcap', extra]}>{text}</p>
+)}

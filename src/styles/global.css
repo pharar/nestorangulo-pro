@@ -122,12 +122,22 @@ a:hover {
   border-bottom: 1px solid var(--clr-border);
 }
 
+/* One row: logo on the left; the links, then the theme and language toggles, on
+   the right. Under 640px it becomes two rows (see the media query below). */
 .site-header .container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--sp-6);
-  flex-wrap: wrap;
+}
+
+.site-nav-wrap {
+  margin-inline-start: auto;
+}
+
+.site-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
 }
 
 .site-logo {
@@ -182,12 +192,46 @@ a:hover {
   color: var(--clr-text);
 }
 
-/* ── Theme toggle ────────────────────────────────────────────── */
-.site-nav-toggle {
-  display: flex;
-  align-items: center;
+/* A phone has no room for the logo, four links and two toggles on one line, and
+   letting the flex row wrap broke it in three: the logo, the links with the
+   theme toggle, then the language switch alone. So: the logo and the toggles
+   share the first row, the links get the full width of the second. The links
+   may still wrap, as a last resort, when the visitor's text size is very large. */
+@media (max-width: 640px) {
+  .site-header {
+    padding-block: var(--sp-4);
+  }
+
+  .site-header .container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'logo tools'
+      'nav  nav';
+    gap: var(--sp-3) var(--sp-4);
+  }
+
+  .site-logo {
+    grid-area: logo;
+  }
+
+  .site-tools {
+    grid-area: tools;
+    gap: var(--sp-2);
+  }
+
+  .site-nav-wrap {
+    grid-area: nav;
+    margin-inline-start: 0;
+  }
+
+  .site-nav {
+    justify-content: space-between;
+    gap: var(--sp-2) var(--sp-4);
+  }
 }
 
+/* ── Theme toggle ────────────────────────────────────────────── */
 /* Hidden by default and revealed only for scripted visitors. public/theme-init.js
    adds `.js` before first paint, so the button is there from the first frame
    (no layout shift) but never shown as a dead control without JavaScript. */
@@ -254,8 +298,8 @@ a:hover {
 /* ── Language switch ─────────────────────────────────────────── */
 /* Same box, radius, colours and focus ring as .theme-toggle; always visible
    because it is a plain link and needs no JavaScript. The `a` in the selector
-   outranks the generic `.site-nav a` rule. */
-.site-nav a.lang-switch {
+   outranks the generic `a` and `a:hover` rules. */
+.site-tools a.lang-switch {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -274,12 +318,12 @@ a:hover {
     background-color var(--ease);
 }
 
-.site-nav a.lang-switch:hover {
+.site-tools a.lang-switch:hover {
   color: var(--clr-text);
   background: var(--clr-surface);
 }
 
-.site-nav a.lang-switch:focus-visible {
+.site-tools a.lang-switch:focus-visible {
   outline: 2px solid var(--clr-accent);
   outline-offset: 2px;
 }
@@ -460,8 +504,17 @@ a:hover {
   line-height: var(--leading-loose);
 }
 
-/* Drop-cap: reusable accent initial — apply via .lead-dropcap on a <p> */
-.lead-dropcap::first-letter {
+/* Drop cap: the gold initial that opens every page's text. The markup comes
+   from <Lead> (pages) or the hastLead plugin (Markdown); src/lib/lead.mjs has
+   the rule. A letter is styled through ::first-letter; a figure is a span,
+   because ::first-letter would take only its first digit. flow-root keeps a
+   short paragraph as tall as its initial. */
+.lead-dropcap {
+  display: flow-root;
+}
+
+.lead-dropcap:not(.lead-dropcap--figure)::first-letter,
+.lead-dropcap-figure {
   font-family: var(--font-display);
   font-size: 3.75em;
   font-weight: 300;
@@ -470,6 +523,11 @@ a:hover {
   float: left;
   margin: 0.04em 0.08em 0 0;
   color: var(--clr-accent);
+}
+
+/* A letter belongs to its word; a number is a word of its own, so it keeps a space. */
+.lead-dropcap-figure {
+  margin-inline-end: 0.16em;
 }
 
 /* ── Section cards ───────────────────────────────────────────── */
@@ -1025,12 +1083,9 @@ a:hover {
     gap: var(--sp-1);
   }
 
-  .lead-dropcap::first-letter {
+  .lead-dropcap:not(.lead-dropcap--figure)::first-letter,
+  .lead-dropcap-figure {
     font-size: 3em;
-  }
-
-  .site-nav {
-    gap: var(--sp-4);
   }
 
   .service-item {
