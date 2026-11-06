@@ -53,7 +53,7 @@ both answer `text/markdown; charset=utf-8`.
 3. `## Core pages`, `## Speaking` (every published talk, newest first, with ISO date and
    language) and `## Writing` (every published essay, newest first); each line is
    `- [label](absolute .md URL): description`;
-4. `## Optional`: `llms-full.txt`, the sitemap and the HTML home page.
+4. `## Optional`: `llms-full.txt`, the sitemap, the RSS feed and the HTML home page.
 
 `llms-full.txt` is a short preamble followed by every twin verbatim, each preceded by a
 `---` rule and an `<!-- Page n of N: <md url> -->` comment, so pages stay separable even
