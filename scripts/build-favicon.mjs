@@ -1,11 +1,29 @@
+/*
+ * Rasterises the NR mark into the committed fallback icons: public/favicon.ico
+ * (16/32/48) and public/apple-touch-icon.png (180). Browsers with SVG favicon
+ * support use public/favicon.svg instead; these match its light variant.
+ *
+ * The mark is 186×173, not square. Resizing it straight to a square crops its
+ * sides (sharp's default fit is `cover`), so it is first set on a 206×206
+ * cream square at the same size and offset as favicon.svg: scaled to 174×162
+ * and centred. The square stays opaque and unrounded — iOS applies its own
+ * mask, and turns transparency black.
+ */
 import { readFileSync, writeFileSync } from 'node:fs';
 import sharp from 'sharp';
 
-// Replace the slightly-off-white background with the exact site cream
-const svgSrc = readFileSync('public/images/isotipo-nestorangulo-pro.svg', 'utf8').replace(
-  /#fbfafb/gi,
-  '#FAF9F7'
-);
+const CREAM = '#FAF9F7'; // site background; also replaces the mark's #fbfafb backing
+
+const mark = readFileSync('public/images/isotipo-nestorangulo-pro.svg', 'utf8')
+  .replace(/<\?xml[^>]*\?>|<!DOCTYPE[^>]*>/g, '')
+  .replace(/#fbfafb/gi, CREAM)
+  .replace('<svg ', '<svg x="16" y="22" width="174" height="162" ');
+
+if (!mark.includes('<svg x="16"')) {
+  throw new Error('isotipo SVG no longer starts with <svg …>; update build-favicon.mjs');
+}
+
+const svgSrc = `<svg xmlns="http://www.w3.org/2000/svg" width="206" height="206" viewBox="0 0 206 206"><rect width="206" height="206" fill="${CREAM}"/>${mark}</svg>`;
 
 async function rasterize(size) {
   return sharp(Buffer.from(svgSrc)).resize(size, size).png().toBuffer();
