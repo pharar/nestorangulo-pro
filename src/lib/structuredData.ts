@@ -1,6 +1,6 @@
 import { SITE_URL, SITE_NAME, AUTHOR, DEFAULT_DESCRIPTION } from '../config';
 import { personSchema } from './person';
-import { DEFAULT_LANG, isLang, type Lang } from '../i18n/config';
+import { DEFAULT_LANG, LANGS, isLang, type Lang } from '../i18n/config';
 import { localizePath } from '../i18n/utils';
 import { useHome } from '../i18n/ui/home';
 
@@ -52,7 +52,8 @@ export function websiteNode(): GraphNode {
     name: AUTHOR,
     alternateName: SITE_NAME,
     description: DEFAULT_DESCRIPTION,
-    inLanguage: 'en',
+    // The site is bilingual; each page's own `inLanguage` says which one it is.
+    inLanguage: [...LANGS],
     publisher: ref(PERSON_ID),
   };
 }

@@ -64,6 +64,7 @@ export const GET: APIRoute = async () => {
     list([
       `${link('llms-full.txt', '/llms-full.txt')}: ${text('Every page above, concatenated into one Markdown file.')}`,
       `${link('Sitemap', '/sitemap-index.xml')}: ${text('XML sitemap of the canonical HTML pages.')}`,
+      `${link('RSS feed', '/rss.xml')}: ${text('RSS feed of the published essays, newest first, each linking to its page.')}`,
       `${link('Home (HTML)', '/')}: ${text('The canonical HTML home page.')}`,
     ])
   );
