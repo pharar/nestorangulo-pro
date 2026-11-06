@@ -189,7 +189,9 @@ Every PR against `main`, and every push to `main`, runs `.github/workflows/ci.ym
 3. **Build** — `astro build`, then `npm run check:ai` (llms.txt, Markdown twins, JSON-LD
    graph, robots.txt; see [AI-READABLE.md](./documentation/AI-READABLE.md)) and
    `npm run check:i18n` (en/es pairs, hreflang, language switch, localised links, sitemap
-   alternates; see [I18N.md](./documentation/I18N.md)), uploading `dist/` as an artifact
+   alternates; see [I18N.md](./documentation/I18N.md)) and `npm run check:csp` (every
+   inline script and style allowed by the policy the page declares), uploading `dist/` as
+   an artifact
 
 Independently of those, a **Content** job runs `npm run check:content`,
 `npm run check:contrast` and `npm run test:scripts`: the content contract (what the Zod
@@ -206,9 +208,6 @@ Then, in parallel off the build artifact:
    Config in `lychee.toml`; the site's own domain is excluded there, deliberately.
 6. **Lighthouse audit** — asserts a11y ≥ 0.95, SEO ≥ 0.95, perf ≥ 0.9, and warns under
    best-practices 0.9
-
-`npm run check:csp` is **not** a CI step yet: it runs locally and as part of
-`npm run housekeeping:verify`.
 
 CodeQL also runs on every PR. It is GitHub's _default setup_, configured in the repo
 settings rather than in `.github/workflows/`, which is why no file here describes it.
@@ -239,7 +238,7 @@ Settings → Rules → Rulesets → New ruleset, targeting `main`:
   - `Content` — a new check: GitHub only offers it in this list after it has run once, and
     it is **not required until you add it here by hand**
   - `Type check`
-  - `Build` (includes `check:ai`)
+  - `Build` (includes `check:ai`, `check:i18n` and `check:csp`)
   - `URL contract`
   - `Link check`
   - `Lighthouse audit`
@@ -285,18 +284,19 @@ verification, and rollback.
 - **Chunk 6** ✅ i18n: Spanish (`/es/…`) versions of every page, talk and translated essay,
   with Spanish Markdown twins, localised breadcrumbs and `inLanguage`; internal links
   localised by the build, `check:i18n` in CI — see [documentation/I18N.md](./documentation/I18N.md)
-- **Chunk 7** 🛠️ Skills / MCP: Claude Code skills for repeatable site procedures (three
-  exist today: `housekeeping`, `ai-readable-layer` and `i18n`) and an MCP surface for the site's
-  content
+- **Chunk 7** 🛠️ Skills / MCP: Claude Code skills for repeatable site procedures (five
+  exist today: `housekeeping`, `ai-readable-layer`, `i18n`, `post` and `talk`) and an MCP
+  surface for the site's content
 
-Alongside the chunks, ✅ **Housekeeping** (#49) scripted dependency and runtime updates.
+Alongside the chunks:
+
+- ✅ **Housekeeping** (#49) scripted dependency and runtime updates.
+- ✅ **RSS feed** for `/writing` at `/rss.xml`, linked from `<head>` and `llms.txt`.
+- ✅ **Every built-site contract in CI**: `check:csp` joined `check:ai` and `check:i18n`
+  in the Build job.
 
 ### Candidates to assess next
 
-- **RSS/Atom feed for `/writing`**: the standard subscription channel for essays, also
-  read by aggregators and AI tools. Would be added to `llms.txt` and `<head>`.
-- **`check:csp` in CI**: the contract exists but only runs locally. Adding it is a single
-  step in the Build job.
 - **Per-talk OG cards**: essays have their own social image, talks still share
   `og-default.png`.
 - **Speaker / press kit page**: bios in several lengths, photos and topics in one place
