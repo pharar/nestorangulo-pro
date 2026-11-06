@@ -52,7 +52,8 @@ nothing depends on remembering: links, sitemap and hreflang follow the content, 
    paragraph of text is `<Lead text={t('…')} />` (`src/components/Lead.astro`): every page
    opens with the gold drop cap, the first letter or, when the text starts with a number,
    the whole number. Essays and talks get it from their Markdown on their own; the rule
-   is in `src/lib/lead.mjs`. Look at the page at phone width before handing it over.
+   is in `src/lib/lead.mjs` and `npm run check:dropcap` (in the gate) fails a page
+   without it. Look at the page at phone width before handing it over.
 3. Two wrappers: `src/pages/<page>.astro` and `src/pages/es/<page>.astro`.
 4. Markdown twins for both (`src/pages/<page>.md.ts`, `src/pages/es/<page>.md.ts`) and
    the builders in `src/lib/ai/registry.ts`: follow the `ai-readable-layer` skill.

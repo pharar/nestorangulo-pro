@@ -14,8 +14,9 @@
  * - Markdown (essays and talks): `hastLead` below, registered in astro.config.mjs,
  *   which marks the first top-level paragraph of every document.
  *
- * Styles: "Drop cap" in src/styles/global.css. Plain `.mjs` so astro.config.mjs
- * can import it.
+ * Why: documentation/BRAND.md, "The drop cap". Styles: "Drop cap" in
+ * src/styles/global.css. Held by `npm run check:dropcap`. Plain `.mjs` so
+ * astro.config.mjs can import it.
  */
 
 /** A whole leading number: `50`, `1,200`, `1.200`, `100+`. */

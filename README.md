@@ -42,6 +42,7 @@ npm run build && npm run check:ai && npm run check:urls && npm run check:csp
 | `npm run check:i18n`     | Bilingual contract of the built site (en/es pairs, switch, links)  |
 | `npm run check:content`  | Content contract of the Markdown sources (no build needed)         |
 | `npm run check:contrast` | Text colour contrast of the tokens, both themes (no build needed)  |
+| `npm run check:dropcap`  | Every built page opens with one gold drop cap (BRAND.md)           |
 | `npm run test:scripts`   | Unit tests for the scripts (`node --test`)                         |
 | `npm run gate`           | Every local check in one go — run before handing work over         |
 | `npm run format`         | Format all files with Prettier                                     |
@@ -76,8 +77,9 @@ them.
 │   ├── SPEAKING.md            — Talk card conventions
 │   └── WRITING.md             — Essays: schema, figures, social card, RSS
 ├── scripts/                   — build-og.mjs, build-favicon.mjs (asset generators),
-│                                check-urls.mjs, check-csp.mjs, check-ai-layer.mjs
-│                                (build contracts), check-content.mjs (content
+│                                check-urls.mjs, check-csp.mjs, check-ai-layer.mjs,
+│                                check-dropcap.mjs (build contracts),
+│                                check-content.mjs (content
 │                                contract), check-contrast.mjs (colour
 │                                contrast), gate.mjs (every local check),
 │                                housekeeping.mjs (update report),
@@ -88,7 +90,7 @@ them.
 ├── src/
 │   ├── components/            — SEO (meta, JSON-LD graph, Markdown alternate),
 │   │                            Header, Footer, ThemeToggle, Isotipo, Credentials,
-│   │                            Press, Publications, Service
+│   │                            Press, Publications, Service, Lead (the drop cap)
 │   ├── content/talks/         — Talk entries (Markdown, one file per talk)
 │   ├── content/writing/       — Essays (Markdown, one file per essay)
 │   ├── content.config.ts      — `talks` and `writing` collection schemas (Zod)
@@ -187,11 +189,12 @@ Every PR against `main`, and every push to `main`, runs `.github/workflows/ci.ym
    formatting slip never hides a real failure behind a skipped build.
 2. **Type check** — `astro check` with TypeScript strict
 3. **Build** — `astro build`, then `npm run check:ai` (llms.txt, Markdown twins, JSON-LD
-   graph, robots.txt; see [AI-READABLE.md](./documentation/AI-READABLE.md)) and
+   graph, robots.txt; see [AI-READABLE.md](./documentation/AI-READABLE.md)),
    `npm run check:i18n` (en/es pairs, hreflang, language switch, localised links, sitemap
-   alternates; see [I18N.md](./documentation/I18N.md)) and `npm run check:csp` (every
-   inline script and style allowed by the policy the page declares), uploading `dist/` as
-   an artifact
+   alternates; see [I18N.md](./documentation/I18N.md)), `npm run check:csp` (every
+   inline script and style allowed by the policy the page declares) and
+   `npm run check:dropcap` (every page opens with the gold drop cap; see
+   [BRAND.md](./documentation/BRAND.md#the-drop-cap)), uploading `dist/` as an artifact
 
 Independently of those, a **Content** job runs `npm run check:content`,
 `npm run check:contrast` and `npm run test:scripts`: the content contract (what the Zod
@@ -238,7 +241,7 @@ Settings → Rules → Rulesets → New ruleset, targeting `main`:
   - `Content` — a new check: GitHub only offers it in this list after it has run once, and
     it is **not required until you add it here by hand**
   - `Type check`
-  - `Build` (includes `check:ai`, `check:i18n` and `check:csp`)
+  - `Build` (includes `check:ai`, `check:i18n`, `check:csp` and `check:dropcap`)
   - `URL contract`
   - `Link check`
   - `Lighthouse audit`

@@ -55,8 +55,8 @@ branch or a lost change. Sync before touching shared ground.
 - Do not push, open a PR, merge, upload to R2, or change anything outside the repo
   (Cloudflare dashboard, DNS, buckets) without explicit confirmation from the owner.
 - Run `npm run gate` before handing anything over. It runs every local check: format,
-  content and contrast contracts, script tests, types, build, URL, CSP, AI-readable-layer
-  and bilingual (en/es) contracts.
+  content and contrast contracts, script tests, types, build, URL, CSP, AI-readable-layer,
+  bilingual (en/es) and drop-cap contracts.
 
 ## Invariants
 
@@ -130,5 +130,6 @@ change as a PR from a fresh worktree), with `node:test` tests beside them.
 | Run every local check            | (none; part of every skill) | `npm run gate`                                                         | this file                                                                                |
 | Check content rules              | (none yet)                  | `npm run check:content`                                                | header of `scripts/check-content.mjs`; [README](./README.md#content)                     |
 | Check text colour contrast       | (none)                      | `npm run check:contrast`                                               | [BRAND.md](./documentation/BRAND.md#on-the-site)                                         |
+| Open each page with a drop cap   | `i18n` (new page step)      | `npm run check:dropcap`                                                | [BRAND.md](./documentation/BRAND.md#the-drop-cap)                                        |
 
 Add a row when a new repeatable action gains its skill, script and doc.

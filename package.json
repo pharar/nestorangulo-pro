@@ -41,6 +41,7 @@
     "check:csp": "node scripts/check-csp.mjs",
     "check:content": "node scripts/check-content.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
+    "check:dropcap": "node scripts/check-dropcap.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:scripts": "node --test scripts/",

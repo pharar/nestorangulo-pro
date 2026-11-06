@@ -70,6 +70,19 @@ Montserrat is for brand assets: the logos and the social cards, which embed it f
 `src/styles/tokens.css`: Fraunces for display, IBM Plex Sans for body, IBM Plex Mono for
 code and metadata.
 
+### The drop cap
+
+Every page opens its text with a drop cap in the gold: the first letter in Fraunces light
+italic, or the whole number when the text starts with one (the talk count that opens
+Speaking). Home, About, Writing, Speaking, Contact and every essay and talk carry it; the
+404 does not, nor a talk with no abstract. It marks where the reading starts, the same on
+every page, so a page without it looks unfinished next to the others.
+
+How it is built is in `src/lib/lead.mjs`: a page renders its first paragraph with
+`<Lead>`, and Markdown gets it from the `hastLead` plugin, so a new essay or talk needs
+nothing. `npm run check:dropcap` (part of the gate and of CI) fails a built page without
+one, with two, or whose number would come out with only its first digit in gold.
+
 ## Logos and tagline
 
 The logo files are in `public/images/`:
