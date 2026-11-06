@@ -76,7 +76,7 @@ a:hover {
   z-index: 100;
   padding: var(--sp-2) var(--sp-4);
   background: var(--clr-accent);
-  color: #fff;
+  color: var(--clr-on-accent); /* white on the gold was 2.8:1 */
   font-family: var(--font-body);
   font-size: var(--text-sm);
   font-weight: 500;
@@ -87,7 +87,7 @@ a:hover {
 
 .skip-link:focus {
   top: 0;
-  outline: 2px solid #fff;
+  outline: 2px solid var(--clr-on-accent);
   outline-offset: -4px;
 }
 
@@ -305,12 +305,12 @@ a:hover {
   gap: var(--sp-2);
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   letter-spacing: 0.02em;
 }
 
-/* The mark sits inside .footer-copy, which is --clr-subtle. Left to inherit,
-   currentColor would wash it out to the same pale grey as the copyright line;
+/* The mark sits inside .footer-copy, which is --clr-muted. Left to inherit,
+   currentColor would turn it the same grey as the copyright line;
    it has always rendered stronger than its neighbouring text, so pin it to the
    body ink the way the header logo does. */
 .footer-mark {
@@ -606,7 +606,7 @@ a:hover {
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   padding-top: 0.2em;
 }
 
@@ -643,14 +643,14 @@ a:hover {
 .placeholder-status {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   margin-bottom: var(--sp-6);
 }
 
 .back-link {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--clr-accent);
+  color: var(--clr-accent-text);
   text-decoration: none;
   letter-spacing: 0.04em;
   transition: opacity var(--ease);
@@ -658,7 +658,6 @@ a:hover {
 
 .back-link:hover {
   opacity: 0.75;
-  color: var(--clr-accent);
 }
 
 /* ── About page ──────────────────────────────────────────────── */
@@ -824,7 +823,7 @@ a:hover {
 }
 
 .credential-badge {
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
 }
 
 .credential-note {
@@ -1168,7 +1167,7 @@ a:hover {
   align-self: start;
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   letter-spacing: 0.04em;
   white-space: nowrap;
 }
@@ -1230,7 +1229,7 @@ a:hover {
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   margin: 0 0 var(--sp-2) 0;
   padding-bottom: var(--sp-2);
   border-bottom: 1px solid var(--clr-border);
@@ -1286,7 +1285,7 @@ a:hover {
 .talk-format {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: var(--sp-2);
@@ -1441,7 +1440,7 @@ a:hover {
 .talk-provenance-note {
   margin-top: var(--sp-3);
   font-size: var(--text-xs);
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   font-family: var(--font-mono);
   letter-spacing: 0.02em;
 }
@@ -1589,6 +1588,11 @@ a:hover {
   color: var(--clr-accent);
 }
 
+/* A bullet is decoration; a number is text, so it takes the AA gold. */
+.essay-body ol > li::marker {
+  color: var(--clr-accent-text);
+}
+
 .essay-body strong {
   font-weight: 600;
 }
@@ -1623,7 +1627,7 @@ a:hover {
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
   /* The generated text says "Footnotes"; show "Notes" instead. */
   font-size: 0;
 }
@@ -1651,7 +1655,7 @@ a:hover {
 }
 
 .essay-body .footnotes li::marker {
-  color: var(--clr-subtle);
+  color: var(--clr-muted);
 }
 
 .essay-body .footnotes p {

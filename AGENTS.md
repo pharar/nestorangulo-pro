@@ -55,8 +55,8 @@ branch or a lost change. Sync before touching shared ground.
 - Do not push, open a PR, merge, upload to R2, or change anything outside the repo
   (Cloudflare dashboard, DNS, buckets) without explicit confirmation from the owner.
 - Run `npm run gate` before handing anything over. It runs every local check: format,
-  content contract, script tests, types, build, URL, CSP, AI-readable-layer and bilingual
-  (en/es) contracts.
+  content and contrast contracts, script tests, types, build, URL, CSP, AI-readable-layer
+  and bilingual (en/es) contracts.
 
 ## Invariants
 
@@ -77,6 +77,11 @@ owner's prose unasked. If something cannot be verified, set `draft: true` and le
 field empty rather than filling it with a guess. `src/content/` is authored material:
 change it only when asked to. A fixed fact, relevant only when copy is generated: ISO
 27001 and SOC 2 were passed in May 2026 (not 2025).
+
+Palette, type and logos are in [BRAND.md](./documentation/BRAND.md). Identity facts,
+contact addresses and voice are in the owner's private brand reference, outside the repo;
+its location is in his private agent instructions. Neither its location nor anything from
+it goes into this public repo, its commits or its pull requests.
 
 ## Environments
 
@@ -124,5 +129,6 @@ change as a PR from a fresh worktree), with `node:test` tests beside them.
 | Keep English and Spanish in step | `i18n`                      | `npm run check:i18n`                                                   | [I18N.md](./documentation/I18N.md)                                                       |
 | Run every local check            | (none; part of every skill) | `npm run gate`                                                         | this file                                                                                |
 | Check content rules              | (none yet)                  | `npm run check:content`                                                | header of `scripts/check-content.mjs`; [README](./README.md#content)                     |
+| Check text colour contrast       | (none)                      | `npm run check:contrast`                                               | [BRAND.md](./documentation/BRAND.md#on-the-site)                                         |
 
 Add a row when a new repeatable action gains its skill, script and doc.
