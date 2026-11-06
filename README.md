@@ -67,8 +67,10 @@ them.
 │                                og-essay.html; Montserrat fonts)
 ├── documentation/
 │   ├── AI-READABLE.md         — llms.txt, Markdown twins, robots.txt, check:ai
+│   ├── BRAND.md               — Palette, type, logos (the private part is not here)
 │   ├── DEPLOY.md              — Cloudflare Pages setup and deploy guide
 │   ├── HOUSEKEEPING.md        — Keeping dependencies and runtime current
+│   ├── I18N.md                — English and Spanish versions, /es/ routes
 │   ├── SLIDES-R2.md           — Hosting slide decks on Cloudflare R2
 │   ├── SPEAKING.md            — Talk card conventions
 │   └── WRITING.md             — Essays: schema, figures, social card, RSS
