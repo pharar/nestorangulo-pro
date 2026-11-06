@@ -78,6 +78,10 @@ field empty rather than filling it with a guess. `src/content/` is authored mate
 change it only when asked to. A fixed fact, relevant only when copy is generated: ISO
 27001 and SOC 2 were passed in May 2026 (not 2025).
 
+Palette, type and logos are in [BRAND.md](./documentation/BRAND.md). Identity facts,
+contact addresses and voice are in the owner's private brand reference, outside the repo;
+BRAND.md says where it is. Nothing from it goes into this public repo.
+
 ## Environments
 
 A sandboxed or bridged shell (a Linux VM over a Mac checkout, a cloud container) differs
