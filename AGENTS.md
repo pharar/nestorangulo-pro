@@ -90,7 +90,10 @@ from the owner's machine. Check, don't assume:
   plainly and name the build as the owner's step; never claim a build passed. Never
   `npm install` over a foreign `node_modules`.
 - Never write a global git identity. Pass it per command with
-  `git -c user.name=… -c user.email=…`, taken from the author in `package.json`.
+  `git -c user.name=… -c user.email=…`, taken from the author in `package.json`. That
+  email is the owner's GitHub noreply address, the commit identity; it is not a contact
+  address, so never copy it into the site (the contact addresses are in
+  `src/data/contacts.ts`).
 - The owner may push and merge between turns: re-read the git state (branch, `git fetch`,
   `git status`) at the start of every follow-up; a branch you made may already be merged.
 
