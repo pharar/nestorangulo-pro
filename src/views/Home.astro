@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Lead from '../components/Lead.astro';
 import { Image } from 'astro:assets';
 import heroImage from '../images/home-hero.jpg';
 import { getPublishedTalks, talkCountRounded } from '../lib/talks';
@@ -61,7 +62,7 @@ const TALK_COUNT_ROUNDED = talkCountRounded(TALK_COUNT);
   <section class="manifesto" aria-label={t('manifestoLabel')}>
     <div class="container">
       <div class="manifesto-body">
-        <p class="lead-dropcap">{t('manifesto1')}</p>
+        <Lead text={t('manifesto1')} />
         <p>{t('manifesto2')}</p>
         <p>{t('manifesto3')}</p>
         <p>{t('manifesto4', { rounded: TALK_COUNT_ROUNDED })}</p>

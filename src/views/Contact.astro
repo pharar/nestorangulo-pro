@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Lead from '../components/Lead.astro';
 import { SITE_URL } from '../config';
 import { contacts } from '../data/contacts';
 import { useContact } from '../i18n/ui/contact';
@@ -32,7 +33,7 @@ const t = useContact(lang);
           _
         </span>
       </h1>
-      <p>{t('intro')}</p>
+      <Lead text={t('intro')} />
     </div>
 
     <ul class="contact-list">

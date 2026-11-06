@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import photo from '../images/photo-nestor.jpg';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Lead from '../components/Lead.astro';
 import Credentials from '../components/Credentials.astro';
 import Service from '../components/Service.astro';
 import Publications from '../components/Publications.astro';
@@ -66,7 +67,7 @@ const TALK_COUNT_ROUNDED = talkCountRounded(TALK_COUNT);
   <section class="about-section" aria-label={t('bioLabel')}>
     <div class="container">
       <div class="about-bio">
-        <p class="lead-dropcap">{t('bio1')}</p>
+        <Lead text={t('bio1')} />
         <p>{t('bio2')}</p>
         <p>{t('bio3')}</p>
         <p>{t('bio4', { rounded: TALK_COUNT_ROUNDED })}</p>

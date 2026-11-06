@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Lead from '../components/Lead.astro';
 import { SITE_URL } from '../config';
 import { getLocalizedEssays } from '../lib/i18nContent';
 import { writingListId, writingListNode } from '../lib/writingSchema';
@@ -39,7 +40,7 @@ function isoDate(d: Date): string {
   <div class="container">
     <div class="page-header">
       <h1>{t('h1')}</h1>
-      <p>{t('intro')}</p>
+      <Lead text={t('intro')} />
     </div>
 
     {essays.length === 0 ? (

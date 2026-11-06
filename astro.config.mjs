@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { satteri } from '@astrojs/markdown-satteri';
 import { hastFootnotesEs } from './src/lib/hastFootnotesEs.mjs';
 import { hastLinksEs } from './src/lib/hastLinksEs.mjs';
+import { hastLead } from './src/lib/lead.mjs';
 import { hasSpanishRoute } from './src/lib/i18nLinks.mjs';
 
 /**
@@ -43,8 +44,9 @@ export default defineConfig({
     locales: ['en', 'es'],
     routing: { prefixDefaultLocale: false },
   },
+  // Every document: the gold drop cap on its first paragraph (src/lib/lead.mjs).
   // Spanish content only: footnote labels and /es/ links (see the plugins).
-  markdown: { processor: satteri({ hastPlugins: [hastFootnotesEs, hastLinksEs] }) },
+  markdown: { processor: satteri({ hastPlugins: [hastLead, hastFootnotesEs, hastLinksEs] }) },
   integrations: [
     spanish404(),
     sitemap({
