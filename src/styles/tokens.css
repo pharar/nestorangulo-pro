@@ -25,14 +25,14 @@
   /* Light values follow the brand palette, the same one the logos, favicon and
      social card use: background #faf9f7, ink #2a2f32, gold #c08c50, rule
      #c8c4bc, muted #8c8f97. One deliberate exception: the brand muted is only
-     3.07:1 on the background, below WCAG AA (4.5:1) for body-size text, so it
-     is --clr-subtle (the faintest text, and an improvement on the old 2.56:1)
-     and --clr-muted keeps a darker grey for secondary text. */
+     3.07:1 on the background, below WCAG AA (4.5:1) for text, so the site does
+     not use it for text; secondary and small text is --clr-muted.
+     Every token that colours text is checked against its backgrounds, in both
+     themes, by `npm run check:contrast` (scripts/check-contrast.mjs). */
   --clr-bg: #faf9f7; /* warm off-white */
   --clr-surface: #f3f1ee;
   --clr-text: #2a2f32; /* brand ink, 12.9:1 on bg */
   --clr-muted: #6b6663; /* warm mid-grey, 5.4:1 on bg (AA) */
-  --clr-subtle: #8c8f97; /* brand muted, 3.07:1 on bg */
   --clr-border: #c8c4bc; /* brand rule */
   --clr-accent: #c08c50; /* amber gold — brand */
   --clr-accent-hover: #a87740; /* amber gold -15% lightness */
@@ -87,7 +87,6 @@
     --clr-surface: #232019;
     --clr-text: #f0ede8; /* warm off-white */
     --clr-muted: #a8a29a;
-    --clr-subtle: #7a746c;
     --clr-border: #33302a;
     --clr-accent: #c08c50; /* brand gold, unchanged in both themes */
     --clr-accent-hover: #d4a068; /* lightened, not darkened, for dark ground */
@@ -103,7 +102,6 @@
   --clr-surface: #232019;
   --clr-text: #f0ede8;
   --clr-muted: #a8a29a;
-  --clr-subtle: #7a746c;
   --clr-border: #33302a;
   --clr-accent: #c08c50;
   --clr-accent-hover: #d4a068;

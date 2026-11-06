@@ -31,11 +31,25 @@ No pure black (`#000000`) or pure white (`#FFFFFF`): always the warm equivalents
 ### On the site
 
 The light theme in `src/styles/tokens.css` uses the palette as `--clr-bg`, `--clr-text`
-(ink), `--clr-border` (rule), `--clr-subtle` (muted) and `--clr-accent` (gold), with one
-deliberate exception: the brand muted is 3.07:1 on the background, below WCAG AA (4.5:1)
-for body-size text, so secondary text (`--clr-muted`) uses a darker grey, `#6B6663`
-(5.4:1), and the brand muted is kept for the faintest text. The dark theme has no
-counterpart in the palette; its values are the site's own.
+(ink), `--clr-border` (rule) and `--clr-accent` (gold). The dark theme has no counterpart
+in the palette; its values are the site's own.
+
+Text meets WCAG AA (4.5:1) in both themes, and that decides two deviations:
+
+- **No brand muted for text.** `#8C8F97` is 3.07:1 on the background, so secondary and
+  small text (`--clr-muted`) uses a darker warm grey, `#6B6663` (5.4:1 on the
+  background, 5.0:1 on the surface). The brand muted stays in the logos and the social
+  card.
+- **Gold is not a text colour at rest.** `#C08C50` is 2.8:1 on the light background.
+  Hover states, the title caret, drop caps and list bullets stay in it by design, though
+  that is below AA; any other text in gold uses `--clr-accent-text`, darkened for AA, and
+  text on gold uses `--clr-on-accent`.
+
+`npm run check:contrast` (part of the gate and of CI) holds this: it computes every
+text-on-background pairing, in every theme, from the tokens, and fails when a stylesheet
+colours text with a token it does not check. A new pairing goes in `PAIRS` in
+`scripts/check-contrast.mjs`. Lighthouse also fails any page with a contrast error, but
+it only sees the light theme.
 
 The background and ink are repeated outside the stylesheet, so a change to them must
 reach these too: `public/favicon.svg`, `CREAM` in `scripts/build-favicon.mjs` (rerun it

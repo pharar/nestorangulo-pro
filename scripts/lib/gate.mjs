@@ -7,7 +7,7 @@
  * runs them all in one place, in an order that fails fast.
  *
  * Order: checks that need nothing but the sources come first (format, content
- * contract, script tests, types), then the build, then the contracts that read
+ * and contrast contracts, script tests, types), then the build, then the contracts that read
  * `dist/` and so can only follow it. A step marked `needs` is skipped, not run,
  * when the step it depends on failed.
  */
@@ -19,6 +19,7 @@ import { readFileSync } from 'node:fs';
 const BASE_STEPS = [
   ['Format', 'format:check'],
   ['Content contract', 'check:content'],
+  ['Contrast contract', 'check:contrast'],
   ['Script tests', 'test:scripts'],
   ['Type check', 'check'],
   ['Build', 'build'],
